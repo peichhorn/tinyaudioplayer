@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.0.201102241217.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.0.201102241217">
+      <category name="de.fips.plugins.snapshots"/>
+   </feature>
+   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.0.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.0">
+      <category name="de.fips.plugin.releases"/>
+   </feature>
+   <category-def name="de.fips.plugin.snapshots" label="Snapshots"/>
+   <category-def name="de.fips.plugin.releases" label="Releases"/>
+</site>

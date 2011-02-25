@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <extension point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="toolbar:org.eclipse.ui.main.toolbar ">
+       <toolbar
+             id="de.fips.plugin.tinyaudioplayer.controls"
+             label="TinyAudioplayer">
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.previous"
+                style="push">
+          </command>
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.play"
+                style="push">
+          </command>
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.pause"
+                style="push">
+          </command>
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.stop"
+                style="push">
+          </command>
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.next"
+                style="push">
+          </command>
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.eject"
+                style="push">
+          </command>
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.shuffle"
+                style="toggle">
+          </command>
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.repeat"
+                style="toggle">
+          </command>
+       </toolbar>
+    </menuContribution>
+  </extension>
+  <extension point="org.eclipse.ui.commands">
+    <command defaultHandler="de.fips.plugin.tinyaudioplayer.handler.PreviousHandler" id="de.fips.plugin.tinyaudioplayer.previous" name="Previous Track"></command>
+    <command defaultHandler="de.fips.plugin.tinyaudioplayer.handler.PlayHandler" id="de.fips.plugin.tinyaudioplayer.play" name="Play Track"></command>
+    <command defaultHandler="de.fips.plugin.tinyaudioplayer.handler.PauseHandler" id="de.fips.plugin.tinyaudioplayer.pause" name="Pause Track"></command>
+    <command defaultHandler="de.fips.plugin.tinyaudioplayer.handler.StopHandler" id="de.fips.plugin.tinyaudioplayer.stop" name="Stop Track"></command>
+    <command defaultHandler="de.fips.plugin.tinyaudioplayer.handler.NextHandler" id="de.fips.plugin.tinyaudioplayer.next" name="Next Track"></command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.EjectHandler"
+          id="de.fips.plugin.tinyaudioplayer.eject"
+          name="Eject Tracks">
+    </command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.ShuffleHandler"
+          id="de.fips.plugin.tinyaudioplayer.shuffle"
+          name="Shuffle Playlist">
+    </command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.RepeatHandler"
+          id="de.fips.plugin.tinyaudioplayer.repeat"
+          name="Repeat Playlist">
+    </command>
+  </extension>
+  <extension point="org.eclipse.ui.commandImages">
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.previous"
+          disabledIcon="icons/16px-skip-backward-disabled.png"
+          icon="icons/16px-skip-backward.png"></image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.play"
+          disabledIcon="icons/16px-start-disabled.png"
+          icon="icons/16px-start.png"></image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.pause"
+          disabledIcon="icons/16px-pause-disabled.png"
+          icon="icons/16px-pause.png"></image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.stop"
+          disabledIcon="icons/16px-stop-disabled.png"
+          icon="icons/16px-stop.png"> </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.next"
+          disabledIcon="icons/16px-skip-forward-disabled.png"
+          icon="icons/16px-skip-forward.png"> </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.eject"
+          disabledIcon="icons/16px-eject-disabled.png"
+          icon="icons/16px-eject.png">
+    </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.shuffle"
+          disabledIcon="icons/16px-shuffle-disabled.png"
+          icon="icons/16px-shuffle.png">
+    </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.repeat"
+          disabledIcon="icons/16px-repeat-disabled.png"
+          icon="icons/16px-repeat.png">
+    </image>
+  </extension>
+  <extension point="org.eclipse.ui.themes">
+     <themeElementCategory
+           id="de.fips.plugin.tinyaudioplayer.notifier.themeElementCategory"
+           label="TinyAudioplayer Notifier">
+     </themeElementCategory>
+     <colorDefinition
+           categoryId="de.fips.plugin.tinyaudioplayer.notifier.themeElementCategory"
+           id="de.fips.plugin.tinyaudioplayer.notifier.color"
+           label="Text Color"
+           value="40,73,97">
+     </colorDefinition>
+     <colorDefinition
+           categoryId="de.fips.plugin.tinyaudioplayer.notifier.themeElementCategory"
+           id="de.fips.plugin.tinyaudioplayer.notifier.titlecolor"
+           label="Title Color"
+           value="40,73,97">
+     </colorDefinition>
+     <colorDefinition
+           categoryId="de.fips.plugin.tinyaudioplayer.notifier.themeElementCategory"
+           id="de.fips.plugin.tinyaudioplayer.notifier.bordercolor"
+           label="Border Color"
+           value="40,73,97">
+     </colorDefinition>
+     <colorDefinition
+           categoryId="de.fips.plugin.tinyaudioplayer.notifier.themeElementCategory"
+           id="de.fips.plugin.tinyaudioplayer.notifier.gradientcolor1"
+           label="Gradient Background Color 1"
+           value="226,239,249">
+     </colorDefinition>
+     <colorDefinition
+           categoryId="de.fips.plugin.tinyaudioplayer.notifier.themeElementCategory"
+           id="de.fips.plugin.tinyaudioplayer.notifier.gradientcolor2"
+           label="Gradient Background Color 2"
+           value="177,211,243">
+     </colorDefinition>
+     <fontDefinition
+           categoryId="de.fips.plugin.tinyaudioplayer.notifier.themeElementCategory"
+           id="de.fips.plugin.tinyaudioplayer.notifier.textfont"
+           label="Text Font"
+           value="Tahoma-bold-8">
+     </fontDefinition>
+     <fontDefinition
+           categoryId="de.fips.plugin.tinyaudioplayer.notifier.themeElementCategory"
+           id="de.fips.plugin.tinyaudioplayer.notifier.titlefont"
+           label="Title Font"
+           value="Tahoma-bold-11">
+     </fontDefinition>
+  </extension>
+  <extension
+        point="org.eclipse.ui.preferencePages">
+     <page
+           class="de.fips.plugin.tinyaudioplayer.preference.PreferencePage"
+           id="de.fips.plugin.tinyaudioplayer.preferencePage"
+           name="TinyAudioplayer">
+     </page>
+  </extension>
+</plugin>

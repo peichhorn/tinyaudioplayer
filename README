@@ -1,0 +1,6 @@
+Small pure-java audio player for eclipse.
+
+Supported audio formats: *.mp3, *.ogg, *.wav
+Supported playlist formats: *.m3u, *.pls
+
+Updatesite: 
