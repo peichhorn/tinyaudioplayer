@@ -6,7 +6,7 @@
       provider-name="Philipp Eichhorn">
 
    <description url="https://github.com/peichhorn/tinyaudioplayer">
-      Small pure-java audio player for eclipse.
+      Small pure-java audio player for the eclipse platform.
    </description>
 
    <copyright url="https://github.com/peichhorn/tinyaudioplayer">
@@ -34,6 +34,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
    </license>
+
+   <url>
+      <update label="TinyAudioplayer Update Site" url="https://github.com/peichhorn/tinyaudioplayer/raw/master/updatesite"/>
+   </url>
 
    <plugin
          id="de.fips.plugin.tinyaudioplayer"
