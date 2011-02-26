@@ -29,8 +29,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@EqualsAndHashCode(of="displayableName")
-@ToString(of="displayableName")
+@EqualsAndHashCode(of={"displayableName", "infoTag"})
+@ToString(of={"displayableName", "infoTag"})
 public class PlaylistItem {
 	@Getter
 	protected final String name;

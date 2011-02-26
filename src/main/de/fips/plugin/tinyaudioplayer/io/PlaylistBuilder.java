@@ -29,7 +29,7 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 import lombok.Getter;
 
-public class PlayistBuilder implements IPlaylistFileVisitor {
+public class PlaylistBuilder implements IPlaylistFileVisitor {
 	@Getter
 	private Playlist playlist;
 	@Getter
@@ -37,24 +37,25 @@ public class PlayistBuilder implements IPlaylistFileVisitor {
 	private String songName;
 	private File songFile;
 	private Long songLength;
-	private boolean isFirstFile;
 	
 	@Override
 	public void visitBegin(final File file) throws IOException {
 		playlist = new Playlist();
-		songName = null;
-		songFile = null;
-		songLength = null;
-		isFirstFile = true;
 	}
 	
 	@Override
 	public void visitComment(final String comment) throws IOException {
 	}
+	
+	@Override
+	public void visitEntryBegin() throws IOException {
+		songName = null;
+		songFile = null;
+		songLength = null;
+	}
 
 	@Override
 	public void visitFile(final File file) throws IOException {
-		tryToCreateEnrty();
 		songFile = file;
 	}
 
@@ -69,31 +70,24 @@ public class PlayistBuilder implements IPlaylistFileVisitor {
 	}
 	
 	@Override
+	public void visitEntryEnd() throws IOException {
+		if (songFile != null) {
+			if (songName == null) {
+				songName = songFile.getName();
+			}
+			if (songLength == null) {
+				songLength = Long.valueOf(-1);
+			}
+			playlist.add(new PlaylistItem(songName, songFile.getCanonicalFile().getAbsolutePath(), songLength));
+		}
+	}
+	
+	@Override
 	public void visitNumberOfEntries(final Integer numberofentries) throws IOException {
 		numEntries = numberofentries;
 	}
 	
 	@Override
 	public void visitEnd(final File file) throws IOException {
-		tryToCreateEnrty();
-	}
-	
-	private void tryToCreateEnrty() throws IOException {
-		if (isFirstFile) {
-			isFirstFile = false;
-		} else {
-			if (songFile != null) {
-				if (songName == null) {
-					songName = songFile.getName();
-				}
-				if (songLength == null) {
-					songLength = Long.valueOf(-1);
-				}
-				playlist.add(new PlaylistItem(songName, songFile.getCanonicalFile().getAbsolutePath(), songLength));
-				songFile = null;
-			}
-			songName = null;
-			songLength = null;
-		}
 	}
 }

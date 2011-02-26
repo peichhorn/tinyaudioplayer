@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
@@ -41,7 +40,6 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag;
 
 public class MThreeUWriter {
-	private final transient ILog log = TinyAudioPlayerPlugin.getDefaultLog();
 
 	public String formatName() {
 		return "Playlist File";
@@ -64,7 +62,7 @@ public class MThreeUWriter {
 			}
 			bw.close();
 		} catch (IOException e) {
-			log.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Creating M3U failed!", e));
+			TinyAudioPlayerPlugin.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Creating M3U failed!", e));
 		}
 	}
 

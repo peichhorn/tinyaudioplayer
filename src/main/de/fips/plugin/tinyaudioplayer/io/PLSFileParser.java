@@ -39,6 +39,7 @@ public class PLSFileParser {
 			if (line.startsWith("[")) {
 				visitor.visitComment(line);
 			} else if ((line.toLowerCase().startsWith("file"))) {
+				visitor.visitEntryBegin();
 				final StringTokenizer st = new StringTokenizer(line, "=");
 				st.nextToken();
 				final String fileName = st.nextToken().trim();
@@ -55,6 +56,7 @@ public class PLSFileParser {
 				final StringTokenizer st = new StringTokenizer(line, "=");
 				st.nextToken();
 				visitor.visitLength(Long.valueOf(st.nextToken().trim()));
+				visitor.visitEntryEnd();
 			} else if ((line.toLowerCase().startsWith("numberofentries"))) {
 				final StringTokenizer st = new StringTokenizer(line, "=");
 				st.nextToken();

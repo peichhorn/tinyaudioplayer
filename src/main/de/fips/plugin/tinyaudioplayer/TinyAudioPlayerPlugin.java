@@ -24,7 +24,7 @@ package de.fips.plugin.tinyaudioplayer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.IWorkbench;
@@ -52,8 +52,10 @@ public class TinyAudioPlayerPlugin extends AbstractUIPlugin {
 		return sharedInstance;
 	}
 
-	public static ILog getDefaultLog() {
-		return getDefault().getLog();
+	public static void log(final IStatus status) {
+		if (getDefault() != null) {
+			getDefault().getLog().log(status);	
+		}
 	}
 	
 	public static IWorkbench getDefaultWorkbench() {

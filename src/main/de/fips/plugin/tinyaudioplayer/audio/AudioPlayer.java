@@ -33,7 +33,6 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
@@ -54,8 +53,6 @@ import lombok.Signal;
 @ListenerSupport(IPlaybackListener.class)
 @AutoGenMethodStub
 public class AudioPlayer implements IAudioPlayer, Runnable {
-	private final transient ILog log = TinyAudioPlayerPlugin.getDefaultLog();
-	
 	private final int EXTERNAL_BUFFER_SIZE = 0x10000;
 	@Getter
 	private volatile boolean paused;
@@ -177,9 +174,9 @@ public class AudioPlayer implements IAudioPlayer, Runnable {
 		try {
 			encodedAudioInputStream = AudioSystem.getAudioInputStream(soundFile);
 		} catch (UnsupportedAudioFileException e) {
-			log.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Filetype of '" + fileName + "' not supported!"));
+			TinyAudioPlayerPlugin.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Filetype of '" + fileName + "' not supported!"));
 		} catch (IOException e) {
-			log.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Filetype of '" + fileName + "' not supported!"));
+			TinyAudioPlayerPlugin.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Filetype of '" + fileName + "' not supported!"));
 		}
 		return encodedAudioInputStream;
 	}

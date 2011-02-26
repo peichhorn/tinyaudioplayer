@@ -34,9 +34,12 @@ public class MThreeUFileParser {
 	public void parse(final File file) throws IOException {
 		visitor.visitBegin(file);
 		@Cleanup final TextLines lines = TextLines.of(file).ignoringEmptyLines();
+		boolean entryOpen = false;
 		for (final String line : lines) {
 			if (line.startsWith("#")) {
 				if (line.toUpperCase().startsWith("#EXTINF")) {
+					visitor.visitEntryBegin();
+					entryOpen = true;
 					final int indA = line.indexOf(",", 0);
 					if (indA != -1) {
 						visitor.visitTitle(line.substring(indA + 1, line.length()));
@@ -49,11 +52,16 @@ public class MThreeUFileParser {
 					visitor.visitComment(line);
 				}
 			} else {
+				if (!entryOpen) {
+					visitor.visitEntryBegin();
+				}
 				File f = new File(file.getParentFile(), line);
 				if (!f.exists()) {
 					f = new File(line);
 				}
 				visitor.visitFile(f);
+				visitor.visitEntryEnd();
+				entryOpen = false;
 			}
 		}
 		visitor.visitEnd(file);
