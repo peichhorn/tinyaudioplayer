@@ -40,6 +40,13 @@
                 commandId="de.fips.plugin.tinyaudioplayer.repeat"
                 style="toggle">
           </command>
+          <command
+                commandId="de.fips.plugin.tinyaudioplayer.mute"
+                style="push">
+          </command>
+          <control
+                class="de.fips.plugin.tinyaudioplayer.VolumeControl">
+          </control>
        </toolbar>
     </menuContribution>
   </extension>
@@ -63,6 +70,11 @@
           defaultHandler="de.fips.plugin.tinyaudioplayer.handler.RepeatHandler"
           id="de.fips.plugin.tinyaudioplayer.repeat"
           name="Repeat Playlist">
+    </command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.MuteHandler"
+          id="de.fips.plugin.tinyaudioplayer.mute"
+          name="Mute">
     </command>
   </extension>
   <extension point="org.eclipse.ui.commandImages">
@@ -100,6 +112,11 @@
           commandId="de.fips.plugin.tinyaudioplayer.repeat"
           disabledIcon="icons/16px-repeat-disabled.png"
           icon="icons/16px-repeat.png">
+    </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.mute"
+          disabledIcon="icons/16px-mute.png"
+          icon="icons/16px-unmute.png">
     </image>
   </extension>
   <extension point="org.eclipse.ui.themes">

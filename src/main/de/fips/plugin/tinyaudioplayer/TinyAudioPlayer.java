@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
 
+import lombok.Getter;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -37,6 +39,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 import de.fips.plugin.tinyaudioplayer.audio.AudioPlayer;
+import de.fips.plugin.tinyaudioplayer.audio.IAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.IPlaybackListener;
 import de.fips.plugin.tinyaudioplayer.audio.IPlaylistListener;
 import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent;
@@ -45,10 +48,13 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 import de.fips.plugin.tinyaudioplayer.io.AudioFileReader;
 import de.fips.plugin.tinyaudioplayer.io.PlaylistReader;
 
-public class TinyAudioPlayer {	
+public class TinyAudioPlayer implements IAudioPlayer {
 	private final PlaybackListener playbackListener = new PlaybackListener();
 	private final PlaylistListener playlistListener = new PlaylistListener();
 	private final Playlist playlist = new Playlist();
+	@Getter
+	private volatile boolean mute;
+	private volatile float volume = 1.0f;
 	private AudioPlayer player;
 
 	TinyAudioPlayer() {
@@ -67,7 +73,7 @@ public class TinyAudioPlayer {
 		if (player != null) {
 			player.removePlaybackListener(playbackListener);
 		}
-		player = new AudioPlayer(filename);
+		player = new AudioPlayer(filename, volume, mute);
 		player.addPlaybackListener(playbackListener);
 		player.play();
 	}
@@ -116,6 +122,20 @@ public class TinyAudioPlayer {
 	
 	public void repeat() {
 		playlist.setRepeat(!playlist.isRepeat());
+	}
+	
+	public void setMute(final boolean mute) {
+		this.mute = mute;
+		if (player != null) {
+			player.setMute(this.mute);
+		}
+	}
+
+	public void setVolume(final float volume) {
+		this.volume = volume;
+		if (player != null) {
+			player.setVolume(volume);
+		}
 	}
 
 	public void eject() {
