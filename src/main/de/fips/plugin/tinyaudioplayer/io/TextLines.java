@@ -34,6 +34,11 @@ import java.util.NoSuchElementException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * {@link Iterator} over lines of text.
+ * 
+ * @author Philipp Eichhorn
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class TextLines implements Iterable<String>, Iterator<String>, Closeable {
 	private final BufferedReader in;
@@ -42,6 +47,9 @@ public class TextLines implements Iterable<String>, Iterator<String>, Closeable 
 	private volatile boolean nextDefined;
 	private String next;
 
+	/**
+	 * Tell the {@link Iterator} to skip empty lines.
+	 */
 	public TextLines ignoringEmptyLines() {
 		ignoreEmptyLines = true;
 		return this;
@@ -95,7 +103,8 @@ public class TextLines implements Iterable<String>, Iterator<String>, Closeable 
 			return false;
 		}
 	}
-
+ 
+	/** Creates a {@link TextLines} for a {@link File}. */
 	public static TextLines of(final File file) {
 		try {
 			return of(new FileReader(file));
@@ -104,6 +113,7 @@ public class TextLines implements Iterable<String>, Iterator<String>, Closeable 
 		}
 	}
 
+	/** Creates a {@link TextLines} for a {@link Reader}. */
 	public static TextLines of(final Reader reader) {
 		return new TextLines(new BufferedReader(reader));
 	}

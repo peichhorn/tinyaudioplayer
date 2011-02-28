@@ -24,6 +24,11 @@ package de.fips.plugin.tinyaudioplayer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Some constants used by the {@link NotifierDialog}.
+ * 
+ * @author Philipp Eichhorn
+ */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public final class NotifierConstants {
 	public static final String COLOR_ID = "de.fips.plugin.tinyaudioplayer.notifier.color"; //$NON-NLS-1$

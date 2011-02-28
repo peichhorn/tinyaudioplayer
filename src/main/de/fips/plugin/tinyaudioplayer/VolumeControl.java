@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer;
 
+import lombok.NoArgsConstructor;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -31,15 +33,16 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
+/**
+ * Simple Volume Control that allows to modify the
+ * volume of the {@link TinyAudioPlayerPlugin}.
+ * 
+ * @see TinyAudioPlayer#setVolume(float)
+ * @author Philipp Eichhorn
+ */
+@NoArgsConstructor
 public class VolumeControl extends WorkbenchWindowControlContribution {
 	private float volume = 1.0f;
-
-	public VolumeControl() {
-	}
-
-	public VolumeControl(String id) {
-		super(id);
-	}
 
 	@Override
 	protected Control createControl(Composite parent) {

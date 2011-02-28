@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.audio;
 
+import static de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag.playlistItemTag;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -61,7 +63,7 @@ public class PlaylistItemTagFactory {
 	
 	private static class OggPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
-			final PlaylistItemTag.$OptionalDef builder = PlaylistItemTag.create();
+			final PlaylistItemTag.$OptionalDef builder = playlistItemTag();
 			if (aff instanceof TAudioFileFormat) {
 				final Map<?, ?> props = ((TAudioFileFormat) aff).properties();
 				Object currentValue = props.get("ogg.channels");
@@ -114,7 +116,7 @@ public class PlaylistItemTagFactory {
 
 	private static class MpegPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
-			final PlaylistItemTag.$OptionalDef builder = PlaylistItemTag.create();
+			final PlaylistItemTag.$OptionalDef builder = playlistItemTag();
 			if (aff instanceof TAudioFileFormat) {
 				final Map<?, ?> props = ((TAudioFileFormat) aff).properties();
 				Object currentValue = props.get("mp3.channels");
@@ -168,7 +170,7 @@ public class PlaylistItemTagFactory {
 	private static class FlacPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
 			final AudioFormat af = aff.getFormat();
-			return PlaylistItemTag.create() //
+			return playlistItemTag() //
 				.channels(af.getChannels()) //
 				.samplingRate((int) af.getSampleRate()) //
 				.bitRate(af.getSampleSizeInBits()).build();

@@ -28,8 +28,14 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
+/**
+ * A preference page that allows the configuration of the {@link TinyAudioPlayer}.
+ * 
+ * @author Philipp Eichhorn
+ */
 @NoArgsConstructor
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	@Override

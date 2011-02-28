@@ -48,6 +48,10 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 import de.fips.plugin.tinyaudioplayer.io.AudioFileReader;
 import de.fips.plugin.tinyaudioplayer.io.PlaylistReader;
 
+/**
+ * 
+ * @author Philipp Eichhorn
+ */
 public class TinyAudioPlayer implements IAudioPlayer {
 	private final PlaybackListener playbackListener = new PlaybackListener();
 	private final PlaylistListener playlistListener = new PlaylistListener();
@@ -64,15 +68,13 @@ public class TinyAudioPlayer implements IAudioPlayer {
 	public void stop() {
 		if (player != null) {
 			player.stop();
+			player.removePlaybackListener(playbackListener);
 			player = null;
 		}
 	}
 
 	private void play(final String filename) {
 		stop();
-		if (player != null) {
-			player.removePlaybackListener(playbackListener);
-		}
 		player = new AudioPlayer(filename, volume, mute);
 		player.addPlaybackListener(playbackListener);
 		player.play();

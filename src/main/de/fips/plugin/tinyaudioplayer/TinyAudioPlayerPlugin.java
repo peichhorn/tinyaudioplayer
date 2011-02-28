@@ -31,6 +31,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Entrypoint of the TinyAudioplayer Plugin.
+ * 
+ * @author Philipp Eichhorn
+ */
 @NoArgsConstructor
 public class TinyAudioPlayerPlugin extends AbstractUIPlugin {
 	private static TinyAudioPlayerPlugin sharedInstance;
@@ -48,28 +53,46 @@ public class TinyAudioPlayerPlugin extends AbstractUIPlugin {
 		super.stop(context);
 	}
 
+	/**
+	 * Returns the shared instance of this plugin.
+	 */
 	public static TinyAudioPlayerPlugin getDefault() {
 		return sharedInstance;
 	}
 
+	/**
+	 * Logs the given status.
+	 */
 	public static void log(final IStatus status) {
 		if (getDefault() != null) {
 			getDefault().getLog().log(status);	
 		}
 	}
 	
+	/**
+	 * Returns the {@link IWorkbench} of this plugins shared instance.
+	 */
 	public static IWorkbench getDefaultWorkbench() {
 		return getDefault().getWorkbench();
 	}
 	
+	/**
+	 * Returns the {@link ImageRegistry} of this plugins shared instance.
+	 */
 	public static ImageRegistry getDefaultImageRegistry() {
 		return getDefault().getImageRegistry();
 	}
 	
+	/**
+	 * Returns the {@link TinyAudioPlayer} of this plugins shared instance.
+	 */
 	public static TinyAudioPlayer getDefaultPlayer() {
 		return getDefault().getPlayer();
 	}
 
+	/**
+	 * Creates and returns a new image descriptor for an image file located within this plug-in.
+	 */
 	public static ImageDescriptor getImageDescriptor(final String path) {
 		return imageDescriptorFromPlugin(TinyAudioPlayerConstants.PLUGIN_ID, path);
 	}

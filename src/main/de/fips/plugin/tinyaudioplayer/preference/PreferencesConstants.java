@@ -20,10 +20,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.preference;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Some constants used by the PreferencePage.
+ * 
+ * @author Philipp Eichhorn
+ */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public final class PreferencesConstants {
 	public static final String ACTIVE_NOTIFICATIONS = "de.fips.plugin.tinyaudioplayer.notifier.activenotifications"; //$NON-NLS-1$
