@@ -32,8 +32,8 @@ public interface IAudioPlayer {
 	public void previous();
 
 	public void next();
-	
+
 	public void setMute(final boolean mute);
-	
+
 	public void setVolume(final float volume);
 }

@@ -118,12 +118,12 @@ public class TinyAudioPlayer implements IAudioPlayer {
 		}
 	}
 	
-	public void shuffle() {
-		playlist.setShuffle(!playlist.isShuffle());
+	public void toggleShuffle() {
+		playlist.toggleShuffle();
 	}
 	
-	public void repeat() {
-		playlist.setRepeat(!playlist.isRepeat());
+	public void toggleRepeat() {
+		playlist.toggleRepeat();
 	}
 	
 	public void setMute(final boolean mute) {

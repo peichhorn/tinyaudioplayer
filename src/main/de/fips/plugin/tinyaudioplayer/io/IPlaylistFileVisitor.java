@@ -26,20 +26,20 @@ import java.io.IOException;
 
 public interface IPlaylistFileVisitor {
 	public void visitBegin(File file) throws IOException;
-	
+
 	public void visitComment(String comment) throws IOException;
-	
+
 	public void visitEntryBegin() throws IOException;
-	
+
 	public void visitFile(File file) throws IOException;
-	
+
 	public void visitTitle(String title) throws IOException;
-	
+
 	public void visitLength(Long length) throws IOException;
-	
+
 	public void visitEntryEnd() throws IOException;
-	
+
 	public void visitNumberOfEntries(Integer numberofentries) throws IOException;
-	
+
 	public void visitEnd(File file) throws IOException;
 }

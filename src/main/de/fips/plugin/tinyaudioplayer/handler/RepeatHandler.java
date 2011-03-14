@@ -31,7 +31,7 @@ public class RepeatHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		TinyAudioPlayerPlugin.getDefaultPlayer().repeat();
+		TinyAudioPlayerPlugin.getDefaultPlayer().toggleRepeat();
 		return null;
 	}
 }

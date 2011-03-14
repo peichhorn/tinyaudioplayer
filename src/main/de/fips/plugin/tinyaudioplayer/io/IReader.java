@@ -28,7 +28,7 @@ public interface IReader<E> {
 	public boolean canHandle(File file);
 
 	public String formatName();
-	
+
 	public String completeFormatName();
 
 	public String formatExtensions();

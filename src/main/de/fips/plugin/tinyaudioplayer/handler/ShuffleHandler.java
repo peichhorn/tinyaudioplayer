@@ -31,7 +31,7 @@ public class ShuffleHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		TinyAudioPlayerPlugin.getDefaultPlayer().shuffle();
+		TinyAudioPlayerPlugin.getDefaultPlayer().toggleShuffle();
 		return null;
 	}
 }

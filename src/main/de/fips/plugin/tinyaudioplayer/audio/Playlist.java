@@ -28,20 +28,24 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import lombok.Getter;
 import lombok.ListenerSupport;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NoArgsConstructor
 @ListenerSupport(IPlaylistListener.class)
 public class Playlist implements Iterable<PlaylistItem> {
 	protected final List<PlaylistItem> tracks = new ArrayList<PlaylistItem>();
 	protected int currentIndex = -1;
-	@Getter @Setter
 	protected boolean shuffle;
-	@Getter @Setter
 	protected boolean repeat;
+
+	public void toggleShuffle() {
+		shuffle = !shuffle;
+	}
+
+	public void toggleRepeat() {
+		repeat = !repeat;
+	}
 
 	public int add(final Playlist other) {
 		return add(other, true);
