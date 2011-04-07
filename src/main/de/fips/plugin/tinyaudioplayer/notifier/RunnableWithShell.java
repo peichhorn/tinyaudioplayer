@@ -1,3 +1,4 @@
+/*
 Copyright © 2011 Philipp Eichhorn.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +18,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package de.fips.plugin.tinyaudioplayer.notifier;
+
+import lombok.RequiredArgsConstructor;
+
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
+
+@RequiredArgsConstructor
+public abstract class RunnableWithShell  implements Runnable {
+	private final Shell shell;
+
+	protected abstract void guardedRun(final Shell shell);
+	
+	@Override
+	public final void run() {
+		try {
+			if (!isNullOrDisposed(shell)) {
+				guardedRun(shell);
+			}
+		} catch (Exception ignore) {
+		}
+	}
+	
+	private boolean isNullOrDisposed(final Widget widget) {
+		return widget == null || widget.isDisposed();
+	}
+}

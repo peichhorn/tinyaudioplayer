@@ -34,10 +34,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ListenerSupport(IPlaylistListener.class)
 public class Playlist implements Iterable<PlaylistItem> {
-	protected final List<PlaylistItem> tracks = new ArrayList<PlaylistItem>();
-	protected int currentIndex = -1;
-	protected boolean shuffle;
-	protected boolean repeat;
+	private final List<PlaylistItem> tracks = new ArrayList<PlaylistItem>();
+	private int currentIndex = -1;
+	private boolean shuffle;
+	private boolean repeat;
 
 	public void toggleShuffle() {
 		shuffle = !shuffle;
@@ -99,13 +99,19 @@ public class Playlist implements Iterable<PlaylistItem> {
 	public int size() {
 		return tracks.size();
 	}
+	
+	public Object[] toArray() {
+		return tracks.toArray();
+	}
 
 	public void add(final PlaylistItem track) {
 		tracks.add(track);
-		fireTrackEnqueued(track);
 		if (currentIndex < 0) {
 			currentIndex = 0;
+			fireTrackEnqueued(track);
 			fireTrackChanged(track);
+		} else {
+			fireTrackEnqueued(track);
 		}
 	}
 
@@ -113,14 +119,15 @@ public class Playlist implements Iterable<PlaylistItem> {
 		final int index = tracks.indexOf(track);
 		if (index >= 0) {
 			tracks.remove(index);
-			fireTrackRemoved(track);
 			if (tracks.isEmpty()) {
 				currentIndex = -1;
+				fireTrackRemoved(track);
 				firePlaylistCleared();
 			} else {
 				if (currentIndex > index) {
 					currentIndex--;
 				}
+				fireTrackRemoved(track);
 				fireTrackChanged(getCurrentTrack());
 			}
 		}
@@ -128,14 +135,15 @@ public class Playlist implements Iterable<PlaylistItem> {
 
 	public void removeCurrent() {
 		tracks.remove(currentIndex);
-		fireTrackRemoved(getCurrentTrack());
 		if (tracks.isEmpty()) {
 			currentIndex = -1;
+			fireTrackRemoved(getCurrentTrack());
 			firePlaylistCleared();
 		} else {
 			if (currentIndex >= tracks.size()) {
 				currentIndex = tracks.size() - 1;
 			}
+			fireTrackRemoved(getCurrentTrack());
 			fireTrackChanged(getCurrentTrack());
 		}
 	}
@@ -150,6 +158,10 @@ public class Playlist implements Iterable<PlaylistItem> {
 		return null;
 	}
 
+	public void setCurrentTrack(final PlaylistItem item) {
+		setCurrentTrack(tracks.indexOf(item));
+	}
+	
 	public void setCurrentTrack(final int index) {
 		if ((index >= 0) && (index < tracks.size())) {
 			currentIndex = index;

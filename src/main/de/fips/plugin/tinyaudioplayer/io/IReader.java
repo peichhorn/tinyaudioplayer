@@ -22,7 +22,6 @@ THE SOFTWARE.
 package de.fips.plugin.tinyaudioplayer.io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 public interface IReader<E> {
 	public boolean canHandle(File file);
@@ -33,5 +32,5 @@ public interface IReader<E> {
 
 	public String formatExtensions();
 
-	public E read(File file) throws FileNotFoundException;
+	public E read(File file);
 }

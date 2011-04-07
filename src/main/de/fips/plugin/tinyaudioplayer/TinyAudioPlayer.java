@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
 
-import lombok.Getter;
+import lombok.Delegate;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -38,109 +38,43 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import de.fips.plugin.tinyaudioplayer.audio.AudioPlayer;
-import de.fips.plugin.tinyaudioplayer.audio.IAudioPlayer;
+import de.fips.plugin.tinyaudioplayer.audio.PlaylistAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.IPlaybackListener;
-import de.fips.plugin.tinyaudioplayer.audio.IPlaylistListener;
 import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 import de.fips.plugin.tinyaudioplayer.io.AudioFileReader;
+import de.fips.plugin.tinyaudioplayer.io.MThreeUWriter;
 import de.fips.plugin.tinyaudioplayer.io.PlaylistReader;
+import de.fips.plugin.tinyaudioplayer.notifier.NotifierDialog;
 
 /**
  * 
  * @author Philipp Eichhorn
  */
-public class TinyAudioPlayer implements IAudioPlayer {
-	private final PlaybackListener playbackListener = new PlaybackListener();
-	private final PlaylistListener playlistListener = new PlaylistListener();
-	private final Playlist playlist = new Playlist();
-	@Getter
-	private volatile boolean mute;
-	private volatile float volume = 1.0f;
-	private AudioPlayer player;
-
-	TinyAudioPlayer() {
-		playlist.addPlaylistListener(playlistListener);
-	}
-
-	public void stop() {
-		if (player != null) {
-			player.stop();
-			player.removePlaybackListener(playbackListener);
-			player = null;
-		}
-	}
-
-	private void play(final String filename) {
-		stop();
-		player = new AudioPlayer(filename, volume, mute);
-		player.addPlaybackListener(playbackListener);
-		player.play();
-	}
-
-	public void play() {
-		if ((player != null) && (player.isPaused())) {
-			player.play();
-		} else {
-			if (playlist.hasTracks()) {
-				play(playlist.getCurrentTrack().getLocation());
-			}
-		}
-	}
-
-	public void pause() {
-		if (player != null) {
-			if (player.isPaused()) {
-				player.play();
-			} else {
-				player.pause();
-			}
-		}
-	}
-
-	public void previous() {
-		boolean wasPlaying = player != null;
-		stop();
-		playlist.previous();
-		if (wasPlaying) {
-			play();
-		}
-	}
-
-	public void next() {
-		boolean wasPlaying = player != null;
-		stop();
-		playlist.next();
-		if (wasPlaying) {
-			play();
-		}
+public class TinyAudioPlayer {
+	@Delegate
+	private final PlaylistAudioPlayer player;
+	
+	public TinyAudioPlayer() {
+		this(new PlaylistAudioPlayer());
 	}
 	
-	public void toggleShuffle() {
-		playlist.toggleShuffle();
-	}
-	
-	public void toggleRepeat() {
-		playlist.toggleRepeat();
-	}
-	
-	public void setMute(final boolean mute) {
-		this.mute = mute;
-		if (player != null) {
-			player.setMute(this.mute);
-		}
+	public TinyAudioPlayer(final PlaylistAudioPlayer player) {
+		super();
+		this.player = player;
+		player.setPlaybackHandler(new PlaybackListener());
 	}
 
-	public void setVolume(final float volume) {
-		this.volume = volume;
-		if (player != null) {
-			player.setVolume(volume);
-		}
+	public void enqueue() {
+		addTracksToPlaylist(false);
 	}
-
+	
 	public void eject() {
+		addTracksToPlaylist(true);
+	}
+	
+	private void addTracksToPlaylist(final boolean useCleanPlaylist) {
 		final Shell shell = new Shell(Display.getDefault());
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 		dialog.setFilterExtensions(new String[] { new AudioFileReader().formatExtensions(), new PlaylistReader().formatExtensions() });
@@ -155,9 +89,27 @@ public class TinyAudioPlayer implements IAudioPlayer {
 				newPlaylist = new PlaylistReader().read(selectedFile);
 			}
 			if (newPlaylist != null) {
-				playlist.clear();
-				playlist.add(newPlaylist);
-				play();
+				if (useCleanPlaylist) {
+					player.getPlaylist().clear();
+				}
+				player.getPlaylist().add(newPlaylist);
+				player.play();
+			}
+		}
+	}
+	
+	public void export() {
+		if (player.getPlaylist() != null) {
+			final Shell shell = new Shell(Display.getDefault());
+			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
+			dialog.setFilterExtensions(new String[] { new MThreeUWriter().formatExtensions() });
+			dialog.setFilterNames(new String[] { new MThreeUWriter().completeFormatName() });
+			final String selectedFileName = dialog.open();
+			if (selectedFileName != null) {
+				final File selectedFile = new File(selectedFileName);
+				if (new MThreeUWriter().canHandle(selectedFile)) {
+					new MThreeUWriter().write(selectedFile, player.getPlaylist());
+				}
 			}
 		}
 	}
@@ -198,42 +150,15 @@ public class TinyAudioPlayer implements IAudioPlayer {
 		public void handlePlaybackEvent(PlaybackEvent event) {
 			switch (event.getType()) {
 			case Finished:
-				next();
+				player.next();
 				break;
 			case Started:
-				final PlaylistItem track = playlist.getCurrentTrack();
+				final PlaylistItem track = player.getPlaylist().getCurrentTrack();
 				NotifierDialog.notifyAsync("Now playing:", track.getFormattedDisplayName(), loadCoverFor(track));
 				break;
 			default:
 				break;
 			}
-		}
-	}
-
-	private class PlaylistListener implements IPlaylistListener {
-
-		@Override
-		public void trackEnqueued(PlaylistItem item) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void trackChanged(PlaylistItem item) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void trackRemoved(PlaylistItem item) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void playlistCleared() {
-			// TODO Auto-generated method stub
-
 		}
 	}
 }

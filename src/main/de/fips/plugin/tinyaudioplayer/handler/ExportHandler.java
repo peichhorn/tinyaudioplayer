@@ -1,3 +1,4 @@
+/*
 Copyright © 2011 Philipp Eichhorn.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +18,20 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package de.fips.plugin.tinyaudioplayer.handler;
+
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+
+public class ExportHandler extends AbstractHandler {
+
+	@Override
+	public Object execute(final ExecutionEvent event) throws ExecutionException {
+		TinyAudioPlayerPlugin.getDefaultPlayer().export();
+		return null;
+	}
+}

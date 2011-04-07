@@ -33,13 +33,13 @@ import lombok.ToString;
 @ToString(of={"displayableName", "infoTag"})
 public class PlaylistItem {
 	@Getter
-	protected final String name;
-	protected String displayableName;
+	private final String name;
 	@Getter
-	protected String location;
+	private final long seconds;
 	@Getter
-	protected final long seconds;
-	protected PlaylistItemTag infoTag;
+	private String location;
+	private String displayableName;
+	private PlaylistItemTag infoTag;
 
 	public PlaylistItem(final String name, final String location, final long seconds) {
 		this.name = name;

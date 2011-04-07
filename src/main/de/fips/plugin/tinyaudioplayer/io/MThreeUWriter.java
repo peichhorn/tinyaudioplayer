@@ -23,7 +23,6 @@ package de.fips.plugin.tinyaudioplayer.io;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,17 +38,17 @@ import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag;
 
-public class MThreeUWriter {
+public class MThreeUWriter extends AbstractWriter<Playlist>{
 
 	public String formatName() {
 		return "Playlist File";
 	}
 
-	public String formatPostfixes() {
+	public String formatExtensions() {
 		return "*.m3u";
 	}
 
-	public void write(final File file, final Playlist playlist) throws FileNotFoundException {
+	public void write(final File file, final Playlist playlist) {
 		try {
 			final BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 			bw.write("#EXTM3U");

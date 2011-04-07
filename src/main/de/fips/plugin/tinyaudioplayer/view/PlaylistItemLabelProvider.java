@@ -1,3 +1,4 @@
+/*
 Copyright © 2011 Philipp Eichhorn.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +18,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package de.fips.plugin.tinyaudioplayer.view;
+
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.graphics.Color;
+
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+import de.fips.plugin.tinyaudioplayer.audio.Playlist;
+import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+
+public class PlaylistItemLabelProvider extends StyledCellLabelProvider {		
+	public void update(final ViewerCell cell) {
+		final Playlist playlist = TinyAudioPlayerPlugin.getDefaultPlayer().getPlaylist();
+		final PlaylistItem item = (PlaylistItem)cell.getElement();
+		cell.setText(item.getFormattedDisplayName());
+		if (playlist.hasTracks() && (item == playlist.getCurrentTrack())) {
+			cell.setBackground(new Color(null, 225, 225, 225));
+		} else {
+			cell.setBackground(new Color(null, 255, 255, 255));
+		}
+	}
+}

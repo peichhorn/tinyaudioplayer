@@ -1,3 +1,4 @@
+/*
 Copyright © 2011 Philipp Eichhorn.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +18,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package de.fips.plugin.tinyaudioplayer.view;
+
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.StructuredSelection;
+
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+import de.fips.plugin.tinyaudioplayer.audio.Playlist;
+import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+
+public class PlaylistViewDoubleClickListener implements IDoubleClickListener {
+	@Override
+	public void doubleClick(DoubleClickEvent event) {
+		final Playlist playlist = TinyAudioPlayerPlugin.getDefaultPlayer().getPlaylist();
+		final StructuredSelection selection = (StructuredSelection)event.getSelection();
+		if (playlist.hasTracks()) {
+			playlist.setCurrentTrack((PlaylistItem)selection.getFirstElement());
+			TinyAudioPlayerPlugin.getDefaultPlayer().play();
+			event.getViewer().refresh();
+		}
+	}
+}

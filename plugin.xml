@@ -49,6 +49,18 @@
           </control>
        </toolbar>
     </menuContribution>
+    <menuContribution
+          allPopups="false"
+          locationURI="toolbar:de.fips.plugin.tinyaudioplayer.view.playlist">
+       <command
+             commandId="de.fips.plugin.tinyaudioplayer.enqueue"
+             style="push">
+       </command>
+       <command
+             commandId="de.fips.plugin.tinyaudioplayer.export"
+             style="push">
+       </command>
+    </menuContribution>
   </extension>
   <extension point="org.eclipse.ui.commands">
     <command defaultHandler="de.fips.plugin.tinyaudioplayer.handler.PreviousHandler" id="de.fips.plugin.tinyaudioplayer.previous" name="Previous Track"></command>
@@ -75,6 +87,16 @@
           defaultHandler="de.fips.plugin.tinyaudioplayer.handler.MuteHandler"
           id="de.fips.plugin.tinyaudioplayer.mute"
           name="Mute">
+    </command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.EnqueueHandler"
+          id="de.fips.plugin.tinyaudioplayer.enqueue"
+          name="Enqueue Tracks">
+    </command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.ExportHandler"
+          id="de.fips.plugin.tinyaudioplayer.export"
+          name="Export Playlist">
     </command>
   </extension>
   <extension point="org.eclipse.ui.commandImages">
@@ -117,6 +139,14 @@
           commandId="de.fips.plugin.tinyaudioplayer.mute"
           disabledIcon="icons/16px-mute.png"
           icon="icons/16px-unmute.png">
+    </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.enqueue"
+          icon="icons/16px-enqueue.png">
+    </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.export"
+          icon="icons/16px-export.png">
     </image>
   </extension>
   <extension point="org.eclipse.ui.themes">
@@ -174,5 +204,19 @@
            id="de.fips.plugin.tinyaudioplayer.preferencePage"
            name="TinyAudioplayer">
      </page>
+  </extension>
+  <extension
+        point="org.eclipse.ui.views">
+     <view
+           category="de.fips.plugin.tinyaudioplayer.view.tinyaudioplayer.category"
+           class="de.fips.plugin.tinyaudioplayer.view.PlaylistView"
+           icon="icons/16px-start-disabled.png"
+           id="de.fips.plugin.tinyaudioplayer.view.playlist"
+           name="Playlist">
+     </view>
+     <category
+           id="de.fips.plugin.tinyaudioplayer.view.tinyaudioplayer.category"
+           name="TinyAudioplayer">
+     </category>
   </extension>
 </plugin>

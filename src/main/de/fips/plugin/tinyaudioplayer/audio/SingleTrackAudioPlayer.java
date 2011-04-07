@@ -40,7 +40,6 @@ import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerConstants;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent.Type;
 
-import lombok.AutoGenMethodStub;
 import lombok.Await;
 import lombok.Getter;
 import lombok.ListenerSupport;
@@ -51,17 +50,17 @@ import lombok.Signal;
  * @author: Philipp Eichhorn
  */
 @ListenerSupport(IPlaybackListener.class)
-@AutoGenMethodStub
-public class AudioPlayer implements IAudioPlayer, Runnable {
-	private final int EXTERNAL_BUFFER_SIZE = 0x10000;
+public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
+	private final static int EXTERNAL_BUFFER_SIZE = 0x10000;
+	
+	private final String fileName;
+	private volatile float volume;
+	private volatile boolean mute;
 	@Getter
 	private volatile boolean paused;
-	private volatile boolean mute;
-	private volatile float volume = 1.0f;
-	private final String fileName;
 	private SourceDataLine line;
 
-	public AudioPlayer(final String fileName, final float volume, final boolean mute) {
+	public SingleTrackAudioPlayer(final String fileName, final float volume, final boolean mute) {
 		this.fileName = fileName;
 		this.volume = Math.min(2.0f, Math.max(volume, 0.0f));
 		this.mute = mute;

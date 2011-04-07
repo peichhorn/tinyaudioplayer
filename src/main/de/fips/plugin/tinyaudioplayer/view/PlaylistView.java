@@ -1,3 +1,4 @@
+/*
 Copyright © 2011 Philipp Eichhorn.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +18,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package de.fips.plugin.tinyaudioplayer.view;
+
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.ViewPart;
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+
+public class PlaylistView extends ViewPart {
+	private TableViewer viewer;
+	
+	@Override
+	public void createPartControl(final Composite parent) {	
+		viewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		viewer.addDoubleClickListener(new PlaylistViewDoubleClickListener());
+		viewer.setContentProvider(new PlaylistContentProvider());
+		viewer.setLabelProvider(new PlaylistItemLabelProvider());
+		viewer.setInput(TinyAudioPlayerPlugin.getDefaultPlayer().getPlaylist());
+	}
+
+	@Override
+	public void setFocus() {
+		viewer.getControl().setFocus();
+	}
+}

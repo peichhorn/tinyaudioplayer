@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package de.fips.plugin.tinyaudioplayer;
+package de.fips.plugin.tinyaudioplayer.notifier;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,6 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -45,9 +44,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.themes.IThemeManager;
 
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.preference.PreferencesConstants;
 
 /**
@@ -286,26 +285,5 @@ public class NotifierDialog {
 				Display.getDefault().timerExec(NotifierConstants.FADE_TIMER, this);
 			}
 		});
-	}
-
-	@RequiredArgsConstructor
-	private static abstract class RunnableWithShell implements Runnable {
-		private final Shell shell;
-
-		protected abstract void guardedRun(final Shell shell);
-		
-		@Override
-		public final void run() {
-			try {
-				if (!isNullOrDisposed(shell)) {
-					guardedRun(shell);
-				}
-			} catch (Exception ignore) {
-			}
-		}
-	}
-
-	private static boolean isNullOrDisposed(final Widget widget) {
-		return widget == null || widget.isDisposed();
 	}
 }

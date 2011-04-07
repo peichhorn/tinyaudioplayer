@@ -1,3 +1,4 @@
+/*
 Copyright © 2011 Philipp Eichhorn.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,3 +18,19 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
+package de.fips.plugin.tinyaudioplayer.io;
+
+import java.io.File;
+import java.util.regex.Pattern;
+
+public abstract class AbstractWriter<E> implements IWriter<E> {
+	public final boolean canHandle(final File file) {
+		final String name = file.getName().toLowerCase();
+		return Pattern.matches(formatExtensions().replace("*", ".*\\").replace(";", "|"), name);
+	}
+	
+	public final String completeFormatName() {
+		return formatName() + " (" + formatExtensions() + ")";
+	}
+}

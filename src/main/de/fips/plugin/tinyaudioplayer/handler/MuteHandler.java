@@ -53,7 +53,7 @@ public class MuteHandler extends AbstractHandler implements IElementUpdater {
 	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
 		final ICommandImageService commandImageService = (ICommandImageService) TinyAudioPlayerPlugin.getDefaultWorkbench().getService(ICommandImageService.class);
 		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
-		if (commandImageService != null) {
+		if ((commandImageService != null) && (commandId != null)) {
 			final int type = player.isMute() ? ICommandImageService.TYPE_DISABLED : ICommandImageService.TYPE_DEFAULT;
 			element.setIcon(commandImageService.getImageDescriptor(commandId, type));
 		}
