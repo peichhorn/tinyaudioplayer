@@ -50,7 +50,7 @@ import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.preference.PreferencesConstants;
 
 /**
- * 
+ *
  * @author Philipp Eichhorn
  */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
@@ -70,7 +70,7 @@ public class NotifierDialog {
 	public static void notify(final String title, final String message, final Image image) {
 		new NotifierDialog().show(title, message, image);
 	}
-	
+
 	private void show(final String title, final String message, final Image image) {
 		final Shell shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
 		shell.setLayout(new FillLayout());
@@ -78,19 +78,19 @@ public class NotifierDialog {
 		theme(shell, SWT.FOREGROUND, NotifierConstants.COLOR_ID);
 		registerDisposeListener(shell);
 		registerResizeListener(shell);
-		
+
 		final Composite inner = createInnerComposite(shell);
 		createImageLabel(inner, image);
 		Composite right = createRightComposite(inner);
 		createTitleLabel(right, title);
 		createTextLabel(right, message);
-		
+
 		shell.pack();
-		
+
 		if ((Display.getDefault().getActiveShell() == null) || (Display.getDefault().getActiveShell().getMonitor() == null)) {
 			return;
 		}
-		
+
 		repositionShell(shell);
 		removeUnwantedShells();
 		rearrangeActiveShells(shell.getBounds().height);
@@ -99,7 +99,7 @@ public class NotifierDialog {
 		shell.setVisible(true);
 		fadeIn(shell);
 	}
-	
+
 	private void removeUnwantedShells() {
 		final int allowedActiveShells = getActiveNotifications() - 1;
 		for (Shell s : new ArrayList<Shell>(activeShells)) {
@@ -110,7 +110,7 @@ public class NotifierDialog {
 			activeShells.remove(s);
 		}
 	}
-	
+
 	private int getActiveNotifications() {
 		return Math.max(1, TinyAudioPlayerPlugin.getDefault().getPreferenceStore().getInt(PreferencesConstants.ACTIVE_NOTIFICATIONS));
 	}
@@ -143,7 +143,7 @@ public class NotifierDialog {
 			}
 		});
 	}
-	
+
 	private void registerResizeListener(final Shell shell) {
 		shell.addListener(SWT.Resize, new Listener() {
 			@Override
@@ -169,7 +169,7 @@ public class NotifierDialog {
 			}
 		});
 	}
-	
+
 	private Composite createInnerComposite(final Composite parent) {
 		final Composite inner = new Composite(parent, SWT.NONE);
 		final GridLayout gl = new GridLayout(2, false);
@@ -180,13 +180,13 @@ public class NotifierDialog {
 		inner.setLayout(gl);
 		return inner;
 	}
-	
+
 	private Composite createRightComposite(final Composite parent) {
 		final Composite right = new Composite(parent, SWT.NONE);
 		right.setLayout(new GridLayout(1, false));
 		return right;
 	}
-	
+
 	private void createImageLabel(final Composite parent, final Image image) {
 		final CLabel imgLabel = new CLabel(parent, SWT.NONE);
 		imgLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
@@ -194,7 +194,7 @@ public class NotifierDialog {
 			imgLabel.setImage(image);
 		}
 	}
-	
+
 	private void createTitleLabel(final Composite parent, final String title) {
 		final CLabel titleLabel = new CLabel(parent, SWT.NONE);
 		titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
@@ -202,7 +202,7 @@ public class NotifierDialog {
 		theme(titleLabel, SWT.FOREGROUND, NotifierConstants.TITLE_COLOR_ID);
 		theme(titleLabel, SWT.NONE, NotifierConstants.TITLE_FONT_ID);
 	}
-	
+
 	private void createTextLabel(final Composite parent, final String message) {
 		final Label text = new Label(parent, SWT.WRAP);
 		theme(text, SWT.NONE, NotifierConstants.TEXT_FONT_ID);
@@ -212,7 +212,7 @@ public class NotifierDialog {
 		theme(text, SWT.FOREGROUND, NotifierConstants.COLOR_ID);
 		text.setText(message);
 	}
-	
+
 	private void theme(final Control control, final int what, final String themeVariable) {
 		final IThemeManager themeManager = TinyAudioPlayerPlugin.getDefaultWorkbench().getThemeManager();
 		switch (what) {
@@ -226,7 +226,7 @@ public class NotifierDialog {
 			control.setFont(themeManager.getCurrentTheme().getFontRegistry().get(themeVariable));
 		}
 	}
-	
+
 	private static void theme(final GC gc, final int what, final String themeVariable) {
 		final IThemeManager themeManager = TinyAudioPlayerPlugin.getDefaultWorkbench().getThemeManager();
 		switch (what) {

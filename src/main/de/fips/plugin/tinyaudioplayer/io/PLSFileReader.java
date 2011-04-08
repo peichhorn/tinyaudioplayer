@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.io;
 
+import static de.fips.plugin.tinyaudioplayer.io.TextLines.textLinesIn;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -29,17 +31,23 @@ import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class PLSFileParser {
+public class PLSFileReader {
 	private final IPlaylistFileVisitor visitor;
-	
-	public void parse(final File file) throws IOException {
+
+	public void read(final File file) throws IOException {
 		visitor.visitBegin(file);
-		@Cleanup final TextLines lines = TextLines.of(file).ignoringEmptyLines();
+		@Cleanup final TextLines lines = textLinesIn(file).ignoringEmptyLines();
+		boolean entryOpen = false;
 		for (final String line : lines) {
 			if (line.startsWith("[")) {
 				visitor.visitComment(line);
 			} else if ((line.toLowerCase().startsWith("file"))) {
+				if (entryOpen) {
+					visitor.visitEntryEnd();
+					entryOpen = false;
+				}
 				visitor.visitEntryBegin();
+				entryOpen = true;
 				final StringTokenizer st = new StringTokenizer(line, "=");
 				st.nextToken();
 				final String fileName = st.nextToken().trim();
@@ -57,11 +65,15 @@ public class PLSFileParser {
 				st.nextToken();
 				visitor.visitLength(Long.valueOf(st.nextToken().trim()));
 				visitor.visitEntryEnd();
+				entryOpen = false;
 			} else if ((line.toLowerCase().startsWith("numberofentries"))) {
 				final StringTokenizer st = new StringTokenizer(line, "=");
 				st.nextToken();
 				visitor.visitNumberOfEntries(new Integer(st.nextToken().trim()));
 			}
+		}
+		if (entryOpen) {
+			visitor.visitEntryEnd();
 		}
 		visitor.visitEnd(file);
 	}

@@ -21,74 +21,87 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.io;
 
-import static de.fips.plugin.tinyaudioplayer.io.FileUtils.fileNameWithoutExtension;
-
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
-import lombok.Getter;
-import de.fips.plugin.tinyaudioplayer.audio.Playlist;
-import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
-
-public class PlaylistBuilder implements IPlaylistFileVisitor {
-	@Getter
-	private Playlist playlist;
-	@Getter
-	private Integer numEntries;
-	private String songName;
-	private File songFile;
-	private Long songLength;
+public class MThreeUFileWriter implements IPlaylistFileVisitor {
+	private BufferedWriter bw;
+	private File file;
+	private File location;
+	private Long length;
+	private String title;
 
 	@Override
-	public void visitBegin(final File file) throws IOException {
-		playlist = new Playlist();
+	public void visitBegin(File file) throws IOException {
+		if (bw != null) {
+			bw.close();
+		}
+		this.file = file;
+		bw = new BufferedWriter(new FileWriter(this.file));
+		bw.write("#EXTM3U");
+		bw.newLine();
 	}
 
 	@Override
-	public void visitComment(final String comment) throws IOException {
+	public void visitComment(String comment) throws IOException {
+		checkIsOpen();
+		bw.write("#");
+		bw.write(comment);
+		bw.newLine();
 	}
 
 	@Override
 	public void visitEntryBegin() throws IOException {
-		songName = null;
-		songFile = null;
-		songLength = null;
+		checkIsOpen();
+		location = file;
+		length = 0L;
+		title = "";
 	}
 
 	@Override
-	public void visitFile(final File file) throws IOException {
-		songFile = file;
+	public void visitFile(File file) throws IOException {
+		checkIsOpen();
+		location = file;
 	}
 
 	@Override
-	public void visitTitle(final String title) throws IOException {
-		songName = title;
+	public void visitTitle(String title) throws IOException {
+		checkIsOpen();
+		this.title = title;
 	}
 
 	@Override
-	public void visitLength(final Long length) throws IOException {
-		songLength = length;
+	public void visitLength(Long length) throws IOException {
+		checkIsOpen();
+		this.length = length;
 	}
 
 	@Override
 	public void visitEntryEnd() throws IOException {
-		if (songFile != null) {
-			if (songName == null) {
-				songName = fileNameWithoutExtension(songFile);
-			}
-			if (songLength == null) {
-				songLength = 0L;
-			}
-			playlist.add(new PlaylistItem(songName, songFile.getCanonicalFile().getAbsolutePath(), songLength));
+		checkIsOpen();
+		bw.write("#EXTINF:" + length + "," + title);
+		bw.newLine();
+		bw.write(FileUtils.relativePath(location, file));
+		bw.newLine();
+	}
+
+	@Override
+	public void visitNumberOfEntries(Integer numberofentries) throws IOException {
+		checkIsOpen();
+	}
+
+	@Override
+	public void visitEnd(File file) throws IOException {
+		checkIsOpen();
+		bw.close();
+		bw = null;
+	}
+
+	private void checkIsOpen() {
+		if (bw == null) {
+			throw new IllegalStateException();
 		}
-	}
-
-	@Override
-	public void visitNumberOfEntries(final Integer numberofentries) throws IOException {
-		numEntries = numberofentries;
-	}
-
-	@Override
-	public void visitEnd(final File file) throws IOException {
 	}
 }

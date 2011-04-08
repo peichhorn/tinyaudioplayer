@@ -25,11 +25,13 @@ import java.io.File;
 import java.util.regex.Pattern;
 
 public abstract class AbstractReader<E> implements IReader<E> {
+	@Override
 	public final boolean canHandle(final File file) {
 		final String name = file.getName().toLowerCase();
 		return Pattern.matches(formatExtensions().replace("*", ".*\\").replace(";", "|"), name);
 	}
-	
+
+	@Override
 	public final String completeFormatName() {
 		return formatName() + " (" + formatExtensions() + ")";
 	}

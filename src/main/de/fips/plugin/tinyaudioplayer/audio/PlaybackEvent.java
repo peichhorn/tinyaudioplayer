@@ -30,10 +30,10 @@ public class PlaybackEvent {
 	public enum Type {
 		Started, Paused, Resumed, Progress, Finished, Canceled
 	}
-		
+
 	private final Type type;
 	private final long progress;
-	
+
 	public PlaybackEvent(final Type type) {
 		this(type, -1);
 	}

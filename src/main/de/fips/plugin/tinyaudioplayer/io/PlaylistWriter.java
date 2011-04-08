@@ -21,30 +21,50 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.io;
 
-import static de.fips.plugin.tinyaudioplayer.io.FileUtils.fileNameWithoutExtension;
-
 import java.io.File;
+import java.io.IOException;
 
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
-public class AudioFileReader extends AbstractReader<Playlist> {
+public class PlaylistWriter extends AbstractWriter<Playlist>{
+
 	@Override
 	public String formatName() {
-		return "Audio File";
+		return "Playlist File";
 	}
 
 	@Override
 	public String formatExtensions() {
-		return "*.mp3;*.ogg;*.wav";
+		return "*.m3u;*.pls";
 	}
 
 	@Override
-	public Playlist read(File file) {
-		final Playlist playlist = new Playlist();
-		if (file.isFile() && file.exists()) {
-			playlist.add(new PlaylistItem(fileNameWithoutExtension(file), file.getAbsolutePath(), 0L));
+	public void write(final File file, final Playlist playlist) {
+		IPlaylistFileVisitor visitor = null;
+		if (file.getName().toLowerCase().endsWith(".m3u")) {
+			visitor = new MThreeUFileWriter();
+		} else if (file.getName().toLowerCase().endsWith(".pls")) {
+			visitor = new PLSFileWriter();
 		}
-		return playlist;
+		if (visitor != null) {
+			try {
+				visitor.visitBegin(file);
+				for (final PlaylistItem pli : playlist) {
+					visitor.visitEntryBegin();
+					visitor.visitFile(new File(pli.getLocation()));
+					visitor.visitLength(pli.getSeconds());
+					visitor.visitTitle(pli.getName());
+					visitor.visitEntryEnd();
+				}
+				visitor.visitNumberOfEntries(playlist.size());
+				visitor.visitEnd(file);
+			} catch (IOException e) {
+				TinyAudioPlayerPlugin.logErr("Writing playlist failed!", e);
+			}
+		} else {
+			TinyAudioPlayerPlugin.logErr("Writing playlist failed!");
+		}
 	}
 }

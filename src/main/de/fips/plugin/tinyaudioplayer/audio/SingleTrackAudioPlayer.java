@@ -28,31 +28,26 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.BooleanControl;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
-
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerConstants;
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
-import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent.Type;
 
 import lombok.Await;
 import lombok.Getter;
 import lombok.ListenerSupport;
 import lombok.Signal;
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent.Type;
 
 /**
- * 
+ *
  * @author: Philipp Eichhorn
  */
 @ListenerSupport(IPlaybackListener.class)
 public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	private final static int EXTERNAL_BUFFER_SIZE = 0x10000;
-	
+
 	private final String fileName;
 	private volatile float volume;
 	private volatile boolean mute;
@@ -65,11 +60,13 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 		this.volume = Math.min(2.0f, Math.max(volume, 0.0f));
 		this.mute = mute;
 	}
-	
+
+	@Override
 	public void pause() {
 		paused = true;
 	}
-	
+
+	@Override
 	public void play() {
 		if (line == null) {
 			final Thread thread = new Thread(this, "AudioPlayer thread playing: " + fileName);
@@ -80,6 +77,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 		}
 	}
 
+	@Override
 	public void stop() {
 		if (line != null) {
 			runUnpause();
@@ -88,17 +86,19 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 			line = null;
 		}
 	}
-	
+
+	@Override
 	public void setMute(final boolean mute) {
 		this.mute = mute;
 		applyMute();
 	}
-	
+
+	@Override
 	public void setVolume(final float volume) {
 		this.volume = Math.min(2.0f, Math.max(volume, 0.0f));
 		applyVolume();
 	}
-	
+
 	@Override
 	public void run() {
 		final AudioInputStream encodedAudioInputStream = getEncodeAudioInputStream();
@@ -146,21 +146,20 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 				}
 				fireHandlePlaybackEvent(new PlaybackEvent(Type.Canceled));
 			} finally {
-				
 				stop();
 			}
 		}
 	}
-	
+
 	private void applyMute() {
 		if ((line != null ) && line.isOpen() && line.isControlSupported(BooleanControl.Type.MUTE)) {
 			final BooleanControl muteControl = ((BooleanControl)line.getControl(BooleanControl.Type.MUTE));
 			muteControl.setValue(mute);
 		}
 	}
-	
+
 	private void applyVolume() {
-		if ((line != null ) && line.isOpen() && line.isControlSupported(FloatControl.Type.MASTER_GAIN)) { 
+		if ((line != null ) && line.isOpen() && line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
 			final FloatControl volumeControl = ((FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN));
 			float dB = (float)(Math.log(volume) / Math.log(10.0) * 20.0);
 			volumeControl.setValue(dB);
@@ -173,9 +172,9 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 		try {
 			encodedAudioInputStream = AudioSystem.getAudioInputStream(soundFile);
 		} catch (UnsupportedAudioFileException e) {
-			TinyAudioPlayerPlugin.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Filetype of '" + fileName + "' not supported!"));
+			TinyAudioPlayerPlugin.logErr("Filetype of '%s' not supported!", fileName);
 		} catch (IOException e) {
-			TinyAudioPlayerPlugin.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Filetype of '" + fileName + "' not supported!"));
+			TinyAudioPlayerPlugin.logErr("Filetype of '%s' not supported!", fileName);
 		}
 		return encodedAudioInputStream;
 	}
@@ -197,11 +196,10 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	@Await(value = "canResume", conditionMethod = "isPaused")
 	private void runPause() {
 	}
-	
-	
+
 	@Signal("canResume")
 	private void runUnpause() {
-		paused = false; 
+		paused = false;
 	}
-	
+
 }

@@ -33,9 +33,9 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.tritonus.share.sampled.file.TAudioFileFormat;
-
 import lombok.NoArgsConstructor;
+
+import org.tritonus.share.sampled.file.TAudioFileFormat;
 
 @NoArgsConstructor()
 public class PlaylistItemTagFactory {
@@ -60,8 +60,9 @@ public class PlaylistItemTagFactory {
 		}
 		return tag;
 	}
-	
+
 	private static class OggPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
+		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
 			final PlaylistItemTag.$OptionalDef builder = playlistItemTag();
 			if (aff instanceof TAudioFileFormat) {
@@ -115,6 +116,7 @@ public class PlaylistItemTagFactory {
 	}
 
 	private static class MpegPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
+		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
 			final PlaylistItemTag.$OptionalDef builder = playlistItemTag();
 			if (aff instanceof TAudioFileFormat) {
@@ -166,8 +168,9 @@ public class PlaylistItemTagFactory {
 			return builder.build();
 		}
 	}
-	
+
 	private static class FlacPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
+		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
 			final AudioFormat af = aff.getFormat();
 			return playlistItemTag() //
@@ -176,7 +179,7 @@ public class PlaylistItemTagFactory {
 				.bitRate(af.getSampleSizeInBits()).build();
 		}
 	}
-	
+
 	private static interface IPlaylistItemTagBuilder {
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff);
 	}

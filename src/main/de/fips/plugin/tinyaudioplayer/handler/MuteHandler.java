@@ -36,7 +36,7 @@ import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
 public class MuteHandler extends AbstractHandler implements IElementUpdater {
 	private String commandId;
-	
+
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
@@ -48,12 +48,12 @@ public class MuteHandler extends AbstractHandler implements IElementUpdater {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
 		final ICommandImageService commandImageService = (ICommandImageService) TinyAudioPlayerPlugin.getDefaultWorkbench().getService(ICommandImageService.class);
-		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
 		if ((commandImageService != null) && (commandId != null)) {
+			final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
 			final int type = player.isMute() ? ICommandImageService.TYPE_DISABLED : ICommandImageService.TYPE_DEFAULT;
 			element.setIcon(commandImageService.getImageDescriptor(commandId, type));
 		}

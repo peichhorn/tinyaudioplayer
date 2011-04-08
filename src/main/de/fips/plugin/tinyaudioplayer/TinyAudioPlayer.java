@@ -38,42 +38,44 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import de.fips.plugin.tinyaudioplayer.audio.PlaylistAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.IPlaybackListener;
 import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
+import de.fips.plugin.tinyaudioplayer.audio.PlaylistAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 import de.fips.plugin.tinyaudioplayer.io.AudioFileReader;
-import de.fips.plugin.tinyaudioplayer.io.MThreeUWriter;
 import de.fips.plugin.tinyaudioplayer.io.PlaylistReader;
+import de.fips.plugin.tinyaudioplayer.io.PlaylistWriter;
 import de.fips.plugin.tinyaudioplayer.notifier.NotifierDialog;
 
 /**
- * 
+ *
  * @author Philipp Eichhorn
  */
 public class TinyAudioPlayer {
 	@Delegate
 	private final PlaylistAudioPlayer player;
-	
+
 	public TinyAudioPlayer() {
-		this(new PlaylistAudioPlayer());
+		super();
+		this.player = new PlaylistAudioPlayer();
+		this.player.setPlaybackHandler(new PlaybackHandler());
 	}
-	
-	public TinyAudioPlayer(final PlaylistAudioPlayer player) {
+
+	public TinyAudioPlayer(final PlaylistAudioPlayer player, final IPlaybackListener handler) {
 		super();
 		this.player = player;
-		player.setPlaybackHandler(new PlaybackListener());
+		this.player.setPlaybackHandler(handler);
 	}
 
 	public void enqueue() {
 		addTracksToPlaylist(false);
 	}
-	
+
 	public void eject() {
 		addTracksToPlaylist(true);
 	}
-	
+
 	private void addTracksToPlaylist(final boolean useCleanPlaylist) {
 		final Shell shell = new Shell(Display.getDefault());
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
@@ -93,27 +95,26 @@ public class TinyAudioPlayer {
 					player.getPlaylist().clear();
 				}
 				player.getPlaylist().add(newPlaylist);
-				player.play();
 			}
 		}
 	}
-	
+
 	public void export() {
 		if (player.getPlaylist() != null) {
 			final Shell shell = new Shell(Display.getDefault());
 			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
-			dialog.setFilterExtensions(new String[] { new MThreeUWriter().formatExtensions() });
-			dialog.setFilterNames(new String[] { new MThreeUWriter().completeFormatName() });
+			dialog.setFilterExtensions(new String[] { new PlaylistWriter().formatExtensions() });
+			dialog.setFilterNames(new String[] { new PlaylistWriter().completeFormatName() });
 			final String selectedFileName = dialog.open();
 			if (selectedFileName != null) {
 				final File selectedFile = new File(selectedFileName);
-				if (new MThreeUWriter().canHandle(selectedFile)) {
-					new MThreeUWriter().write(selectedFile, player.getPlaylist());
+				if (new PlaylistWriter().canHandle(selectedFile)) {
+					new PlaylistWriter().write(selectedFile, player.getPlaylist());
 				}
 			}
 		}
 	}
-	
+
 	private Image loadCoverFor(final PlaylistItem track){
 		Image thumbnail = null;
 		final File file = new File(track.getLocation());
@@ -144,8 +145,8 @@ public class TinyAudioPlayer {
 		return thumbnail;
 	}
 
-	private class PlaybackListener implements IPlaybackListener {
-		
+	private class PlaybackHandler implements IPlaybackListener {
+
 		@Override
 		public void handlePlaybackEvent(PlaybackEvent event) {
 			switch (event.getType()) {

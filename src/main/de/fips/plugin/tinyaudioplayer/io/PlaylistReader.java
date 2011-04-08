@@ -23,44 +23,43 @@ package de.fips.plugin.tinyaudioplayer.io;
 
 import java.io.File;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerConstants;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 
 public class PlaylistReader extends AbstractReader<Playlist> {
 
+	@Override
 	public String formatName() {
 		return "Playlist File";
 	}
 
+	@Override
 	public String formatExtensions() {
 		return "*.m3u;*.pls";
 	}
 
+	@Override
 	public Playlist read(final File file) {
 		Playlist playlist = new Playlist();
 		if (file.isFile() && file.exists()) {
 			try {
 				final PlaylistBuilder builder = new PlaylistBuilder();
 				if (file.getName().toLowerCase().endsWith(".m3u")) {
-					new MThreeUFileParser(builder).parse(file);
+					new MThreeUFileReader(builder).read(file);
 				} else if (file.getName().toLowerCase().endsWith(".pls")) {
-					new PLSFileParser(builder).parse(file);	
+					new PLSFileReader(builder).read(file);
 				}
 				playlist = builder.getPlaylist();
-				
+
 				int numEntries = 0;
 				if (builder.getNumEntries() != null) {
 					numEntries = builder.getNumEntries() - playlist.size();
 				}
 				if (numEntries > 0) {
-					TinyAudioPlayerPlugin.log(new Status(IStatus.WARNING, TinyAudioPlayerConstants.PLUGIN_ID, numEntries + " playlist entries are missing!"));
+					TinyAudioPlayerPlugin.logWarn("%s playlist entries are missing!", numEntries);
 				}
 			} catch (Exception e) {
-				TinyAudioPlayerPlugin.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, "Reading playlist failed!", e));
+				TinyAudioPlayerPlugin.logErr("Reading playlist failed!", e);
 			}
 		}
 		return playlist;

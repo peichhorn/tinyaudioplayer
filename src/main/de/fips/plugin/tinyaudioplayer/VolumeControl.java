@@ -36,7 +36,7 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 /**
  * Simple Volume Control that allows to modify the
  * volume of the {@link TinyAudioPlayerPlugin}.
- * 
+ *
  * @see TinyAudioPlayer#setVolume(float)
  * @author Philipp Eichhorn
  */
@@ -49,6 +49,7 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 		final Composite volumeControl = new Composite(parent, SWT.NONE);
 		volumeControl.setBackgroundMode(SWT.INHERIT_DEFAULT);
 		volumeControl.addPaintListener(new PaintListener() {
+			@Override
 			public void paintControl(PaintEvent e) {
 				e.gc.setClipping(0, 0, (int) (32 * volume), 16);
 				e.gc.drawImage(TinyAudioPlayerPlugin.getImageDescriptor("icons/16px-progress.png").createImage(), 0, 0);
@@ -56,7 +57,8 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 			}
 		});
 		Listener listener = new Listener() {
-			private boolean mouseDown; 
+			private boolean mouseDown;
+			@Override
 			public void handleEvent(Event event) {
 				switch (event.type) {
 				case SWT.MouseDown:
@@ -73,7 +75,7 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 				}
 				}
 			}
-			
+
 			private void updateVolume(Event event) {
 				if (mouseDown) {
 					final Rectangle rect = volumeControl.getBounds();

@@ -24,6 +24,36 @@ package de.fips.plugin.tinyaudioplayer.io;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This interface is used to abstract different playlist data-formats.<br>
+ * Implementations of this interface are able to handle playlist-like files.
+ * <p>
+ * <b>Details:</b><br>
+ * Methods get invoked after this scheme:
+ * <pre>
+ * visitComment(String)
+ * ...
+ * visitBegin(File)
+ *   ...
+ *   visitEntryBegin()
+ *     visitFile(File)
+ *     ...
+ *     visitLength(Long)
+ *     visitTitle(String)
+ *     visitComment(String)
+ *   visitEntryEnd()
+ *   visitEntryBegin()
+ *     visitTitle(String)
+ *     visitLength(Long)
+ *     visitFile(File)
+ *   visitEntryEnd()
+ *   visitComment(String)
+ *   ...
+ * visitEnd(File)
+ * </pre>
+ *
+ * @author Philipp Eichhorn
+ */
 public interface IPlaylistFileVisitor {
 	public void visitBegin(File file) throws IOException;
 

@@ -22,9 +22,10 @@ THE SOFTWARE.
 package de.fips.plugin.tinyaudioplayer;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.IWorkbench;
@@ -33,21 +34,27 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Entrypoint of the TinyAudioplayer Plugin.
- * 
+ *
  * @author Philipp Eichhorn
  */
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class TinyAudioPlayerPlugin extends AbstractUIPlugin {
 	private static TinyAudioPlayerPlugin sharedInstance;
-	
-	@Getter
-	private final TinyAudioPlayer player = new TinyAudioPlayer();
 
+	@Getter
+	private final TinyAudioPlayer player;
+
+	public TinyAudioPlayerPlugin() {
+		this(new TinyAudioPlayer());
+	}
+
+	@Override
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		sharedInstance = this;
 	}
 
+	@Override
 	public void stop(final BundleContext context) throws Exception {
 		sharedInstance = null;
 		super.stop(context);
@@ -60,29 +67,47 @@ public class TinyAudioPlayerPlugin extends AbstractUIPlugin {
 		return sharedInstance;
 	}
 
-	/**
-	 * Logs the given status.
-	 */
-	public static void log(final IStatus status) {
+	private static void log(final IStatus status) {
 		if (getDefault() != null) {
-			getDefault().getLog().log(status);	
+			getDefault().getLog().log(status);
 		}
 	}
-	
+
+	/**
+	 * Logs a warning.
+	 */
+	public static void logWarn(final String message, final Object... args) {
+		TinyAudioPlayerPlugin.log(new Status(IStatus.WARNING, TinyAudioPlayerConstants.PLUGIN_ID, String.format(message, args)));
+	}
+
+	/**
+	 * Logs an error.
+	 */
+	public static void logErr(final String message, final Throwable throwable) {
+		TinyAudioPlayerPlugin.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, message, throwable));
+	}
+
+	/**
+	 * Logs an error.
+	 */
+	public static void logErr(final String message, final Object... args) {
+		TinyAudioPlayerPlugin.log(new Status(IStatus.ERROR, TinyAudioPlayerConstants.PLUGIN_ID, String.format(message, args)));
+	}
+
 	/**
 	 * Returns the {@link IWorkbench} of this plugins shared instance.
 	 */
 	public static IWorkbench getDefaultWorkbench() {
 		return getDefault().getWorkbench();
 	}
-	
+
 	/**
 	 * Returns the {@link ImageRegistry} of this plugins shared instance.
 	 */
 	public static ImageRegistry getDefaultImageRegistry() {
 		return getDefault().getImageRegistry();
 	}
-	
+
 	/**
 	 * Returns the {@link TinyAudioPlayer} of this plugins shared instance.
 	 */

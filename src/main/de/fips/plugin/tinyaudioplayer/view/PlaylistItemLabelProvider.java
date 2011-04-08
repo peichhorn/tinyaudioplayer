@@ -21,20 +21,26 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.view;
 
+import lombok.RequiredArgsConstructor;
+
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
 
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
-public class PlaylistItemLabelProvider extends StyledCellLabelProvider {		
+@RequiredArgsConstructor
+public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
+	private final TinyAudioPlayer player;
+
+	@Override
 	public void update(final ViewerCell cell) {
-		final Playlist playlist = TinyAudioPlayerPlugin.getDefaultPlayer().getPlaylist();
 		final PlaylistItem item = (PlaylistItem)cell.getElement();
 		cell.setText(item.getFormattedDisplayName());
-		if (playlist.hasTracks() && (item == playlist.getCurrentTrack())) {
+		final Playlist playlist = player.getPlaylist();
+		if (playlist.hasTracks() && (item.equals(playlist.getCurrentTrack()))) {
 			cell.setBackground(new Color(null, 225, 225, 225));
 		} else {
 			cell.setBackground(new Color(null, 255, 255, 255));

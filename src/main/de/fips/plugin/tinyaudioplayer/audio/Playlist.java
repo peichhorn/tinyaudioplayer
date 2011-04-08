@@ -99,7 +99,7 @@ public class Playlist implements Iterable<PlaylistItem> {
 	public int size() {
 		return tracks.size();
 	}
-	
+
 	public Object[] toArray() {
 		return tracks.toArray();
 	}
@@ -161,7 +161,7 @@ public class Playlist implements Iterable<PlaylistItem> {
 	public void setCurrentTrack(final PlaylistItem item) {
 		setCurrentTrack(tracks.indexOf(item));
 	}
-	
+
 	public void setCurrentTrack(final int index) {
 		if ((index >= 0) && (index < tracks.size())) {
 			currentIndex = index;
@@ -191,7 +191,7 @@ public class Playlist implements Iterable<PlaylistItem> {
 	public void next() {
 		updateIndex(0, (tracks.size() - 1), 1);
 	}
-	
+
 	private void updateIndex(final int first, final int last, final int diff) {
 		if (shuffle) {
 			currentIndex = new Random().nextInt(tracks.size());
@@ -209,6 +209,7 @@ public class Playlist implements Iterable<PlaylistItem> {
 		fireTrackChanged(getCurrentTrack());
 	}
 
+	@Override
 	public Iterator<PlaylistItem> iterator() {
 		return tracks.iterator();
 	}

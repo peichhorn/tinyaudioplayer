@@ -18,11 +18,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-*/
+ */
 package de.fips.plugin.tinyaudioplayer.view;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Display;
 
 import de.fips.plugin.tinyaudioplayer.audio.IPlaylistListener;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
@@ -31,38 +32,38 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 public class PlaylistContentProvider implements IStructuredContentProvider, IPlaylistListener {
 	private Playlist playlist;
 	private Viewer viewer;
-	
+
 	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
 		this.viewer = viewer;
-		playlist = (Playlist)oldInput;
+		playlist = (Playlist) oldInput;
 		removeListener();
-		playlist = (Playlist)newInput;
+		playlist = (Playlist) newInput;
 		addListener();
 	}
-	
+
 	@Override
-	public Object[] getElements(Object inputElement) {
-		return ((Playlist)inputElement).toArray();
+	public Object[] getElements(final Object inputElement) {
+		return ((Playlist) inputElement).toArray();
 	}
-	
+
 	@Override
 	public void dispose() {
 		removeListener();
 	}
 
 	@Override
-	public void trackEnqueued(PlaylistItem item) {
+	public void trackEnqueued(final PlaylistItem item) {
 		refresh();
 	}
 
 	@Override
-	public void trackChanged(PlaylistItem item) {
+	public void trackChanged(final PlaylistItem item) {
 		refresh();
 	}
 
 	@Override
-	public void trackRemoved(PlaylistItem item) {
+	public void trackRemoved(final PlaylistItem item) {
 		refresh();
 	}
 
@@ -70,22 +71,27 @@ public class PlaylistContentProvider implements IStructuredContentProvider, IPla
 	public void playlistCleared() {
 		refresh();
 	}
-	
+
 	private void refresh() {
 		if (viewer != null) {
-			viewer.refresh();	
+			Display.getDefault().syncExec(new Runnable() {
+				@Override
+				public void run() {
+					viewer.refresh();
+				}
+			});
 		}
 	}
-	
+
 	private void addListener() {
 		if (playlist != null) {
-			playlist.addPlaylistListener(this);	
+			playlist.addPlaylistListener(this);
 		}
 	}
-	
+
 	private void removeListener() {
 		if (playlist != null) {
-			playlist.removePlaylistListener(this);	
+			playlist.removePlaylistListener(this);
 		}
 	}
 }

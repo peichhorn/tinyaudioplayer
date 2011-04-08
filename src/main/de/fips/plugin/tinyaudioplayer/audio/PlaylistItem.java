@@ -23,11 +23,11 @@ package de.fips.plugin.tinyaudioplayer.audio;
 
 import java.io.File;
 
-import org.apache.commons.lang.StringUtils;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+
+import org.apache.commons.lang.StringUtils;
 
 @EqualsAndHashCode(of={"displayableName", "infoTag"})
 @ToString(of={"displayableName", "infoTag"})
@@ -130,12 +130,12 @@ public class PlaylistItem {
 				}
 				displayableName = builder.toString();
 			} else {
-				displayableName = name;	
+				displayableName = name;
 			}
 		}
 		return displayableName;
 	}
-	
+
 	public void setFormattedDisplayName(final String fname) {
 		displayableName = fname;
 	}

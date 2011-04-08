@@ -21,22 +21,27 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.view;
 
+import lombok.RequiredArgsConstructor;
+
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
+@RequiredArgsConstructor
 public class PlaylistViewDoubleClickListener implements IDoubleClickListener {
+	private final TinyAudioPlayer player;
+
 	@Override
-	public void doubleClick(DoubleClickEvent event) {
-		final Playlist playlist = TinyAudioPlayerPlugin.getDefaultPlayer().getPlaylist();
-		final StructuredSelection selection = (StructuredSelection)event.getSelection();
+	public void doubleClick(final DoubleClickEvent event) {
+		final Playlist playlist = player.getPlaylist();
 		if (playlist.hasTracks()) {
+			final StructuredSelection selection = (StructuredSelection)event.getSelection();
 			playlist.setCurrentTrack((PlaylistItem)selection.getFirstElement());
-			TinyAudioPlayerPlugin.getDefaultPlayer().play();
+			player.play();
 			event.getViewer().refresh();
 		}
 	}

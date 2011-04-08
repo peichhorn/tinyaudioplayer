@@ -19,31 +19,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package de.fips.plugin.tinyaudioplayer.view;
+package de.fips.plugin.tinyaudioplayer.handler;
 
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.ui.IWorkbench;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
-public class PlaylistView extends ViewPart {
-	private TableViewer viewer;
-
-	@Override
-	public void createPartControl(final Composite parent) {
-		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
-		viewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-		viewer.addDoubleClickListener(new PlaylistViewDoubleClickListener(player));
-		viewer.setContentProvider(new PlaylistContentProvider());
-		viewer.setLabelProvider(new PlaylistItemLabelProvider(player));
-		viewer.setInput(player.getPlaylist());
-	}
-
-	@Override
-	public void setFocus() {
-		viewer.getControl().setFocus();
+public class MuteHandlerTest {
+	@Test
+	public void whenInvoked_execute_shouldTogglePlayerMute() throws Exception {
+		// setup
+		final TinyAudioPlayer player = mock(TinyAudioPlayer.class);
+		final ExecutionEvent event = new ExecutionEvent();
+		final BundleContext context = mock(BundleContext.class);
+		doReturn(mock(Bundle.class)).when(context).getBundle();
+		final TinyAudioPlayerPlugin plugin = spy(new TinyAudioPlayerPlugin(player));
+		plugin.start(context);
+		doReturn(mock(IWorkbench.class)).when(plugin).getWorkbench();
+		doReturn(true).when(player).isMute();
+		// run
+		new MuteHandler().execute(event);
+		// assert
+		InOrder inOrder = inOrder(player);
+		inOrder.verify(player).isMute();
+		inOrder.verify(player).setMute(false);
 	}
 }

@@ -24,12 +24,8 @@ package de.fips.plugin.tinyaudioplayer.audio;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import de.fips.plugin.tinyaudioplayer.audio.SingleTrackAudioPlayer;
-import de.fips.plugin.tinyaudioplayer.audio.IPlaybackListener;
-import de.fips.plugin.tinyaudioplayer.audio.Playlist;
-
 /**
- * 
+ *
  * @author Philipp Eichhorn
  */
 @RequiredArgsConstructor
@@ -41,7 +37,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 	private volatile boolean mute;
 	private volatile float volume = 1.0f;
 	private SingleTrackAudioPlayer player;
-	
+
 	public PlaylistAudioPlayer() {
 		this(new Playlist());
 	}
@@ -49,7 +45,8 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 	public void setPlaybackHandler(IPlaybackListener handler) {
 		playbackListener = handler;
 	}
-	
+
+	@Override
 	public void stop() {
 		if (player != null) {
 			player.stop();
@@ -69,6 +66,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		player.play();
 	}
 
+	@Override
 	public void play() {
 		if ((player != null) && (player.isPaused())) {
 			player.play();
@@ -79,6 +77,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		}
 	}
 
+	@Override
 	public void pause() {
 		if (player != null) {
 			if (player.isPaused()) {
@@ -89,6 +88,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		}
 	}
 
+	@Override
 	public void previous() {
 		boolean wasPlaying = player != null;
 		stop();
@@ -98,6 +98,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		}
 	}
 
+	@Override
 	public void next() {
 		boolean wasPlaying = player != null;
 		stop();
@@ -106,15 +107,16 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 			play();
 		}
 	}
-	
+
 	public void toggleShuffle() {
 		playlist.toggleShuffle();
 	}
-	
+
 	public void toggleRepeat() {
 		playlist.toggleRepeat();
 	}
-	
+
+	@Override
 	public void setMute(final boolean mute) {
 		this.mute = mute;
 		if (player != null) {
@@ -122,6 +124,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		}
 	}
 
+	@Override
 	public void setVolume(final float volume) {
 		this.volume = volume;
 		if (player != null) {

@@ -31,7 +31,7 @@ public abstract class RunnableWithShell  implements Runnable {
 	private final Shell shell;
 
 	protected abstract void guardedRun(final Shell shell);
-	
+
 	@Override
 	public final void run() {
 		try {
@@ -41,7 +41,7 @@ public abstract class RunnableWithShell  implements Runnable {
 		} catch (Exception ignore) {
 		}
 	}
-	
+
 	private boolean isNullOrDisposed(final Widget widget) {
 		return widget == null || widget.isDisposed();
 	}

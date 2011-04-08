@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Some constants used by the {@link NotifierDialog}.
- * 
+ *
  * @author Philipp Eichhorn
  */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
@@ -38,7 +38,7 @@ public final class NotifierConstants {
 	public static final String GRADIENT_COLOR_2_ID = "de.fips.plugin.tinyaudioplayer.notifier.gradientcolor2"; //$NON-NLS-1$
 	public static final String TITLE_FONT_ID = "de.fips.plugin.tinyaudioplayer.notifier.titlefont"; //$NON-NLS-1$
 	public static final String TEXT_FONT_ID = "de.fips.plugin.tinyaudioplayer.notifier.textfont"; //$NON-NLS-1$
-	
+
 	public static final int DISPLAY_TIME = 4500;
 	public static final int FADE_TIMER = 50;
 	public static final int FADE_IN_STEP = 30;

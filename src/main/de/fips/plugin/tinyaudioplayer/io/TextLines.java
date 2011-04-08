@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -36,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * {@link Iterator} over lines of text.
- * 
+ *
  * @author Philipp Eichhorn
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -55,6 +57,7 @@ public class TextLines implements Iterable<String>, Iterator<String>, Closeable 
 		return this;
 	}
 
+	@Override
 	public boolean hasNext() {
 		if (!nextDefined) {
 			hasNext = getNext();
@@ -63,6 +66,7 @@ public class TextLines implements Iterable<String>, Iterator<String>, Closeable 
 		return hasNext;
 	}
 
+	@Override
 	public String next() {
 		if (!hasNext()) {
 			throw new NoSuchElementException();
@@ -71,10 +75,12 @@ public class TextLines implements Iterable<String>, Iterator<String>, Closeable 
 		return next;
 	}
 
+	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void close() {
 		try {
 			in.close();
@@ -103,18 +109,23 @@ public class TextLines implements Iterable<String>, Iterator<String>, Closeable 
 			return false;
 		}
 	}
- 
+
+	/** Creates a {@link TextLines} for an {@link InputStream}. */
+	public static TextLines textLinesIn(final InputStream inputStream) {
+		return textLinesIn(new InputStreamReader(inputStream));
+	}
+
 	/** Creates a {@link TextLines} for a {@link File}. */
-	public static TextLines of(final File file) {
+	public static TextLines textLinesIn(final File file) {
 		try {
-			return of(new FileReader(file));
+			return textLinesIn(new FileReader(file));
 		} catch (FileNotFoundException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
 
 	/** Creates a {@link TextLines} for a {@link Reader}. */
-	public static TextLines of(final Reader reader) {
+	public static TextLines textLinesIn(final Reader reader) {
 		return new TextLines(new BufferedReader(reader));
 	}
 }

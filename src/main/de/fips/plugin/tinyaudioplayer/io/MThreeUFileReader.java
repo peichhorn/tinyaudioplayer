@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.io;
 
+import static de.fips.plugin.tinyaudioplayer.io.TextLines.textLinesIn;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -28,13 +30,14 @@ import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class MThreeUFileParser {
+public class MThreeUFileReader {
 	private final IPlaylistFileVisitor visitor;
-	
-	public void parse(final File file) throws IOException {
+
+	public void read(final File file) throws IOException {
 		visitor.visitBegin(file);
-		@Cleanup final TextLines lines = TextLines.of(file).ignoringEmptyLines();
+		@Cleanup final TextLines lines = textLinesIn(file).ignoringEmptyLines();
 		boolean entryOpen = false;
+		int entryCounter = 0;
 		for (final String line : lines) {
 			if (line.startsWith("#")) {
 				if (line.toUpperCase().startsWith("#EXTINF")) {
@@ -61,9 +64,11 @@ public class MThreeUFileParser {
 				}
 				visitor.visitFile(f);
 				visitor.visitEntryEnd();
+				entryCounter++;
 				entryOpen = false;
 			}
 		}
+		visitor.visitNumberOfEntries(entryCounter);
 		visitor.visitEnd(file);
 	}
 }
