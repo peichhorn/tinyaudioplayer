@@ -57,26 +57,33 @@ public class TinyAudioPlayer {
 	private final PlaylistAudioPlayer player;
 
 	public TinyAudioPlayer() {
+		this(new PlaylistAudioPlayer());
+	}
+
+	public TinyAudioPlayer(final PlaylistAudioPlayer player) {
 		super();
-		this.player = new PlaylistAudioPlayer();
+		this.player = player;
 		this.player.setPlaybackHandler(new PlaybackHandler());
 	}
 
-	public TinyAudioPlayer(final PlaylistAudioPlayer player, final IPlaybackListener handler) {
-		super();
-		this.player = player;
-		this.player.setPlaybackHandler(handler);
-	}
-
 	public void enqueue() {
-		addTracksToPlaylist(false);
+		final Playlist newPlaylist = loadNewPlaylist();
+		if (newPlaylist != null) {
+			player.getPlaylist().add(newPlaylist);
+		}
 	}
 
 	public void eject() {
-		addTracksToPlaylist(true);
+		final Playlist newPlaylist = loadNewPlaylist();
+		if (newPlaylist != null) {
+			player.getPlaylist().clear();
+			player.getPlaylist().add(newPlaylist);
+			player.play();
+		}
 	}
 
-	private void addTracksToPlaylist(final boolean useCleanPlaylist) {
+	Playlist loadNewPlaylist() {
+		Playlist newPlaylist = null;
 		final Shell shell = new Shell(Display.getDefault());
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 		dialog.setFilterExtensions(new String[] { new AudioFileReader().formatExtensions(), new PlaylistReader().formatExtensions() });
@@ -84,23 +91,21 @@ public class TinyAudioPlayer {
 		final String selectedFileName = dialog.open();
 		if (selectedFileName != null) {
 			final File selectedFile = new File(selectedFileName);
-			Playlist newPlaylist = null;
 			if (new AudioFileReader().canHandle(selectedFile)) {
 				newPlaylist = new AudioFileReader().read(selectedFile);
 			} else if (new PlaylistReader().canHandle(selectedFile)) {
 				newPlaylist = new PlaylistReader().read(selectedFile);
 			}
-			if (newPlaylist != null) {
-				if (useCleanPlaylist) {
-					player.getPlaylist().clear();
-				}
-				player.getPlaylist().add(newPlaylist);
-			}
 		}
+		return newPlaylist;
 	}
 
 	public void export() {
-		if (player.getPlaylist() != null) {
+		savePlaylist(player.getPlaylist());
+	}
+	
+	void savePlaylist(final Playlist playlist) {
+		if (playlist.hasTracks()) {
 			final Shell shell = new Shell(Display.getDefault());
 			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
 			dialog.setFilterExtensions(new String[] { new PlaylistWriter().formatExtensions() });
@@ -109,7 +114,7 @@ public class TinyAudioPlayer {
 			if (selectedFileName != null) {
 				final File selectedFile = new File(selectedFileName);
 				if (new PlaylistWriter().canHandle(selectedFile)) {
-					new PlaylistWriter().write(selectedFile, player.getPlaylist());
+					new PlaylistWriter().write(selectedFile, playlist);
 				}
 			}
 		}
