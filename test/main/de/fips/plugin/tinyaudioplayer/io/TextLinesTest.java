@@ -49,7 +49,7 @@ public class TextLinesTest {
 	}
 
 	@Test
-	public void normally_next_shouldReturnEmptyLines() throws Exception {
+	public void whenNotOtherwiseConfigured_next_shouldReturnEmptyLines() throws Exception {
 		// setup
 		final StringReader reader = new StringReader("a\nb\n\nc");
 		final TextLines lines = TextLines.textLinesIn(reader);

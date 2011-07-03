@@ -51,8 +51,9 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 		volumeControl.addPaintListener(new PaintListener() {
 			@Override
 			public void paintControl(PaintEvent e) {
+				e.gc.drawImage(TinyAudioPlayerPlugin.getImageDescriptor("icons/16px-volume-base.png").createImage(), 0, 0);
 				e.gc.setClipping(0, 0, (int) (32 * volume), 16);
-				e.gc.drawImage(TinyAudioPlayerPlugin.getImageDescriptor("icons/16px-progress.png").createImage(), 0, 0);
+				e.gc.drawImage(TinyAudioPlayerPlugin.getImageDescriptor("icons/16px-volume.png").createImage(), 0, 0);
 				e.gc.dispose();
 			}
 		});

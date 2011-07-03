@@ -8,9 +8,17 @@ import org.junit.Test;
 
 public class FileUtilsTest {
 	@Test
-	public void testFileNameWithoutExtension() throws Exception {
+	public void whenFilenameStartsWithDot_fileNameWithoutExtension_shouldReturnFilename() throws Exception {
 		assertEquals(".file", FileUtils.fileNameWithoutExtension(new File(".file")));
+	}
+
+	@Test
+	public void whenFilenameHasNoExtension_fileNameWithoutExtension_shouldReturnFilename() throws Exception {
 		assertEquals("file", FileUtils.fileNameWithoutExtension(new File("file")));
+	}
+
+	@Test
+	public void whenFilenameHasExtension_fileNameWithoutExtension_shouldReturnFilenameWithoutExtension() throws Exception {
 		assertEquals("file", FileUtils.fileNameWithoutExtension(new File("file.ext")));
 	}
 

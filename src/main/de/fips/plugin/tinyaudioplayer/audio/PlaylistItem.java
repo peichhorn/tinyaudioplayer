@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.audio;
 
+import static java.util.concurrent.TimeUnit.*;
+
 import java.io.File;
 
 import lombok.EqualsAndHashCode;
@@ -29,6 +31,10 @@ import lombok.ToString;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ *
+ * @author: Philipp Eichhorn
+ */
 @EqualsAndHashCode(of={"displayableName", "infoTag"})
 @ToString(of={"displayableName", "infoTag"})
 public class PlaylistItem {
@@ -48,35 +54,19 @@ public class PlaylistItem {
 	}
 
 	public long getLength() {
-		long length = seconds;
-		if ((infoTag != null) && (infoTag.getPlayTime() > 0)) {
-			length = infoTag.getPlayTime();
-		}
-		return length;
+		return ((infoTag == null) || (infoTag.getPlayTime() <= 0)) ? seconds : infoTag.getPlayTime();
 	}
 
 	public int getBitrate() {
-		int bitrate = -1;
-		if (infoTag != null) {
-			bitrate = infoTag.getBitRate();
-		}
-		return bitrate;
+		return (infoTag == null) ? -1 : infoTag.getBitRate();
 	}
 
 	public int getSamplerate() {
-		int samplerate = -1;
-		if (infoTag != null) {
-			samplerate = infoTag.getSamplingRate();
-		}
-		return samplerate;
+		return (infoTag == null) ? -1 : infoTag.getSamplingRate();
 	}
 
 	public int getChannels() {
-		int channels = -1;
-		if (infoTag != null) {
-			channels = infoTag.getChannels();
-		}
-		return channels;
+		return (infoTag == null) ? -1 : infoTag.getChannels();
 	}
 
 	public void setLocation(final String l) {
@@ -89,32 +79,22 @@ public class PlaylistItem {
 			infoTag = new PlaylistItemTagFactory().formFile(new File(l));
 		}
 		displayableName = null;
-		getFormattedDisplayName();
+		getDisplayableName();
 	}
 
-	public String getFormattedLength() {
-		long seconds = getLength();
-		final StringBuilder length = new StringBuilder();
-		if (seconds > -1) {
-			long minutes = seconds / 60;
-			long hours = minutes / 60;
-			minutes %= 60;
-			seconds %= 60;
-			if (hours > 0) {
-				if (hours <= 9) length.append("0");
-				length.append(hours).append(":");
-			}
-			if (minutes <= 9) length.append("0");
-			length.append(minutes).append(":");
-			if (seconds <= 9) length.append("0");
-			length.append(seconds);
+	public String getDisplayableLength() {
+		final long seconds = getLength();
+		if (seconds < 0) return "unknown";
+		final long millis = SECONDS.toMillis(getLength());
+		final long hour = HOURS.toMillis(1);
+		if (millis < hour) {
+			return String.format("%1$TM:%1$TS", millis);
 		} else {
-			length.append("unknown");
+			return String.format("%d:%2$TM:%2$TS", millis / hour, millis % hour);
 		}
-		return length.toString();
 	}
 
-	public String getFormattedDisplayName() {
+	public String getDisplayableName() {
 		if (displayableName == null) {
 			if (infoTag != null) {
 				final StringBuilder builder = new StringBuilder();
@@ -126,7 +106,7 @@ public class PlaylistItem {
 					builder.append(name);
 				}
 				if (getLength() > 0) {
-					builder.append(" (").append(getFormattedLength()).append(")");
+					builder.append(" (").append(getDisplayableLength()).append(")");
 				}
 				displayableName = builder.toString();
 			} else {
@@ -134,10 +114,6 @@ public class PlaylistItem {
 			}
 		}
 		return displayableName;
-	}
-
-	public void setFormattedDisplayName(final String fname) {
-		displayableName = fname;
 	}
 
 	public PlaylistItemTag getInfoTag() {

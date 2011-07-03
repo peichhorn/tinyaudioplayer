@@ -25,6 +25,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ *
+ * @author: Philipp Eichhorn
+ */
 @Builder(AccessLevel.PACKAGE)
 @Getter
 public class PlaylistItemTag {

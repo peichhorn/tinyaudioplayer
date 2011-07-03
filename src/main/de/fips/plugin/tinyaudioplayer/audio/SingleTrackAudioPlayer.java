@@ -193,7 +193,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 		return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, sampleSizeInBits, channels, (channels * sampleSizeInBits) >> 3, sampleRate, false);
 	}
 
-	@Await(value = "canResume", conditionMethod = "isPaused")
+	@Await(conditionName = "canResume", conditionMethod = "isPaused")
 	private void runPause() {
 	}
 
@@ -201,5 +201,4 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	private void runUnpause() {
 		paused = false;
 	}
-
 }

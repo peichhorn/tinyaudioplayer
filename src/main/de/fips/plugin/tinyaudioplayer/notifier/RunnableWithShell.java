@@ -22,6 +22,7 @@ THE SOFTWARE.
 package de.fips.plugin.tinyaudioplayer.notifier;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Rethrow;
 
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
@@ -32,13 +33,11 @@ public abstract class RunnableWithShell  implements Runnable {
 
 	protected abstract void guardedRun(final Shell shell);
 
+	@Rethrow
 	@Override
 	public final void run() {
-		try {
-			if (!isNullOrDisposed(shell)) {
-				guardedRun(shell);
-			}
-		} catch (Exception ignore) {
+		if (!isNullOrDisposed(shell)) {
+			guardedRun(shell);
 		}
 	}
 

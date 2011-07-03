@@ -48,7 +48,7 @@ public class PlaylistReaderTest {
 	}
 
 	@Test
-	public void readPLS() throws Exception {
+	public void whenInvokedWithPLSFile_read_shouldCreateValidPlaylist() throws Exception {
 		// setup
 		final File testFile = new File(getClass().getResource("playlist.pls").toURI());
 		final PlaylistReader reader = new PlaylistReader();
@@ -71,7 +71,7 @@ public class PlaylistReaderTest {
 	}
 
 	@Test
-	public void readM3U() throws Exception {
+	public void whenInvokedWithM3UFile_read_shouldCreateValidPlaylist() throws Exception {
 		// setup
 		final File testFile = new File(getClass().getResource("playlist.m3u").toURI());
 		final PlaylistReader reader = new PlaylistReader();

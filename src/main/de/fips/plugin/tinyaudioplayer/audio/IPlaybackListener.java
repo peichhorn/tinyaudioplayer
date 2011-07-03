@@ -21,6 +21,10 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.audio;
 
+/**
+ *
+ * @author Philipp Eichhorn
+ */
 public interface IPlaybackListener {
 	public void handlePlaybackEvent(PlaybackEvent event);
 }

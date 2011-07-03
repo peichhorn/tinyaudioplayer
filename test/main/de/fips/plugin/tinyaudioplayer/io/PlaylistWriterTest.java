@@ -10,26 +10,16 @@ import java.util.List;
 
 import lombok.Cleanup;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 public class PlaylistWriterTest {
-	private File testDir;
-
-	@Before
-	public void createTestDir() {
-		testDir = new File(new File(System.getProperty("java.io.tmpdir")), PlaylistWriterTest.class.getSimpleName());
-		testDir.mkdir();
-	}
-
-	@After
-	public void cleanUpTestDir() {
-		assertTrue(FileUtils.removeDirectory(testDir));
-	}
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Test
 	public void formatDefinition() {
@@ -66,8 +56,9 @@ public class PlaylistWriterTest {
 	}
 
 	@Test
-	public void writePLS() throws Exception {
+	public void whenInvokedWithPLSFile_write_shouldCreateValidPLSFile() throws Exception {
 		// setup
+		final File testDir = tempFolder.newFolder(getClass().getSimpleName());
 		final File testFile = new File(testDir, "playlist.pls");
 		final File track1 = new File(testDir, "01 - Track 01.mp3");
 		track1.createNewFile();
@@ -102,8 +93,9 @@ public class PlaylistWriterTest {
 	}
 
 	@Test
-	public void writeM3U() throws Exception {
+	public void whenInvokedWithM3UFile_write_shouldCreateValidM3UFile() throws Exception {
 		// setup
+		final File testDir = tempFolder.newFolder(getClass().getSimpleName());
 		final File testFile = new File(testDir, "playlist.m3u");
 		final File track1 = new File(testDir, "01 - Track 01.mp3");
 		final File track2 = new File(testDir, "Chapter 03 - Title.mp3");

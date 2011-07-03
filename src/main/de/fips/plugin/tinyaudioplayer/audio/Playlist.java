@@ -31,6 +31,10 @@ import java.util.Set;
 import lombok.ListenerSupport;
 import lombok.NoArgsConstructor;
 
+/**
+ *
+ * @author: Philipp Eichhorn
+ */
 @NoArgsConstructor
 @ListenerSupport(IPlaylistListener.class)
 public class Playlist implements Iterable<PlaylistItem> {
@@ -195,16 +199,14 @@ public class Playlist implements Iterable<PlaylistItem> {
 	private void updateIndex(final int first, final int last, final int diff) {
 		if (shuffle) {
 			currentIndex = new Random().nextInt(tracks.size());
-		} else {
-			if (currentIndex == last) {
-				if (repeat) {
-					currentIndex = first;
-				} else {
-					currentIndex = last;
-				}
+		} else if (currentIndex == last) {
+			if (repeat) {
+				currentIndex = first;
 			} else {
-				currentIndex += diff;
+				currentIndex = last;
 			}
+		} else {
+			currentIndex += diff;
 		}
 		fireTrackChanged(getCurrentTrack());
 	}

@@ -24,6 +24,10 @@ package de.fips.plugin.tinyaudioplayer.audio;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+/**
+ *
+ * @author Philipp Eichhorn
+ */
 @RequiredArgsConstructor
 @Data
 public class PlaybackEvent {

@@ -86,8 +86,10 @@ public class TinyAudioPlayer {
 		Playlist newPlaylist = null;
 		final Shell shell = new Shell(Display.getDefault());
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
-		dialog.setFilterExtensions(new String[] { new AudioFileReader().formatExtensions(), new PlaylistReader().formatExtensions() });
-		dialog.setFilterNames(new String[] { new AudioFileReader().completeFormatName(), new PlaylistReader().completeFormatName() });
+		final String audioFileExtensions = new AudioFileReader().formatExtensions();
+		final String playlistFileExtensions = new PlaylistReader().formatExtensions();
+		dialog.setFilterExtensions(new String[] { audioFileExtensions + ";" + playlistFileExtensions, audioFileExtensions, playlistFileExtensions });
+		dialog.setFilterNames(new String[] { "All Supported Files", new AudioFileReader().completeFormatName(), new PlaylistReader().completeFormatName() });
 		final String selectedFileName = dialog.open();
 		if (selectedFileName != null) {
 			final File selectedFile = new File(selectedFileName);
@@ -160,7 +162,7 @@ public class TinyAudioPlayer {
 				break;
 			case Started:
 				final PlaylistItem track = player.getPlaylist().getCurrentTrack();
-				NotifierDialog.notifyAsync("Now playing:", track.getFormattedDisplayName(), loadCoverFor(track));
+				NotifierDialog.notifyAsync("Now playing:", track.getDisplayableName(), loadCoverFor(track));
 				break;
 			default:
 				break;

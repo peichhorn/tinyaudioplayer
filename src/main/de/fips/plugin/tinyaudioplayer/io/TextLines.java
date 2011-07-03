@@ -35,6 +35,7 @@ import java.util.NoSuchElementException;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.Rethrow;
 
 /**
  * {@link Iterator} over lines of text.
@@ -116,12 +117,9 @@ public class TextLines implements Iterable<String>, Iterator<String>, Closeable 
 	}
 
 	/** Creates a {@link TextLines} for a {@link File}. */
+	@Rethrow(value = FileNotFoundException.class, as = IllegalArgumentException.class)
 	public static TextLines textLinesIn(final File file) {
-		try {
-			return textLinesIn(new FileReader(file));
-		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException(e);
-		}
+		return textLinesIn(new FileReader(file));
 	}
 
 	/** Creates a {@link TextLines} for a {@link Reader}. */

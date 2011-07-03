@@ -55,7 +55,7 @@ public class AudioFileReaderTest {
 	}
 
 	@Test
-	public void readMP3() throws Exception {
+	public void whenInvokedWithMP3File_read_shouldCreateValidPlaylist() throws Exception {
 		// setup
 		final File testFile = new File(getClass().getResource("track.mp3").toURI());
 		final AudioFileReader reader = new AudioFileReader();
@@ -70,7 +70,7 @@ public class AudioFileReaderTest {
 	}
 
 	@Test
-	public void readWAV() throws Exception {
+	public void whenInvokedWithWAVFile_read_shouldCreateValidPlaylist() throws Exception {
 		// setup
 		final File testFile = new File(getClass().getResource("track.wav").toURI());
 		final AudioFileReader reader = new AudioFileReader();
@@ -85,7 +85,7 @@ public class AudioFileReaderTest {
 	}
 
 	@Test
-	public void readOGG() throws Exception {
+	public void whenInvokedWithOGGFile_read_shouldCreateValidPlaylist() throws Exception {
 		// setup
 		final File testFile = new File(getClass().getResource("track.ogg").toURI());
 		final AudioFileReader reader = new AudioFileReader();
