@@ -1,16 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.0.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.0">
-      <category name="de.fips.plugin.releases"/>
-   </feature>
-   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.1.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.1">
-      <category name="de.fips.plugin.releases"/>
-   </feature>
-   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.2.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.2">
-      <category name="de.fips.plugin.releases"/>
-   </feature>
-   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.3.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.3">
-      <category name="de.fips.plugin.releases"/>
-   </feature>
-   <category-def name="de.fips.plugin.releases" label="Releases"/>
+   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.4.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.4"/>
 </site>
