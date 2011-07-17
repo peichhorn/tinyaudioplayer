@@ -32,10 +32,10 @@ import lombok.Getter;
 @Builder(AccessLevel.PACKAGE)
 @Getter
 public class PlaylistItemTag {
-	private int samplingRate;
-	private int bitRate;
+	private int samplingRate = 0;
+	private int bitRate = 0;
 	private int channels = -1;
-	private long playTime;
+	private long playTime = 0;
 	private String title = "";
 	private String artist = "";
 	private String album = "";

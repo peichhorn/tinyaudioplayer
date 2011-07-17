@@ -37,7 +37,7 @@ public class PlaylistItemLabelProviderTest {
 		final PlaylistItem item = mock(PlaylistItem.class);
 		doReturn("Text").when(item).getDisplayableName();
 		final Playlist playlist = mock(Playlist.class);
-		doReturn(true).when(playlist).hasTracks();
+		doReturn(false).when(playlist).isEmpty();
 		doReturn(item).when(playlist).getCurrentTrack();
 		doReturn(playlist).when(player).getPlaylist();
 		final PlaylistItemLabelProvider labelProvider = new PlaylistItemLabelProvider(player);
@@ -56,7 +56,7 @@ public class PlaylistItemLabelProviderTest {
 		final PlaylistItem item = mock(PlaylistItem.class);
 		doReturn("Text").when(item).getDisplayableName();
 		final Playlist playlist = mock(Playlist.class);
-		doReturn(true).when(playlist).hasTracks();
+		doReturn(false).when(playlist).isEmpty();
 		doReturn(mock(PlaylistItem.class)).when(playlist).getCurrentTrack();
 		doReturn(playlist).when(player).getPlaylist();
 		final PlaylistItemLabelProvider labelProvider = new PlaylistItemLabelProvider(player);

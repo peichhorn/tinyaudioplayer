@@ -21,10 +21,12 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.view;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
@@ -32,17 +34,17 @@ import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 @RequiredArgsConstructor
-public class PlaylistViewDoubleClickListener implements IDoubleClickListener {
+public class PlaylistViewSelectionChangedListener implements ISelectionChangedListener {
 	private final TinyAudioPlayer player;
 
 	@Override
-	public void doubleClick(final DoubleClickEvent event) {
+	public void selectionChanged(SelectionChangedEvent event) {
 		final Playlist playlist = player.getPlaylist();
 		if (!playlist.isEmpty()) {
 			final StructuredSelection selection = (StructuredSelection)event.getSelection();
-			playlist.setCurrentTrack((PlaylistItem)selection.getFirstElement());
-			player.play();
-			event.getViewer().refresh();
+			@SuppressWarnings("unchecked")
+			List<PlaylistItem> selectedItems = selection.toList();
+			playlist.selectTracks(selectedItems);
 		}
 	}
 }

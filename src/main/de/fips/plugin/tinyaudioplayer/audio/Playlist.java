@@ -27,7 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import lombok.Delegate;
 import lombok.ListenerSupport;
 import lombok.NoArgsConstructor;
 
@@ -38,10 +40,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ListenerSupport(IPlaylistListener.class)
 public class Playlist implements Iterable<PlaylistItem> {
-	private final List<PlaylistItem> tracks = new ArrayList<PlaylistItem>();
+	@Delegate(types = IListSubset.class)
+	private final List<PlaylistItem> tracks = new CopyOnWriteArrayList<PlaylistItem>();
+	private final List<PlaylistItem> selectedTracks = new CopyOnWriteArrayList<PlaylistItem>();
 	private int currentIndex = -1;
-	private boolean shuffle;
-	private boolean repeat;
+	private volatile boolean shuffle;
+	private volatile boolean repeat;
 
 	public void toggleShuffle() {
 		shuffle = !shuffle;
@@ -55,57 +59,27 @@ public class Playlist implements Iterable<PlaylistItem> {
 		return add(other, true);
 	}
 
-	public int add(final Playlist other, final boolean removeDuplicates) {
+	public int add(final Playlist other, final boolean allowDuplicates) {
 		if (other != null) {
-			if (removeDuplicates) {
-				final Set<PlaylistItem> set = new HashSet<PlaylistItem>(tracks);
-				final int oldSize = tracks.size();
+			final int oldSize = tracks.size();
+			if (allowDuplicates) {
 				for (final PlaylistItem track : other.tracks) {
-					if (set.add(track)) {
+					add(track);
+				}
+			} else {
+				final Set<String> uniqueTrackNames = new HashSet<String>();
+				for (final PlaylistItem track : tracks) {
+					uniqueTrackNames.add(track.getDisplayableName());
+				}
+				for (final PlaylistItem track : other.tracks) {
+					if (uniqueTrackNames.add(track.getDisplayableName())) {
 						add(track);
 					}
 				}
-				return tracks.size() - oldSize;
-			} else {
-				for (final PlaylistItem track : other) {
-					add(track);
-				}
-				return other.tracks.size();
 			}
-		}
-		return 0;
-	}
-
-	public int removeDuplicates() {
-		if (hasTracks()) {
-			final int oldSize = tracks.size();
-			final PlaylistItem currentTrack = getCurrentTrack();
-			final Set<PlaylistItem> set = new HashSet<PlaylistItem>();
-			final List<PlaylistItem> uniqueTracks = new ArrayList<PlaylistItem>();
-			for (final PlaylistItem track : tracks) {
-				if (set.add(track)) {
-					uniqueTracks.add(track);
-				}
-			}
-			tracks.clear();
-			tracks.addAll(uniqueTracks);
-			currentIndex = tracks.indexOf(currentTrack);
-			fireTrackChanged(currentTrack);
 			return tracks.size() - oldSize;
 		}
 		return 0;
-	}
-
-	public boolean hasTracks() {
-		return !tracks.isEmpty();
-	}
-
-	public int size() {
-		return tracks.size();
-	}
-
-	public Object[] toArray() {
-		return tracks.toArray();
 	}
 
 	public void add(final PlaylistItem track) {
@@ -120,15 +94,54 @@ public class Playlist implements Iterable<PlaylistItem> {
 	}
 
 	public void remove(final PlaylistItem track) {
-		final int index = tracks.indexOf(track);
-		if (index >= 0) {
+		remove(tracks.indexOf(track));
+		
+	}
+
+	public void removeCurrent() {
+		remove(currentIndex);
+	}
+
+	public void removeSelected() {
+		for (final PlaylistItem track : selectedTracks) {
+			remove(track);
+		}
+		selectedTracks.clear();
+	}
+	
+	public int removeDuplicates() {
+		if (!isEmpty()) {
+			final String currentTrackName = getCurrentTrack().getDisplayableName();
+			final Set<String> uniqueTrackNames = new HashSet<String>();
+			final List<PlaylistItem> oldTracks = new ArrayList<PlaylistItem>(tracks);
+			tracks.clear();
+			currentIndex = 0;
+			firePlaylistCleared();
+			for (final PlaylistItem track : oldTracks) {
+				final String trackName = track.getDisplayableName();
+				if (uniqueTrackNames.add(trackName)) {
+					if (currentTrackName.equals(trackName)) {
+						currentIndex = tracks.size();
+					}
+					tracks.add(track);
+					fireTrackEnqueued(track);
+				}
+			}
+			return oldTracks.size() - tracks.size();
+		}
+		return 0;
+	}
+
+	private void remove(final int index) {
+		if (isValidIndex(index)) {
+			final PlaylistItem track = tracks.get(index);
 			tracks.remove(index);
 			if (tracks.isEmpty()) {
 				currentIndex = -1;
 				fireTrackRemoved(track);
 				firePlaylistCleared();
 			} else {
-				if (currentIndex > index) {
+				if (currentIndex >= index) {
 					currentIndex--;
 				}
 				fireTrackRemoved(track);
@@ -137,27 +150,9 @@ public class Playlist implements Iterable<PlaylistItem> {
 		}
 	}
 
-	public void removeCurrent() {
-		tracks.remove(currentIndex);
-		if (tracks.isEmpty()) {
-			currentIndex = -1;
-			fireTrackRemoved(getCurrentTrack());
-			firePlaylistCleared();
-		} else {
-			if (currentIndex >= tracks.size()) {
-				currentIndex = tracks.size() - 1;
-			}
-			fireTrackRemoved(getCurrentTrack());
-			fireTrackChanged(getCurrentTrack());
-		}
-	}
-
 	public PlaylistItem getCurrentTrack() {
-		if ((currentIndex >= 0) && (currentIndex < tracks.size())) {
+		if (isValidIndex(currentIndex)) {
 			return tracks.get(currentIndex);
-		}
-		if (hasTracks()) {
-			throw new IllegalStateException("Invalid 'currentIndex' in non-emtpy playlist!");
 		}
 		return null;
 	}
@@ -167,9 +162,18 @@ public class Playlist implements Iterable<PlaylistItem> {
 	}
 
 	public void setCurrentTrack(final int index) {
-		if ((index >= 0) && (index < tracks.size())) {
+		if (isValidIndex(index)) {
 			currentIndex = index;
 		}
+	}
+	
+	private boolean isValidIndex(final int index) {
+		return (index >= 0) && (index < tracks.size());
+	}
+
+	public void selectTracks(final List<PlaylistItem> items) {
+		selectedTracks.clear();
+		selectedTracks.addAll(items);
 	}
 
 	public PlaylistItem getPreviousTrack() {
@@ -210,9 +214,26 @@ public class Playlist implements Iterable<PlaylistItem> {
 		}
 		fireTrackChanged(getCurrentTrack());
 	}
-
-	@Override
-	public Iterator<PlaylistItem> iterator() {
-		return tracks.iterator();
+	
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append(this.getClass().getSimpleName()).append("\n");
+		int trackCounter = 1;
+		for (PlaylistItem track : tracks) {
+			if (selectedTracks.contains(track)) {
+				builder.append("[").append(trackCounter++).append("] - ");
+			} else {
+				builder.append(" ").append(trackCounter++).append("  - ");
+			}
+			builder.append(track).append("\n");
+		}
+		return builder.toString();
+	}
+	
+	private static interface IListSubset {
+		boolean isEmpty();
+		int size();
+		Object[] toArray();
+		Iterator<PlaylistItem> iterator();
 	}
 }

@@ -53,7 +53,19 @@
           allPopups="false"
           locationURI="toolbar:de.fips.plugin.tinyaudioplayer.view.playlist">
        <command
+             commandId="de.fips.plugin.tinyaudioplayer.removeduplicates"
+             style="push">
+       </command>
+       <command
+             commandId="de.fips.plugin.tinyaudioplayer.removeselected"
+             style="push">
+       </command>
+       <command
              commandId="de.fips.plugin.tinyaudioplayer.enqueue"
+             style="push">
+       </command>
+       <command
+             commandId="de.fips.plugin.tinyaudioplayer.import"
              style="push">
        </command>
        <command
@@ -89,9 +101,24 @@
           name="Mute">
     </command>
     <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.RemoveDuplicatesHandler"
+          id="de.fips.plugin.tinyaudioplayer.removeduplicates"
+          name="Remove Duplicate Tracks">
+    </command>
+    <command
           defaultHandler="de.fips.plugin.tinyaudioplayer.handler.EnqueueHandler"
           id="de.fips.plugin.tinyaudioplayer.enqueue"
           name="Enqueue Tracks">
+    </command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.RemoveSelectedHandler"
+          id="de.fips.plugin.tinyaudioplayer.removeselected"
+          name="Remove Selected Tracks">
+    </command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.EjectHandler"
+          id="de.fips.plugin.tinyaudioplayer.import"
+          name="Import Playlist">
     </command>
     <command
           defaultHandler="de.fips.plugin.tinyaudioplayer.handler.ExportHandler"
@@ -141,12 +168,24 @@
           icon="icons/16px-unmute.png">
     </image>
     <image
+          commandId="de.fips.plugin.tinyaudioplayer.removeduplicates"
+          icon="icons/16px-filter.png">
+    </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.removeselected"
+          icon="icons/16px-remove.png">
+    </image>
+    <image
           commandId="de.fips.plugin.tinyaudioplayer.enqueue"
           icon="icons/16px-enqueue.png">
     </image>
     <image
           commandId="de.fips.plugin.tinyaudioplayer.export"
           icon="icons/16px-export.png">
+    </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.import"
+          icon="icons/16px-import.png">
     </image>
   </extension>
   <extension point="org.eclipse.ui.themes">

@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.regex.Matcher;
 
 import lombok.Delegate;
+import lombok.VisibleForTesting;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -82,7 +83,19 @@ public class TinyAudioPlayer {
 		}
 	}
 
-	Playlist loadNewPlaylist() {
+	public void export() {
+		savePlaylist(player.getPlaylist());
+	}
+
+	public void removeSelected() {
+		player.getPlaylist().removeSelected();
+	}
+
+	public void removeDuplicates() {
+		player.getPlaylist().removeDuplicates();
+	}
+
+	@VisibleForTesting Playlist loadNewPlaylist() {
 		Playlist newPlaylist = null;
 		final Shell shell = new Shell(Display.getDefault());
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
@@ -101,13 +114,9 @@ public class TinyAudioPlayer {
 		}
 		return newPlaylist;
 	}
-
-	public void export() {
-		savePlaylist(player.getPlaylist());
-	}
 	
-	void savePlaylist(final Playlist playlist) {
-		if (playlist.hasTracks()) {
+	@VisibleForTesting void savePlaylist(final Playlist playlist) {
+		if (!playlist.isEmpty()) {
 			final Shell shell = new Shell(Display.getDefault());
 			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
 			dialog.setFilterExtensions(new String[] { new PlaylistWriter().formatExtensions() });

@@ -40,7 +40,7 @@ public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
 		final PlaylistItem item = (PlaylistItem)cell.getElement();
 		cell.setText(item.getDisplayableName());
 		final Playlist playlist = player.getPlaylist();
-		if (playlist.hasTracks() && (item.equals(playlist.getCurrentTrack()))) {
+		if (!playlist.isEmpty() && (item.equals(playlist.getCurrentTrack()))) {
 			cell.setBackground(new Color(null, 225, 225, 225));
 		} else {
 			cell.setBackground(new Color(null, 255, 255, 255));

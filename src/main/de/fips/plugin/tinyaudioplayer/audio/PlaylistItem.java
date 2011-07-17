@@ -25,8 +25,8 @@ import static java.util.concurrent.TimeUnit.*;
 
 import java.net.URI;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,51 +35,36 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author: Philipp Eichhorn
  */
-@EqualsAndHashCode(of={"displayableName", "infoTag"})
-@ToString(of={"displayableName", "infoTag"})
+@RequiredArgsConstructor
+@Getter
+@ToString(of = { "displayableName" })
 public class PlaylistItem {
-	@Getter
 	private final String name;
-	@Getter
+	private final URI location;
 	private final long seconds;
-	@Getter
-	private URI location;
-	private String displayableName;
-	private PlaylistItemTag infoTag;
-
-	public PlaylistItem(final String name, final URI location, final long seconds) {
-		this.name = name;
-		this.seconds = seconds;
-		setLocation(location, true);
-	}
+	@Getter(lazy=true)
+	private final String displayableName = createDisplayableName();
+	@Getter(lazy=true)
+	private final PlaylistItemTag infoTag = createInfoTag();
 
 	public long getLength() {
-		return ((infoTag == null) || (infoTag.getPlayTime() <= 0)) ? seconds : infoTag.getPlayTime();
+		final PlaylistItemTag tag = getInfoTag();
+		return ((tag == null) || (tag.getPlayTime() <= 0)) ? seconds : tag.getPlayTime();
 	}
 
-	public int getBitrate() {
-		return (infoTag == null) ? -1 : infoTag.getBitRate();
+	public int getBitRate() {
+		final PlaylistItemTag tag = getInfoTag();
+		return (tag == null) ? -1 : tag.getBitRate();
 	}
 
-	public int getSamplerate() {
-		return (infoTag == null) ? -1 : infoTag.getSamplingRate();
+	public int getSampleRate() {
+		final PlaylistItemTag tag = getInfoTag();
+		return (tag == null) ? -1 : tag.getSamplingRate();
 	}
 
 	public int getChannels() {
-		return (infoTag == null) ? -1 : infoTag.getChannels();
-	}
-
-	public void setLocation(final URI l) {
-		setLocation(l, false);
-	}
-
-	public void setLocation(final URI uri, final boolean readInfo) {
-		location = uri;
-		if (readInfo) {
-			infoTag = new PlaylistItemTagFactory().formURI(uri);
-		}
-		displayableName = null;
-		getDisplayableName();
+		final PlaylistItemTag tag = getInfoTag();
+		return (tag == null) ? -1 : tag.getChannels();
 	}
 
 	public String getDisplayableLength() {
@@ -94,32 +79,27 @@ public class PlaylistItem {
 		}
 	}
 
-	public String getDisplayableName() {
-		if (displayableName == null) {
-			if (infoTag != null) {
-				final StringBuilder builder = new StringBuilder();
-				if (!(StringUtils.isEmpty(infoTag.getTitle()) || StringUtils.isEmpty(infoTag.getArtist()))) {
-					builder.append(infoTag.getArtist()).append(" - ").append(infoTag.getTitle());
-				} else if (!StringUtils.isEmpty(infoTag.getTitle())) {
-					builder.append(infoTag.getTitle());
-				} else {
-					builder.append(name);
-				}
-				if (getLength() > 0) {
-					builder.append(" (").append(getDisplayableLength()).append(")");
-				}
-				displayableName = builder.toString();
+	private String createDisplayableName() {
+		final PlaylistItemTag tag = getInfoTag();
+		final StringBuilder builder = new StringBuilder();
+		if (tag != null) {
+			if (!(StringUtils.isEmpty(tag.getTitle()) || StringUtils.isEmpty(tag.getArtist()))) {
+				builder.append(tag.getArtist()).append(" - ").append(tag.getTitle());
+			} else if (!StringUtils.isEmpty(tag.getTitle())) {
+				builder.append(tag.getTitle());
 			} else {
-				displayableName = name;
+				builder.append(name);
 			}
+		} else {
+			builder.append(name);
 		}
-		return displayableName;
+		if (getLength() > 0) {
+			builder.append(" (").append(getDisplayableLength()).append(")");
+		}
+		return builder.toString();
 	}
 
-	public PlaylistItemTag getInfoTag() {
-		if (infoTag == null) {
-			setLocation(location, true);
-		}
-		return infoTag;
+	private PlaylistItemTag createInfoTag() {
+		return new PlaylistItemTagFactory().formURI(getLocation());
 	}
 }

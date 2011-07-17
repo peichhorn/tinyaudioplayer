@@ -35,10 +35,12 @@ public class PlaylistView extends ViewPart {
 	@Override
 	public void createPartControl(final Composite parent) {
 		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
-		viewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		viewer.addDoubleClickListener(new PlaylistViewDoubleClickListener(player));
+		viewer.addSelectionChangedListener(new PlaylistViewSelectionChangedListener(player));
 		viewer.setContentProvider(new PlaylistContentProvider());
 		viewer.setLabelProvider(new PlaylistItemLabelProvider(player));
+		viewer.getTable().addKeyListener(new PlaylistViewKeyListener(player));
 		viewer.setInput(player.getPlaylist());
 	}
 

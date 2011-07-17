@@ -21,7 +21,7 @@ public class PlaylistViewDoubleClickListenerTest {
 	public void whenInvoked_doubleClick_shouldPlaySelectedTrack() throws Exception {
 		// setup
 		final Playlist playlist = mock(Playlist.class);
-		doReturn(true).when(playlist).hasTracks();
+		doReturn(false).when(playlist).isEmpty();
 		final TinyAudioPlayer player = mock(TinyAudioPlayer.class);
 		doReturn(playlist).when(player).getPlaylist();
 		final Viewer viewer = mock(Viewer.class);

@@ -73,7 +73,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		if ((player != null) && (player.isPaused())) {
 			player.play();
 		} else {
-			if (playlist.hasTracks()) {
+			if (!playlist.isEmpty()) {
 				play(playlist.getCurrentTrack().getLocation());
 			}
 		}
