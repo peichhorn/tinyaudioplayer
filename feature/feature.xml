@@ -2,7 +2,7 @@
 <feature
       id="de.fips.plugin.tinyaudioplayer_feature"
       label="TinyAudioplayer"
-      version="1.0.4"
+      version="1.0.5"
       provider-name="Philipp Eichhorn">
 
    <description url="https://github.com/peichhorn/tinyaudioplayer">
@@ -43,7 +43,7 @@ THE SOFTWARE.
          id="de.fips.plugin.tinyaudioplayer"
          download-size="0"
          install-size="0"
-         version="1.0.4"
+         version="1.0.5"
          unpack="false"/>
 
 </feature>
