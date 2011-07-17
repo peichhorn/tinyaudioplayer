@@ -56,7 +56,7 @@ public class MThreeUFileWriter implements IPlaylistFileVisitor {
 	@Override
 	public void visitEntryBegin() throws IOException {
 		checkIsOpen();
-		location = file.toURI();
+		location = null;
 		length = 0L;
 		title = "";
 	}
@@ -82,10 +82,12 @@ public class MThreeUFileWriter implements IPlaylistFileVisitor {
 	@Override
 	public void visitEntryEnd() throws IOException {
 		checkIsOpen();
-		bw.write("#EXTINF:" + length + "," + title);
-		bw.newLine();
-		bw.write(FileUtils.relativePath(new File(location), file));
-		bw.newLine();
+		if (location != null) {
+			bw.write("#EXTINF:" + length + "," + title);
+			bw.newLine();
+			bw.write(FileUtils.relativePath(location, file));
+			bw.newLine();
+		}
 	}
 
 	@Override

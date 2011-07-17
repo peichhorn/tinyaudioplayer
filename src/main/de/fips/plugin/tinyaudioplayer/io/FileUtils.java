@@ -1,6 +1,7 @@
 package de.fips.plugin.tinyaudioplayer.io;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -19,38 +20,49 @@ public final class FileUtils {
 		return name;
 	}
 
+	public static String relativePath(URI uri, File relativeTo) {
+		if (uri == null) return null;
+		try {
+			return FileUtils.relativePath(new File(uri), relativeTo);
+		} catch(IllegalArgumentException ignore) {
+			return uri.toString();
+		}
+	}
+
 	public static String relativePath(final File file, File relativeTo) {
-		String path = "";
+		String path = file.getAbsolutePath();
 
 		if (relativeTo.isFile()) {
 			relativeTo = relativeTo.getParentFile();
 		}
 
 		List<String> fileList = getDelimitedStringAsList(file.getAbsolutePath(), File.separator);
-		List<String> relativeList = getDelimitedStringAsList(relativeTo.getAbsolutePath(), File.separator);
+		List<String> relativeToList = getDelimitedStringAsList(relativeTo.getAbsolutePath(), File.separator);
+		
+		if (fileList.get(0).equals(relativeToList.get(0))) {
+			int size = fileList.size();
+			int relativeToSize = relativeToList.size();
+			int count = 0;
 
-		int size = fileList.size();
-		int relativeSize = relativeList.size();
-		int count = 0;
-
-		while ((count < size) && (count < relativeSize)) {
-			if (fileList.get(count).equalsIgnoreCase(relativeList.get(count))) {
-				count++;
-			} else {
-				break;
+			while ((count < size) && (count < relativeToSize)) {
+				if (fileList.get(count).equalsIgnoreCase(relativeToList.get(count))) {
+					count++;
+				} else {
+					break;
+				}
 			}
-		}
+			path = "";
+			for (int i = count; i < relativeToSize; i++) {
+				path += ".." + File.separator;
+			}
 
-		for (int i = count; i < relativeSize; i++) {
-			path += ".." + File.separator;
-		}
+			for (int i = count; i < size; i++) {
+				path += fileList.get(i) + File.separator;
+			}
 
-		for (int i = count; i < size; i++) {
-			path += fileList.get(i) + File.separator;
-		}
-
-		if (path.indexOf(File.separator) > -1) {
-			path = path.substring(0, path.lastIndexOf(File.separator));
+			if (path.indexOf(File.separator) > -1) {
+				path = path.substring(0, path.lastIndexOf(File.separator));
+			}
 		}
 		return path;
 	}

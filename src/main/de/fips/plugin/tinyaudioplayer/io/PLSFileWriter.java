@@ -60,7 +60,7 @@ public class PLSFileWriter implements IPlaylistFileVisitor {
 	@Override
 	public void visitEntryBegin() throws IOException {
 		checkIsOpen();
-		location = file.toURI();
+		location = null;
 		length = 0L;
 		title = "";
 		trackCounter++;
@@ -87,13 +87,15 @@ public class PLSFileWriter implements IPlaylistFileVisitor {
 	@Override
 	public void visitEntryEnd() throws IOException {
 		checkIsOpen();
-		bw.write("File" + trackCounter + "=" + FileUtils.relativePath(new File(location), file));
-		bw.newLine();
-		bw.write("Title" + trackCounter + "=" + title);
-		bw.newLine();
-		bw.write("Length" + trackCounter + "=" + length);
-		bw.newLine();
-		bw.newLine();
+		if (location != null) {
+			bw.write("File" + trackCounter + "=" + FileUtils.relativePath(location, file));
+			bw.newLine();
+			bw.write("Title" + trackCounter + "=" + title);
+			bw.newLine();
+			bw.write("Length" + trackCounter + "=" + length);
+			bw.newLine();
+			bw.newLine();
+		}
 	}
 
 	@Override

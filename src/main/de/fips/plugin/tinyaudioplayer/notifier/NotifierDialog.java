@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.AccessLevel;
+import lombok.ExtensionMethod;
 import lombok.NoArgsConstructor;
 
 import org.eclipse.swt.SWT;
@@ -38,13 +39,11 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.themes.IThemeManager;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.preference.PreferencesConstants;
@@ -54,6 +53,7 @@ import de.fips.plugin.tinyaudioplayer.preference.PreferencesConstants;
  * @author Philipp Eichhorn
  */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
+@ExtensionMethod(NotifierTheming.class)
 public class NotifierDialog {
 	private static List<Shell> activeShells = new ArrayList<Shell>();
 	private static Image oldImage;
@@ -75,7 +75,7 @@ public class NotifierDialog {
 		final Shell shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
 		shell.setLayout(new FillLayout());
 		shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
-		theme(shell, SWT.FOREGROUND, NotifierConstants.COLOR_ID);
+		shell.theme(SWT.FOREGROUND, NotifierConstants.COLOR_ID);
 		registerDisposeListener(shell);
 		registerResizeListener(shell);
 
@@ -149,25 +149,29 @@ public class NotifierDialog {
 			@Override
 			public void handleEvent(Event e) {
 				try {
-					Rectangle rect = shell.getClientArea();
-					Image newImage = new Image(Display.getDefault(), Math.max(1, rect.width), rect.height);
-					GC gc = new GC(newImage);
-					theme(gc, SWT.FOREGROUND, NotifierConstants.GRADIENT_COLOR_1_ID);
-					theme(gc, SWT.BACKGROUND, NotifierConstants.GRADIENT_COLOR_2_ID);
-					gc.fillGradientRectangle(rect.x, rect.y, rect.width, rect.height, true);
-					gc.setLineWidth(2);
-					theme(gc, SWT.FOREGROUND, NotifierConstants.BORDER_COLOR_ID);
-					gc.drawRectangle(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
-					gc.dispose();
-					shell.setBackgroundImage(newImage);
 					if (oldImage != null) {
 						oldImage.dispose();
 					}
-					oldImage = newImage;
+					oldImage = updateBackgroundImage(shell);
 				} catch (Exception ignore) {
 				}
 			}
 		});
+	}
+
+	private Image updateBackgroundImage(final Shell shell) {
+		Rectangle rect = shell.getClientArea();
+		Image newImage = new Image(Display.getDefault(), Math.max(1, rect.width), rect.height);
+		GC gc = new GC(newImage);
+		gc.theme(SWT.FOREGROUND, NotifierConstants.GRADIENT_COLOR_1_ID);
+		gc.theme(SWT.BACKGROUND, NotifierConstants.GRADIENT_COLOR_2_ID);
+		gc.fillGradientRectangle(rect.x, rect.y, rect.width, rect.height, true);
+		gc.setLineWidth(2);
+		gc.theme(SWT.FOREGROUND, NotifierConstants.BORDER_COLOR_ID);
+		gc.drawRectangle(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
+		gc.dispose();
+		shell.setBackgroundImage(newImage);
+		return newImage;
 	}
 
 	private Composite createInnerComposite(final Composite parent) {
@@ -199,46 +203,18 @@ public class NotifierDialog {
 		final CLabel titleLabel = new CLabel(parent, SWT.NONE);
 		titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
 		titleLabel.setText(title);
-		theme(titleLabel, SWT.FOREGROUND, NotifierConstants.TITLE_COLOR_ID);
-		theme(titleLabel, SWT.NONE, NotifierConstants.TITLE_FONT_ID);
+		titleLabel.theme(SWT.FOREGROUND, NotifierConstants.TITLE_COLOR_ID);
+		titleLabel.theme(SWT.NONE, NotifierConstants.TITLE_FONT_ID);
 	}
 
 	private void createTextLabel(final Composite parent, final String message) {
 		final Label text = new Label(parent, SWT.WRAP);
-		theme(text, SWT.NONE, NotifierConstants.TEXT_FONT_ID);
+		text.theme(SWT.NONE, NotifierConstants.TEXT_FONT_ID);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan = 2;
 		text.setLayoutData(gd);
-		theme(text, SWT.FOREGROUND, NotifierConstants.COLOR_ID);
+		text.theme(SWT.FOREGROUND, NotifierConstants.COLOR_ID);
 		text.setText(message);
-	}
-
-	private void theme(final Control control, final int what, final String themeVariable) {
-		final IThemeManager themeManager = TinyAudioPlayerPlugin.getDefaultWorkbench().getThemeManager();
-		switch (what) {
-		case SWT.FOREGROUND:
-			control.setForeground(themeManager.getCurrentTheme().getColorRegistry().get(themeVariable));
-			break;
-		case SWT.BACKGROUND:
-			control.setBackground(themeManager.getCurrentTheme().getColorRegistry().get(themeVariable));
-			break;
-		default:
-			control.setFont(themeManager.getCurrentTheme().getFontRegistry().get(themeVariable));
-		}
-	}
-
-	private static void theme(final GC gc, final int what, final String themeVariable) {
-		final IThemeManager themeManager = TinyAudioPlayerPlugin.getDefaultWorkbench().getThemeManager();
-		switch (what) {
-		case SWT.FOREGROUND:
-			gc.setForeground(themeManager.getCurrentTheme().getColorRegistry().get(themeVariable));
-			break;
-		case SWT.BACKGROUND:
-			gc.setBackground(themeManager.getCurrentTheme().getColorRegistry().get(themeVariable));
-			break;
-		default:
-			gc.setFont(themeManager.getCurrentTheme().getFontRegistry().get(themeVariable));
-		}
 	}
 
 	private void fadeIn(final Shell shell) {
