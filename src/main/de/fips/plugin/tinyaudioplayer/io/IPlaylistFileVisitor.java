@@ -23,6 +23,7 @@ package de.fips.plugin.tinyaudioplayer.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * This interface is used to abstract different playlist data-formats.<br>
@@ -36,7 +37,7 @@ import java.io.IOException;
  * visitBegin(File)
  *   ...
  *   visitEntryBegin()
- *     visitFile(File)
+ *     visitLocation(String)
  *     ...
  *     visitLength(Long)
  *     visitTitle(String)
@@ -45,7 +46,7 @@ import java.io.IOException;
  *   visitEntryBegin()
  *     visitTitle(String)
  *     visitLength(Long)
- *     visitFile(File)
+ *     visitLocation(String)
  *   visitEntryEnd()
  *   visitComment(String)
  *   ...
@@ -61,7 +62,7 @@ public interface IPlaylistFileVisitor {
 
 	public void visitEntryBegin() throws IOException;
 
-	public void visitFile(File file) throws IOException;
+	public void visitLocation(URI location) throws IOException;
 
 	public void visitTitle(String title) throws IOException;
 

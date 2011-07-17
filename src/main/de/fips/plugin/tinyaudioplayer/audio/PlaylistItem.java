@@ -23,7 +23,7 @@ package de.fips.plugin.tinyaudioplayer.audio;
 
 import static java.util.concurrent.TimeUnit.*;
 
-import java.io.File;
+import java.net.URI;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,11 +43,11 @@ public class PlaylistItem {
 	@Getter
 	private final long seconds;
 	@Getter
-	private String location;
+	private URI location;
 	private String displayableName;
 	private PlaylistItemTag infoTag;
 
-	public PlaylistItem(final String name, final String location, final long seconds) {
+	public PlaylistItem(final String name, final URI location, final long seconds) {
 		this.name = name;
 		this.seconds = seconds;
 		setLocation(location, true);
@@ -69,14 +69,14 @@ public class PlaylistItem {
 		return (infoTag == null) ? -1 : infoTag.getChannels();
 	}
 
-	public void setLocation(final String l) {
+	public void setLocation(final URI l) {
 		setLocation(l, false);
 	}
 
-	public void setLocation(final String l, final boolean readInfo) {
-		location = l;
-		if (readInfo && !StringUtils.isEmpty(location)) {
-			infoTag = new PlaylistItemTagFactory().formFile(new File(l));
+	public void setLocation(final URI uri, final boolean readInfo) {
+		location = uri;
+		if (readInfo) {
+			infoTag = new PlaylistItemTagFactory().formURI(uri);
 		}
 		displayableName = null;
 		getDisplayableName();

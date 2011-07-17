@@ -25,11 +25,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 
 public class MThreeUFileWriter implements IPlaylistFileVisitor {
 	private BufferedWriter bw;
 	private File file;
-	private File location;
+	private URI location;
 	private Long length;
 	private String title;
 
@@ -55,15 +56,15 @@ public class MThreeUFileWriter implements IPlaylistFileVisitor {
 	@Override
 	public void visitEntryBegin() throws IOException {
 		checkIsOpen();
-		location = file;
+		location = file.toURI();
 		length = 0L;
 		title = "";
 	}
 
 	@Override
-	public void visitFile(File file) throws IOException {
+	public void visitLocation(URI location) throws IOException {
 		checkIsOpen();
-		location = file;
+		this.location = location;
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class MThreeUFileWriter implements IPlaylistFileVisitor {
 		checkIsOpen();
 		bw.write("#EXTINF:" + length + "," + title);
 		bw.newLine();
-		bw.write(FileUtils.relativePath(location, file));
+		bw.write(FileUtils.relativePath(new File(location), file));
 		bw.newLine();
 	}
 

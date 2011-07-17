@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.audio;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -48,15 +48,15 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent.Type;
 public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	private final static int EXTERNAL_BUFFER_SIZE = 0x10000;
 
-	private final String fileName;
+	private final URI location;
 	private volatile float volume;
 	private volatile boolean mute;
 	@Getter
 	private volatile boolean paused;
 	private SourceDataLine line;
 
-	public SingleTrackAudioPlayer(final String fileName, final float volume, final boolean mute) {
-		this.fileName = fileName;
+	public SingleTrackAudioPlayer(final URI location, final float volume, final boolean mute) {
+		this.location = location;
 		this.volume = Math.min(2.0f, Math.max(volume, 0.0f));
 		this.mute = mute;
 	}
@@ -69,7 +69,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	@Override
 	public void play() {
 		if (line == null) {
-			final Thread thread = new Thread(this, "AudioPlayer thread playing: " + fileName);
+			final Thread thread = new Thread(this, "AudioPlayer thread playing: " + location);
 			thread.setDaemon(true);
 			thread.start();
 		} else {
@@ -81,6 +81,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	public void stop() {
 		if (line != null) {
 			runUnpause();
+			line.flush();
 			line.stop();
 			line.close();
 			line = null;
@@ -121,6 +122,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 					if (nBytesRead >= 0) {
 						if (isPaused()) {
 							if (line.isRunning()) {
+								line.flush();
 								line.stop();
 							}
 							fireHandlePlaybackEvent(new PlaybackEvent(Type.Paused));
@@ -167,14 +169,13 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	}
 
 	private AudioInputStream getEncodeAudioInputStream() {
-		final File soundFile = new File(fileName);
 		AudioInputStream encodedAudioInputStream = null;
 		try {
-			encodedAudioInputStream = AudioSystem.getAudioInputStream(soundFile);
+			encodedAudioInputStream = AudioSystem.getAudioInputStream(location.toURL());
 		} catch (UnsupportedAudioFileException e) {
-			TinyAudioPlayerPlugin.logErr("Filetype of '%s' not supported!", fileName);
+			TinyAudioPlayerPlugin.logErr("Filetype of '%s' not supported!", location);
 		} catch (IOException e) {
-			TinyAudioPlayerPlugin.logErr("Filetype of '%s' not supported!", fileName);
+			TinyAudioPlayerPlugin.logErr("Filetype of '%s' not supported!", location);
 		}
 		return encodedAudioInputStream;
 	}

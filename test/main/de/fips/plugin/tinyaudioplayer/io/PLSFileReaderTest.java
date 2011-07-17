@@ -30,13 +30,13 @@ public class PLSFileReaderTest {
 		inOrder.verify(visitor).visitEntryEnd();
 		inOrder.verify(visitor).visitEnd(eq(testFile));
 
-		verify(visitor).visitFile(eq(new File("01 - Track 01.mp3")));
+		verify(visitor).visitLocation(eq(new File("01 - Track 01.mp3").toURI()));
 		verify(visitor).visitTitle(eq("Artist - Track 01"));
 		verify(visitor).visitLength(eq(220L));
-		verify(visitor).visitFile(eq(new File("Chapter 03 - Title.mp3")));
+		verify(visitor).visitLocation(eq(new File("Chapter 03 - Title.mp3").toURI()));
 		verify(visitor).visitTitle(eq("Author - Book - Chapter 03 - Title"));
 		verify(visitor).visitLength(eq(1167L));
-		verify(visitor).visitFile(eq(new File("Chapter 04 - Title.mp3")));
+		verify(visitor).visitLocation(eq(new File("Chapter 04 - Title.mp3").toURI()));
 		verify(visitor).visitNumberOfEntries(eq(3));
 	}
 }

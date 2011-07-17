@@ -43,7 +43,7 @@ public class AudioFileReader extends AbstractReader<Playlist> {
 	public Playlist read(File file) {
 		final Playlist playlist = new Playlist();
 		if (file.isFile() && file.exists()) {
-			playlist.add(new PlaylistItem(fileNameWithoutExtension(file), file.getAbsolutePath(), 0L));
+			playlist.add(new PlaylistItem(fileNameWithoutExtension(file), file.toURI(), 0L));
 		}
 		return playlist;
 	}

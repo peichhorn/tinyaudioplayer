@@ -58,15 +58,15 @@ public class PlaylistReaderTest {
 		assertEquals(3, playlist.size());
 		final PlaylistItem track1 = playlist.getCurrentTrack();
 		assertEquals("Artist - Track 01", track1.getName());
-		assertEquals(new File("01 - Track 01.mp3").getAbsolutePath(), track1.getLocation());
+		assertEquals(new File("01 - Track 01.mp3").toURI(), track1.getLocation());
 		assertEquals(220, track1.getLength());
 		final PlaylistItem track2 = playlist.getNextTrack();
 		assertEquals("Author - Book - Chapter 03 - Title", track2.getName());
-		assertEquals(new File("Chapter 03 - Title.mp3").getAbsolutePath(), track2.getLocation());
+		assertEquals(new File("Chapter 03 - Title.mp3").toURI(), track2.getLocation());
 		assertEquals(1167, track2.getLength());
 		final PlaylistItem track3 = playlist.getNextTrack();
 		assertEquals("Chapter 04 - Title", track3.getName());
-		assertEquals(new File("Chapter 04 - Title.mp3").getAbsolutePath(), track3.getLocation());
+		assertEquals(new File("Chapter 04 - Title.mp3").toURI(), track3.getLocation());
 		assertEquals(0, track3.getLength());
 	}
 
@@ -81,15 +81,15 @@ public class PlaylistReaderTest {
 		assertEquals(3, playlist.size());
 		final PlaylistItem track1 = playlist.getCurrentTrack();
 		assertEquals("Artist - Track 01", track1.getName());
-		assertEquals(new File("01 - Track 01.mp3").getAbsolutePath(), track1.getLocation());
+		assertEquals(new File("01 - Track 01.mp3").toURI(), track1.getLocation());
 		assertEquals(220, track1.getLength());
 		final PlaylistItem track2 = playlist.getNextTrack();
 		assertEquals("Author - Book - Chapter 03 - Title", track2.getName());
-		assertEquals(new File("Chapter 03 - Title.mp3").getAbsolutePath(), track2.getLocation());
+		assertEquals(new File("Chapter 03 - Title.mp3").toURI(), track2.getLocation());
 		assertEquals(1167, track2.getLength());
 		final PlaylistItem track3 = playlist.getNextTrack();
 		assertEquals("Chapter 04 - Title", track3.getName());
-		assertEquals(new File("Chapter 04 - Title.mp3").getAbsolutePath(), track3.getLocation());
+		assertEquals(new File("Chapter 04 - Title.mp3").toURI(), track3.getLocation());
 		assertEquals(0, track3.getLength());
 	}
 }

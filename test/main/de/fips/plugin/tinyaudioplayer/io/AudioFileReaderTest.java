@@ -65,7 +65,7 @@ public class AudioFileReaderTest {
 		assertEquals(1, playlist.size());
 		final PlaylistItem track1 = playlist.getNextTrack();
 		assertEquals("track", track1.getName());
-		assertEquals(testFile.getAbsolutePath(), track1.getLocation());
+		assertEquals(testFile.toURI(), track1.getLocation());
 		assertEquals(0, track1.getLength());
 	}
 
@@ -80,7 +80,7 @@ public class AudioFileReaderTest {
 		assertEquals(1, playlist.size());
 		final PlaylistItem track1 = playlist.getNextTrack();
 		assertEquals("track", track1.getName());
-		assertEquals(testFile.getAbsolutePath(), track1.getLocation());
+		assertEquals(testFile.toURI(), track1.getLocation());
 		assertEquals(0, track1.getLength());
 	}
 
@@ -95,7 +95,7 @@ public class AudioFileReaderTest {
 		assertEquals(1, playlist.size());
 		final PlaylistItem track1 = playlist.getNextTrack();
 		assertEquals("track", track1.getName());
-		assertEquals(testFile.getAbsolutePath(), track1.getLocation());
+		assertEquals(testFile.toURI(), track1.getLocation());
 		assertEquals(0, track1.getLength());
 	}
 }

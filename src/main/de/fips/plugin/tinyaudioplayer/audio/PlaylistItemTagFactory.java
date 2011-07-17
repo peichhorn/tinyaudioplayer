@@ -25,6 +25,7 @@ import static de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag.playlistItemT
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,10 +51,15 @@ public class PlaylistItemTagFactory {
 		builder.put("flac", new FlacPlaylistItemTagBuilder());
 	}
 
-	public PlaylistItemTag formFile(final File file) {
+	public PlaylistItemTag formURI(final URI uri) {
 		PlaylistItemTag tag = null;
 		try {
-			final AudioFileFormat aff = AudioSystem.getAudioFileFormat(file);
+			AudioFileFormat aff = AudioSystem.getAudioFileFormat(uri.toURL());
+			try {
+				aff = AudioSystem.getAudioFileFormat(new File(uri));
+			} catch (IllegalArgumentException ignore) {
+				// File(URI) preconditions did not hold
+			}
 			final String type = aff.getType().toString().toLowerCase();
 			final IPlaylistItemTagBuilder tagBuilder = builder.get(type);
 			if (tagBuilder != null) {

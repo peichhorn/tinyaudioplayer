@@ -25,11 +25,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 
 public class PLSFileWriter implements IPlaylistFileVisitor {
 	private BufferedWriter bw;
 	private File file;
-	private File location;
+	private URI location;
 	private Long length;
 	private String title;
 	private int trackCounter;
@@ -59,16 +60,16 @@ public class PLSFileWriter implements IPlaylistFileVisitor {
 	@Override
 	public void visitEntryBegin() throws IOException {
 		checkIsOpen();
-		location = file;
+		location = file.toURI();
 		length = 0L;
 		title = "";
 		trackCounter++;
 	}
 
 	@Override
-	public void visitFile(File file) throws IOException {
+	public void visitLocation(URI location) throws IOException {
 		checkIsOpen();
-		location = file;
+		this.location = location;
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class PLSFileWriter implements IPlaylistFileVisitor {
 	@Override
 	public void visitEntryEnd() throws IOException {
 		checkIsOpen();
-		bw.write("File" + trackCounter + "=" + FileUtils.relativePath(location, file));
+		bw.write("File" + trackCounter + "=" + FileUtils.relativePath(new File(location), file));
 		bw.newLine();
 		bw.write("Title" + trackCounter + "=" + title);
 		bw.newLine();

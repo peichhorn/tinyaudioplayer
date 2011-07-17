@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.audio;
 
+import java.net.URI;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -57,9 +59,9 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		}
 	}
 
-	private void play(final String filename) {
+	private void play(final URI location) {
 		stop();
-		player = new SingleTrackAudioPlayer(filename, volume, mute);
+		player = new SingleTrackAudioPlayer(location, volume, mute);
 		if (playbackListener != null) {
 			player.addPlaybackListener(playbackListener);
 		}

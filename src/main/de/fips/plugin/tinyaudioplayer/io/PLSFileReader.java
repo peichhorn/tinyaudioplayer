@@ -25,6 +25,8 @@ import static de.fips.plugin.tinyaudioplayer.io.TextLines.textLinesIn;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.StringTokenizer;
 
 import lombok.Cleanup;
@@ -50,12 +52,16 @@ public class PLSFileReader {
 				entryOpen = true;
 				final StringTokenizer st = new StringTokenizer(line, "=");
 				st.nextToken();
-				final String fileName = st.nextToken().trim();
-				File f = new File(file.getParentFile(), fileName);
-				if (!f.exists()) {
-					f = new File(fileName);
+				final String fileNameOrURL = st.nextToken().trim();
+				try {
+					visitor.visitLocation(new URI(fileNameOrURL));
+				} catch (URISyntaxException  e) {
+					File f = new File(file.getParentFile(), fileNameOrURL);
+					if (!f.exists()) {
+						f = new File(fileNameOrURL);
+					}
+					visitor.visitLocation(f.toURI());
 				}
-				visitor.visitFile(f);
 			} else if ((line.toLowerCase().startsWith("title"))) {
 				final StringTokenizer st = new StringTokenizer(line, "=");
 				st.nextToken();

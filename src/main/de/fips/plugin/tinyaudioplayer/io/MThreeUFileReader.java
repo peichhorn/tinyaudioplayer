@@ -25,6 +25,8 @@ import static de.fips.plugin.tinyaudioplayer.io.TextLines.textLinesIn;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
@@ -58,11 +60,15 @@ public class MThreeUFileReader {
 				if (!entryOpen) {
 					visitor.visitEntryBegin();
 				}
-				File f = new File(file.getParentFile(), line);
-				if (!f.exists()) {
-					f = new File(line);
+				try {
+					visitor.visitLocation(new URI(line));
+				} catch (URISyntaxException  e) {
+					File f = new File(file.getParentFile(), line);
+					if (!f.exists()) {
+						f = new File(line);
+					}
+					visitor.visitLocation(f.toURI());
 				}
-				visitor.visitFile(f);
 				visitor.visitEntryEnd();
 				entryCounter++;
 				entryOpen = false;

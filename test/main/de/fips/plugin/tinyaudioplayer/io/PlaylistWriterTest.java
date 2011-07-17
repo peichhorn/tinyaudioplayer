@@ -65,8 +65,8 @@ public class PlaylistWriterTest {
 		final File track2 = new File(testDir, "Chapter 03 - Title.mp3");
 		track2.createNewFile();
 		final Playlist playlist = new Playlist();
-		playlist.add(new PlaylistItem("Artist - Track 01", track1.getAbsolutePath(), 220));
-		playlist.add(new PlaylistItem("Author - Book - Chapter 03 - Title", track2.getAbsolutePath(), 1167));
+		playlist.add(new PlaylistItem("Artist - Track 01", track1.toURI(), 220));
+		playlist.add(new PlaylistItem("Author - Book - Chapter 03 - Title", track2.toURI(), 1167));
 		final PlaylistWriter writer = new PlaylistWriter();
 		final List<String> allExpected = asList( //
 				"[playlist]", //
@@ -100,8 +100,8 @@ public class PlaylistWriterTest {
 		final File track1 = new File(testDir, "01 - Track 01.mp3");
 		final File track2 = new File(testDir, "Chapter 03 - Title.mp3");
 		final Playlist playlist = new Playlist();
-		playlist.add(new PlaylistItem("Artist - Track 01", track1.getAbsolutePath(), 220));
-		playlist.add(new PlaylistItem("Author - Book - Chapter 03 - Title", track2.getAbsolutePath(), 1167));
+		playlist.add(new PlaylistItem("Artist - Track 01", track1.toURI(), 220));
+		playlist.add(new PlaylistItem("Author - Book - Chapter 03 - Title", track2.toURI(), 1167));
 		final PlaylistWriter writer = new PlaylistWriter();
 		final List<String> allExpected = asList( //
 				"#EXTM3U", //

@@ -124,8 +124,13 @@ public class TinyAudioPlayer {
 
 	private Image loadCoverFor(final PlaylistItem track){
 		Image thumbnail = null;
-		final File file = new File(track.getLocation());
-		final File parent = file.getParentFile();
+		File parent = null;
+		try {
+			final File file = new File(track.getLocation());
+			parent = file.getParentFile();
+		} catch(IllegalArgumentException ignore) {
+			// File(URI) preconditions did not hold
+		}
 		if (parent != null) {
 			String[] coverNames = parent.list(new FilenameFilter() {
 				@Override

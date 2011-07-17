@@ -25,6 +25,7 @@ import static de.fips.plugin.tinyaudioplayer.io.FileUtils.fileNameWithoutExtensi
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import lombok.Getter;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
@@ -36,7 +37,7 @@ public class PlaylistBuilder implements IPlaylistFileVisitor {
 	@Getter
 	private Integer numEntries;
 	private String songName;
-	private File songFile;
+	private URI location;
 	private Long songLength;
 
 	@Override
@@ -51,13 +52,13 @@ public class PlaylistBuilder implements IPlaylistFileVisitor {
 	@Override
 	public void visitEntryBegin() throws IOException {
 		songName = null;
-		songFile = null;
+		location = null;
 		songLength = null;
 	}
 
 	@Override
-	public void visitFile(final File file) throws IOException {
-		songFile = file;
+	public void visitLocation(final URI location) throws IOException {
+		this.location = location;
 	}
 
 	@Override
@@ -72,14 +73,14 @@ public class PlaylistBuilder implements IPlaylistFileVisitor {
 
 	@Override
 	public void visitEntryEnd() throws IOException {
-		if (songFile != null) {
+		if (location != null) {
 			if (songName == null) {
-				songName = fileNameWithoutExtension(songFile);
+				songName = fileNameWithoutExtension(new File(location));
 			}
 			if (songLength == null) {
 				songLength = 0L;
 			}
-			playlist.add(new PlaylistItem(songName, songFile.getCanonicalFile().getAbsolutePath(), songLength));
+			playlist.add(new PlaylistItem(songName, location, songLength));
 		}
 	}
 

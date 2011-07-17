@@ -53,7 +53,7 @@ public class PlaylistWriter extends AbstractWriter<Playlist>{
 				visitor.visitBegin(file);
 				for (final PlaylistItem pli : playlist) {
 					visitor.visitEntryBegin();
-					visitor.visitFile(new File(pli.getLocation()));
+					visitor.visitLocation(pli.getLocation());
 					visitor.visitLength(pli.getSeconds());
 					visitor.visitTitle(pli.getName());
 					visitor.visitEntryEnd();
