@@ -3,4 +3,5 @@
    <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.4.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.4"/>
    <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.5.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.5"/>
    <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.6.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.6"/>
+   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.7.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.7"/>
 </site>
