@@ -7,7 +7,10 @@ Bundle-Version: 1.0.6
 Bundle-Activator: de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.apache.commons.lang
+ org.apache.commons.lang,
+ org.apache.commons.httpclient,
+ org.apache.commons.codec,
+ org.apache.commons.logging
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
@@ -17,7 +20,8 @@ Bundle-ClassPath: .,
  lib/runtime/jorbis.jar,
  lib/runtime/mp3spi.jar,
  lib/runtime/tritonus_share.jar,
- lib/runtime/vorbisspi.jar
+ lib/runtime/vorbisspi.jar,
+ lib/json-simple.jar
 Export-Package: com.jcraft.jogg,
  com.jcraft.jorbis,
  de.fips.plugin.tinyaudioplayer,
@@ -35,6 +39,8 @@ Export-Package: com.jcraft.jogg,
  javazoom.spi.mpeg.sampled.file.tag,
  javazoom.spi.vorbis.sampled.convert,
  javazoom.spi.vorbis.sampled.file,
+ org.json.simple,
+ org.json.simple.parser,
  org.kc7bfi.jflac,
  org.kc7bfi.jflac.apps,
  org.kc7bfi.jflac.frame,

@@ -72,6 +72,14 @@
              commandId="de.fips.plugin.tinyaudioplayer.export"
              style="push">
        </command>
+       <separator
+             name="toolbar:de.fips.plugin.tinyaudioplayer.view.playlist.separator"
+             visible="true">
+       </separator>
+       <command
+             commandId="de.fips.plugin.tinyaudioplayer.importsoundcloud"
+             style="push">
+       </command>
     </menuContribution>
   </extension>
   <extension point="org.eclipse.ui.commands">
@@ -124,6 +132,11 @@
           defaultHandler="de.fips.plugin.tinyaudioplayer.handler.ExportHandler"
           id="de.fips.plugin.tinyaudioplayer.export"
           name="Export Playlist">
+    </command>
+    <command
+          defaultHandler="de.fips.plugin.tinyaudioplayer.handler.ImportSoundcloudHandler"
+          id="de.fips.plugin.tinyaudioplayer.importsoundcloud"
+          name="Import from Soundcloud">
     </command>
   </extension>
   <extension point="org.eclipse.ui.commandImages">
@@ -187,6 +200,10 @@
           commandId="de.fips.plugin.tinyaudioplayer.import"
           icon="icons/16px-import.png">
     </image>
+    <image
+          commandId="de.fips.plugin.tinyaudioplayer.importsoundcloud"
+          icon="icons/16px-soundcloud.png">
+    </image>
   </extension>
   <extension point="org.eclipse.ui.themes">
      <themeElementCategory
@@ -248,7 +265,7 @@
         point="org.eclipse.ui.views">
      <view
            category="de.fips.plugin.tinyaudioplayer.view.tinyaudioplayer.category"
-           class="de.fips.plugin.tinyaudioplayer.view.PlaylistView"
+           class="de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistView"
            icon="icons/16px-start-disabled.png"
            id="de.fips.plugin.tinyaudioplayer.view.playlist"
            name="Playlist">

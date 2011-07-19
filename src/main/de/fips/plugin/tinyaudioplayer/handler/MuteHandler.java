@@ -34,7 +34,7 @@ import org.eclipse.ui.menus.UIElement;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
-public class MuteHandler extends AbstractHandler implements IElementUpdater {
+public final class MuteHandler extends AbstractHandler implements IElementUpdater {
 	private String commandId;
 
 	@Override

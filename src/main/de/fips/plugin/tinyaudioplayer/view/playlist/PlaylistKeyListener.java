@@ -19,33 +19,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package de.fips.plugin.tinyaudioplayer.view;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
-import org.eclipse.jface.viewers.TableViewer;
+import lombok.RequiredArgsConstructor;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
-public class PlaylistView extends ViewPart {
-	private TableViewer viewer;
-
-	@Override
-	public void createPartControl(final Composite parent) {
-		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-		viewer.addDoubleClickListener(new PlaylistViewDoubleClickListener(player));
-		viewer.addSelectionChangedListener(new PlaylistViewSelectionChangedListener(player));
-		viewer.setContentProvider(new PlaylistContentProvider());
-		viewer.setLabelProvider(new PlaylistItemLabelProvider(player));
-		viewer.getTable().addKeyListener(new PlaylistViewKeyListener(player));
-		viewer.setInput(player.getPlaylist());
-	}
+@RequiredArgsConstructor
+public class PlaylistKeyListener extends KeyAdapter {
+	private final TinyAudioPlayer player;
 
 	@Override
-	public void setFocus() {
-		viewer.getControl().setFocus();
+	public void keyPressed(KeyEvent e) {
+		if ((e.keyCode == SWT.DEL) || (e.keyCode == SWT.BS)) {
+			player.removeSelected();
+		}
 	}
 }

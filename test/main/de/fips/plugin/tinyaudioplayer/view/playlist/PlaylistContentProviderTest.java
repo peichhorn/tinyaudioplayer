@@ -1,4 +1,4 @@
-package de.fips.plugin.tinyaudioplayer.view;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -14,6 +14,7 @@ import org.mockito.InOrder;
 import de.fips.plugin.tinyaudioplayer.audio.IPlaylistListener;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistContentProvider;
 
 public class PlaylistContentProviderTest {
 

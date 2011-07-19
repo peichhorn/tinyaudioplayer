@@ -19,30 +19,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package de.fips.plugin.tinyaudioplayer.view;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
-import lombok.RequiredArgsConstructor;
-
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.ViewPart;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
-import de.fips.plugin.tinyaudioplayer.audio.Playlist;
-import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
-@RequiredArgsConstructor
-public class PlaylistViewDoubleClickListener implements IDoubleClickListener {
-	private final TinyAudioPlayer player;
+public class PlaylistView extends ViewPart {
+	private TableViewer viewer;
 
 	@Override
-	public void doubleClick(final DoubleClickEvent event) {
-		final Playlist playlist = player.getPlaylist();
-		if (!playlist.isEmpty()) {
-			final StructuredSelection selection = (StructuredSelection)event.getSelection();
-			playlist.setCurrentTrack((PlaylistItem)selection.getFirstElement());
-			player.play();
-			event.getViewer().refresh();
-		}
+	public void createPartControl(final Composite parent) {
+		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		viewer.addDoubleClickListener(new PlaylistDoubleClickListener(player));
+		viewer.addSelectionChangedListener(new PlaylistSelectionChangedListener(player));
+		viewer.setContentProvider(new PlaylistContentProvider());
+		viewer.setLabelProvider(new PlaylistItemLabelProvider(player));
+		viewer.getTable().addKeyListener(new PlaylistKeyListener(player));
+		viewer.setInput(player.getPlaylist());
+	}
+
+	@Override
+	public void setFocus() {
+		viewer.getControl().setFocus();
 	}
 }

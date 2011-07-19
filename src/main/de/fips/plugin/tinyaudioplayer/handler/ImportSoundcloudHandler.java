@@ -19,31 +19,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package de.fips.plugin.tinyaudioplayer.view;
+package de.fips.plugin.tinyaudioplayer.handler;
 
-import lombok.RequiredArgsConstructor;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-import org.eclipse.jface.viewers.StyledCellLabelProvider;
-import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.swt.graphics.Color;
+import de.fips.plugin.tinyaudioplayer.wizards.soundcloud.SoundCloudWizard;
 
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
-import de.fips.plugin.tinyaudioplayer.audio.Playlist;
-import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
-
-@RequiredArgsConstructor
-public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
-	private final TinyAudioPlayer player;
+public final class ImportSoundcloudHandler extends AbstractHandler {
 
 	@Override
-	public void update(final ViewerCell cell) {
-		final PlaylistItem item = (PlaylistItem)cell.getElement();
-		cell.setText(item.getDisplayableName());
-		final Playlist playlist = player.getPlaylist();
-		if (!playlist.isEmpty() && (item.equals(playlist.getCurrentTrack()))) {
-			cell.setBackground(new Color(null, 225, 225, 225));
-		} else {
-			cell.setBackground(new Color(null, 255, 255, 255));
-		}
+	public Object execute(final ExecutionEvent event) throws ExecutionException {
+		SoundCloudWizard wizard = new SoundCloudWizard();
+		WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShell(event), wizard);
+		dialog.open();
+		return null;
 	}
 }

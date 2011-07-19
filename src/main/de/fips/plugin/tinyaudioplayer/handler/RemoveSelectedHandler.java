@@ -27,7 +27,7 @@ import org.eclipse.core.commands.ExecutionException;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
-public class RemoveSelectedHandler extends AbstractHandler {
+public final class RemoveSelectedHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {

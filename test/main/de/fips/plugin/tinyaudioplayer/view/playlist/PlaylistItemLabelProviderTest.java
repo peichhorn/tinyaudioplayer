@@ -1,4 +1,4 @@
-package de.fips.plugin.tinyaudioplayer.view;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -12,6 +12,7 @@ import org.junit.Test;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistItemLabelProvider;
 
 public class PlaylistItemLabelProviderTest {
 	@Test

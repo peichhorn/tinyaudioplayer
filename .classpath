@@ -4,6 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/main"/>
 	<classpathentry kind="src" path="test/main"/>
+	<classpathentry exported="true" kind="lib" path="lib/json-simple.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jflac.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/runtime/jogg.jar"/>

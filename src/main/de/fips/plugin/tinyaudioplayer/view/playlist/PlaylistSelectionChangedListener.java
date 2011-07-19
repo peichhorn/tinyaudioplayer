@@ -19,19 +19,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package de.fips.plugin.tinyaudioplayer.handler;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import java.util.List;
 
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+import lombok.RequiredArgsConstructor;
 
-public final class ShuffleHandler extends AbstractHandler {
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
+import de.fips.plugin.tinyaudioplayer.audio.Playlist;
+import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+
+@RequiredArgsConstructor
+public class PlaylistSelectionChangedListener implements ISelectionChangedListener {
+	private final TinyAudioPlayer player;
 
 	@Override
-	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		TinyAudioPlayerPlugin.getDefaultPlayer().toggleShuffle();
-		return null;
+	public void selectionChanged(SelectionChangedEvent event) {
+		final Playlist playlist = player.getPlaylist();
+		if (!playlist.isEmpty()) {
+			final StructuredSelection selection = (StructuredSelection)event.getSelection();
+			@SuppressWarnings("unchecked")
+			List<PlaylistItem> selectedItems = selection.toList();
+			playlist.selectTracks(selectedItems);
+		}
 	}
 }

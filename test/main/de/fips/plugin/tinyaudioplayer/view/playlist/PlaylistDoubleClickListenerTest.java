@@ -1,4 +1,4 @@
-package de.fips.plugin.tinyaudioplayer.view;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -14,8 +14,9 @@ import org.mockito.InOrder;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistDoubleClickListener;
 
-public class PlaylistViewDoubleClickListenerTest {
+public class PlaylistDoubleClickListenerTest {
 
 	@Test
 	public void whenInvoked_doubleClick_shouldPlaySelectedTrack() throws Exception {
@@ -27,7 +28,7 @@ public class PlaylistViewDoubleClickListenerTest {
 		final Viewer viewer = mock(Viewer.class);
 		final PlaylistItem newTrack = mock(PlaylistItem.class);
 		final DoubleClickEvent event = new DoubleClickEvent(viewer, new StructuredSelection(newTrack));
-		final PlaylistViewDoubleClickListener listener = new PlaylistViewDoubleClickListener(player);
+		final PlaylistDoubleClickListener listener = new PlaylistDoubleClickListener(player);
 		final InOrder inorder = inOrder(playlist, player, viewer);
 		// run
 		listener.doubleClick(event);

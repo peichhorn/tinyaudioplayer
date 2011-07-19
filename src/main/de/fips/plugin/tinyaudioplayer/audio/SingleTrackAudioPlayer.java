@@ -81,8 +81,8 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	public void stop() {
 		if (line != null) {
 			runUnpause();
-			line.flush();
 			line.stop();
+			line.flush();
 			line.close();
 			line = null;
 		}

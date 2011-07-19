@@ -1,4 +1,4 @@
-package de.fips.plugin.tinyaudioplayer.view;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Matchers.*;
@@ -14,9 +14,10 @@ import org.junit.Test;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistSelectionChangedListener;
 
 
-public class PlaylistViewSelectionChangedListenerTest {
+public class PlaylistSelectionChangedListenerTest {
 	@Test
 	public void whenInvoked_selectionChanged_shouldSelectTracksInPlaylist() throws Exception {
 		// setup
@@ -27,7 +28,7 @@ public class PlaylistViewSelectionChangedListenerTest {
 		final Viewer viewer = mock(Viewer.class);
 		final List<PlaylistItem> selectedTracks = asList(mock(PlaylistItem.class), mock(PlaylistItem.class));
 		final SelectionChangedEvent event = new SelectionChangedEvent(viewer, new StructuredSelection(selectedTracks));
-		final PlaylistViewSelectionChangedListener listener = new PlaylistViewSelectionChangedListener(player);
+		final PlaylistSelectionChangedListener listener = new PlaylistSelectionChangedListener(player);
 		// run
 		listener.selectionChanged(event);
 		// assert

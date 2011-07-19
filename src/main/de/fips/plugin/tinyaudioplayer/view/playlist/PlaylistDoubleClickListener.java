@@ -19,19 +19,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package de.fips.plugin.tinyaudioplayer.handler;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import lombok.RequiredArgsConstructor;
 
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 
-public final class ShuffleHandler extends AbstractHandler {
+import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
+import de.fips.plugin.tinyaudioplayer.audio.Playlist;
+import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+
+@RequiredArgsConstructor
+public class PlaylistDoubleClickListener implements IDoubleClickListener {
+	private final TinyAudioPlayer player;
 
 	@Override
-	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		TinyAudioPlayerPlugin.getDefaultPlayer().toggleShuffle();
-		return null;
+	public void doubleClick(final DoubleClickEvent event) {
+		final Playlist playlist = player.getPlaylist();
+		if (!playlist.isEmpty()) {
+			final StructuredSelection selection = (StructuredSelection)event.getSelection();
+			playlist.setCurrentTrack((PlaylistItem)selection.getFirstElement());
+			player.play();
+			event.getViewer().refresh();
+		}
 	}
 }

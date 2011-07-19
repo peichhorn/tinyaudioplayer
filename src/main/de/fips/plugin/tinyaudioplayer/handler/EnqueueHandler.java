@@ -27,7 +27,7 @@ import org.eclipse.core.commands.ExecutionException;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
-public class EnqueueHandler extends AbstractHandler {
+public final class EnqueueHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {

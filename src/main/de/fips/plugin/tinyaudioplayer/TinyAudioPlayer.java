@@ -44,6 +44,7 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.http.SoundCloudPlaylistProvider;
 import de.fips.plugin.tinyaudioplayer.io.AudioFileReader;
 import de.fips.plugin.tinyaudioplayer.io.PlaylistReader;
 import de.fips.plugin.tinyaudioplayer.io.PlaylistWriter;
@@ -93,6 +94,13 @@ public class TinyAudioPlayer {
 
 	public void removeDuplicates() {
 		player.getPlaylist().removeDuplicates();
+	}
+
+	public void importFromSoundCloud() {
+		final Playlist newPlaylist = new SoundCloudPlaylistProvider().getPlaylistFor("daft punk too long");
+		if (newPlaylist != null) {
+			player.getPlaylist().add(newPlaylist);
+		}
 	}
 
 	@VisibleForTesting Playlist loadNewPlaylist() {

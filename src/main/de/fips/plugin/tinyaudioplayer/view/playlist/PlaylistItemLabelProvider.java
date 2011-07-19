@@ -19,32 +19,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package de.fips.plugin.tinyaudioplayer.view;
-
-import java.util.List;
+package de.fips.plugin.tinyaudioplayer.view.playlist;
 
 import lombok.RequiredArgsConstructor;
 
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.graphics.Color;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 @RequiredArgsConstructor
-public class PlaylistViewSelectionChangedListener implements ISelectionChangedListener {
+public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
 	private final TinyAudioPlayer player;
 
 	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
-		final Playlist playlist = player.getPlaylist();
-		if (!playlist.isEmpty()) {
-			final StructuredSelection selection = (StructuredSelection)event.getSelection();
-			@SuppressWarnings("unchecked")
-			List<PlaylistItem> selectedItems = selection.toList();
-			playlist.selectTracks(selectedItems);
+	public void update(final ViewerCell cell) {
+		final PlaylistItem item = (PlaylistItem)cell.getElement();
+		cell.setText(item.getDisplayableName());
+		if (player != null) {
+			final Playlist playlist = player.getPlaylist();
+			if (!playlist.isEmpty() && (item.equals(playlist.getCurrentTrack()))) {
+				cell.setBackground(new Color(null, 225, 225, 225));
+			} else {
+				cell.setBackground(new Color(null, 255, 255, 255));
+			}
 		}
 	}
 }
