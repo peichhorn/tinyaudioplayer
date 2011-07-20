@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Listener;
 
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.http.EclipseProxyConfiguration;
+import de.fips.plugin.tinyaudioplayer.http.IProxyConfiguration;
 import de.fips.plugin.tinyaudioplayer.http.SoundCloudPlaylistProvider;
 import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistContentProvider;
 import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistItemLabelProvider;
@@ -52,12 +54,17 @@ public class FilterResultsPage extends WizardPage {
 	private Button nextPageButton;
 	private Label pageLabel;
 	private Composite container;
-	private final SoundCloudPlaylistProvider playlistProvider = new SoundCloudPlaylistProvider();
+	private final SoundCloudPlaylistProvider playlistProvider;
 
 	public FilterResultsPage() {
+		this(new EclipseProxyConfiguration());
+	}
+	
+	public FilterResultsPage(final IProxyConfiguration proxyConfiguration) {
 		super("filter.results");
 		setTitle("Filter Results");
 		setDescription("Select the tracks you want to import...");
+		playlistProvider = new SoundCloudPlaylistProvider().proxyConfiguration(proxyConfiguration);
 	}
 
 	private void updateTableViewer(int page) {

@@ -40,6 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.Cleanup;
+import lombok.FluentSetter;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -96,9 +97,12 @@ public class SoundCloudPlaylistProvider {
 	private final String SOUNDCLOUD_SEARCH_QUERY = "http://soundcloud.com/search?page={0}&q%5Bfulltext%5D={1}";
 	private final int BUFFER_SIZE = 65536;
 	
-	private Map<String, String> pageCache = new Cache<String, String>(30);
-	private Map<String, Playlist> playlistCache = new Cache<String, Playlist>(30);
-	private Map<String, Integer> numberOfPagesCache = new Cache<String, Integer>(30);
+	private final Map<URI, String> pageCache = new Cache<URI, String>(30);
+	private final Map<URI, Playlist> playlistCache = new Cache<URI, Playlist>(30);
+	private final Map<String, Integer> numberOfPagesCache = new Cache<String, Integer>(30);
+	
+	@FluentSetter
+	private IProxyConfiguration proxyConfiguration;
 
 	public Playlist getPlaylistFor(final String searchText) {
 		return getPlaylistFor(searchText, 1);
@@ -107,15 +111,18 @@ public class SoundCloudPlaylistProvider {
 	public Playlist getPlaylistFor(final String searchText, final int pageNumber) {
 		if ((searchText == null) || searchText.isEmpty()) return new Playlist();
 		if ((pageNumber < 1) || (pageNumber > getNumberOfPagesFor(searchText))) return new Playlist();
-		final String queryURI = MessageFormat.format(SOUNDCLOUD_SEARCH_QUERY, pageNumber, toSearchString(searchText));
-		final Playlist cachedPlaylist = playlistCache.get(queryURI);
-		if (cachedPlaylist != null) {
-			return cachedPlaylist.clone();
+		final Playlist playlist = new Playlist();
+		final URI queryURI = getSearchQueryURIFor(searchText, pageNumber);
+		if (queryURI != null) {
+			final Playlist cachedPlaylist = playlistCache.get(queryURI);
+			if (cachedPlaylist != null) {
+				return cachedPlaylist.clone();
+			}
+			final String soundCloudPage = getSoundCloudPageFor(queryURI);
+			final List<String> bufferTracksAsJSON = getBufferTracksAsJSON(soundCloudPage);
+			playlist.add(asPlaylist(bufferTracksAsJSON));
+			playlistCache.put(queryURI, playlist);
 		}
-		final String soundCloudPage = getSoundCloudPageFor(queryURI);
-		final List<String> bufferTracksAsJSON = getBufferTracksAsJSON(soundCloudPage);
-		final Playlist playlist = asPlaylist(bufferTracksAsJSON);
-		playlistCache.put(queryURI, playlist);
 		return playlist.clone();
 	}
 
@@ -125,27 +132,39 @@ public class SoundCloudPlaylistProvider {
 		if (cachedNumberOfPages != null) {
 			return cachedNumberOfPages;
 		}
-		final String queryURI = MessageFormat.format(SOUNDCLOUD_SEARCH_QUERY, 1, toSearchString(searchText));
-		String regexp = MessageFormat.format(NUMBER_OF_PAGES_REGEXP, toSearchString(searchText));
-		final String soundCloudPage = getSoundCloudPageFor(queryURI);
-		final Pattern pattern = Pattern.compile(regexp);
-		final Matcher matcher = pattern.matcher(soundCloudPage);
 		int numberOfPagesFor = 1;
-		while(matcher.find()) {
-			numberOfPagesFor = Math.max(numberOfPagesFor, Integer.valueOf(matcher.group(1)));
+		final URI queryURI = getSearchQueryURIFor(searchText, 1);
+		if (queryURI != null) {
+			String regexp = MessageFormat.format(NUMBER_OF_PAGES_REGEXP, toSearchString(searchText));
+			final String soundCloudPage = getSoundCloudPageFor(queryURI);
+			final Pattern pattern = Pattern.compile(regexp);
+			final Matcher matcher = pattern.matcher(soundCloudPage);
+			while(matcher.find()) {
+				numberOfPagesFor = Math.max(numberOfPagesFor, Integer.valueOf(matcher.group(1)));
+			}
+			numberOfPagesCache.put(searchText, cachedNumberOfPages);
 		}
-		numberOfPagesCache.put(searchText, cachedNumberOfPages);
 		return numberOfPagesFor;
 	}
+	
+	private URI getSearchQueryURIFor(final String searchText, final int pageNumber) {
+		try {
+			return new URI(MessageFormat.format(SOUNDCLOUD_SEARCH_QUERY, pageNumber, toSearchString(searchText)));
+		} catch (URISyntaxException e) {
+			return null;
+		}
+	}
 
-	private String getSoundCloudPageFor(final String queryURI) {
+	private String getSoundCloudPageFor(final URI queryURI) {
 		final String cachedPage = pageCache.get(queryURI);
 		if (cachedPage != null) {
 			return cachedPage;
 		}
 		HttpClient client = new HttpClient();
 		try {
-			@Cleanup("releaseConnection") HttpMethod method = new GetMethod(queryURI);
+			if (proxyConfiguration != null) proxyConfiguration.setupProxyFor(client.getHostConfiguration(), queryURI);
+			
+			@Cleanup("releaseConnection") HttpMethod method = new GetMethod(queryURI.toString());
 			client.executeMethod(method);
 			if (method.getStatusCode() == HttpStatus.SC_OK) {
 				@Cleanup InputStream response = method.getResponseBodyAsStream();
