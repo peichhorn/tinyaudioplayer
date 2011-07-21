@@ -54,17 +54,14 @@ public class PlaylistItemTagFactory {
 	public PlaylistItemTag formURI(final URI uri) {
 		PlaylistItemTag tag = null;
 		try {
-			AudioFileFormat aff = AudioSystem.getAudioFileFormat(uri.toURL());
-			try {
-				aff = AudioSystem.getAudioFileFormat(new File(uri));
-			} catch (IllegalArgumentException ignore) {
-				// File(URI) preconditions did not hold
-			}
+			AudioFileFormat aff = AudioSystem.getAudioFileFormat(new File(uri));
 			final String type = aff.getType().toString().toLowerCase();
 			final IPlaylistItemTagBuilder tagBuilder = builder.get(type);
 			if (tagBuilder != null) {
 				tag = tagBuilder.fromAudioFileFormat(aff);
 			}
+		} catch (IllegalArgumentException ignore) {
+			// File(URI) preconditions did not hold
 		} catch (UnsupportedAudioFileException ignore) {
 		} catch (IOException ignore) {
 		}

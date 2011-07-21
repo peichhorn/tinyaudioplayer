@@ -33,8 +33,8 @@ public final class ImportSoundcloudHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		SoundCloudWizard wizard = new SoundCloudWizard();
-		WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShell(event), wizard);
+		final SoundCloudWizard wizard = new SoundCloudWizard();
+		final WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShell(event), wizard);
 		dialog.open();
 		return null;
 	}

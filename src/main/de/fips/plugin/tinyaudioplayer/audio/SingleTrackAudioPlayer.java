@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.audio;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
@@ -171,7 +172,12 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	private AudioInputStream getEncodeAudioInputStream() {
 		AudioInputStream encodedAudioInputStream = null;
 		try {
-			encodedAudioInputStream = AudioSystem.getAudioInputStream(location.toURL());
+			try {
+				encodedAudioInputStream = AudioSystem.getAudioInputStream(new File(location));
+			} catch(IllegalArgumentException ignore) {
+				// File(URI) preconditions did not hold
+				encodedAudioInputStream = AudioSystem.getAudioInputStream(location.toURL());
+			}
 		} catch (UnsupportedAudioFileException e) {
 			TinyAudioPlayerPlugin.logErr("Filetype of '%s' not supported!", location);
 		} catch (IOException e) {

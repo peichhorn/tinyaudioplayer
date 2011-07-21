@@ -22,7 +22,6 @@ THE SOFTWARE.
 package de.fips.plugin.tinyaudioplayer.http;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.UnsupportedEncodingException;
@@ -61,15 +60,15 @@ public class URIBuilder {
 	@FluentSetter
 	private String encoding = "UTF-8";
 
-	public URIBuilder setURI(URI url) {
-		return setURI(url.toString());
+	public URIBuilder setURI(URI uri) {
+		return setURI(uri.toString());
 	}
 
-	public URIBuilder setURI(String url) {
-		if (url == null || url.isEmpty()) {
+	public URIBuilder setURI(String uri) {
+		if (uri == null || uri.isEmpty()) {
 			urlWithoutParameters = "";
 		} else {
-			StringTokenizer tokenizerQueryString = new StringTokenizer(url, "?");
+			StringTokenizer tokenizerQueryString = new StringTokenizer(uri, "?");
 			urlWithoutParameters = tokenizerQueryString.nextToken();
 			if (tokenizerQueryString.hasMoreTokens()) {
 				String queryString = tokenizerQueryString.nextToken();
@@ -104,15 +103,15 @@ public class URIBuilder {
 	public URIBuilder addBeanParameters(Object obj) {
 		try {
 			Class<?> beanClass = obj.getClass();
-			BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
+			BeanInfo beanInfo = Introspector.getBeanInfo(beanClass, Object.class);
 			PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
 			for (PropertyDescriptor descriptor : descriptors) {
 				if (descriptor.isHidden()) continue;
 				String name = descriptor.getName();
-				Object value = descriptor.createPropertyEditor(obj).getValue();
+				Object value = descriptor.getReadMethod().invoke(obj);
 				addParameter(name, value.toString());
 			}
-		} catch (IntrospectionException e) {
+		} catch (Exception e) {
 			// to bad then
 		}
 		return this;
@@ -147,12 +146,14 @@ public class URIBuilder {
 
 	public String toString() {
 		StringBuilder queryString = new StringBuilder();
+		queryString.append(urlWithoutParameters);
 		boolean firstTime = true;
 		for (Map.Entry<String, String> parameter : parameters.entrySet()) {
 			if (RESTRICTED.contains(parameter.getKey())) continue;
 			if (parameter.getKey().isEmpty()) continue;
 			if (firstTime) {
 				firstTime = false;
+				queryString.append("?");
 			} else {
 				queryString.append("&");
 			}
@@ -160,11 +161,6 @@ public class URIBuilder {
 			queryString.append("=");
 			queryString.append(parameter.getValue());
 		}
-		if (queryString.length() > 0) {
-			queryString.insert(0, '?');
-			queryString.insert(0, urlWithoutParameters);
-			return queryString.toString();
-		}
-		return urlWithoutParameters;
+		return queryString.toString();
 	}
 }

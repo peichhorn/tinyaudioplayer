@@ -64,6 +64,10 @@
              commandId="de.fips.plugin.tinyaudioplayer.enqueue"
              style="push">
        </command>
+       <separator
+             name="de.fips.plugin.tinyaudioplayer.view.playlist.separator1"
+             visible="true">
+       </separator>
        <command
              commandId="de.fips.plugin.tinyaudioplayer.import"
              style="push">
@@ -73,7 +77,7 @@
              style="push">
        </command>
        <separator
-             name="toolbar:de.fips.plugin.tinyaudioplayer.view.playlist.separator"
+             name="de.fips.plugin.tinyaudioplayer.view.playlist.separator2"
              visible="true">
        </separator>
        <command
@@ -272,6 +276,20 @@
      </view>
      <category
            id="de.fips.plugin.tinyaudioplayer.view.tinyaudioplayer.category"
+           name="TinyAudioplayer">
+     </category>
+  </extension>
+  <extension
+        point="org.eclipse.ui.importWizards">
+     <wizard
+           category="de.fips.plugin.tinyaudioplayer.wizard.tinyaudioplayer.category"
+           class="de.fips.plugin.tinyaudioplayer.wizards.soundcloud.SoundCloudWizard"
+           icon="icons/16px-soundcloud.png"
+           id="de.fips.plugin.tinyaudioplayer.wizard.soundcloud"
+           name="Import from Soundcloud">
+     </wizard>
+     <category
+           id="de.fips.plugin.tinyaudioplayer.wizard.tinyaudioplayer.category"
            name="TinyAudioplayer">
      </category>
   </extension>

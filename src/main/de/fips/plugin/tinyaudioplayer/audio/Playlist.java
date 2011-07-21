@@ -82,6 +82,12 @@ public class Playlist implements Iterable<PlaylistItem>, Cloneable {
 		return 0;
 	}
 
+	public void add(final List<PlaylistItem> tracks) {
+		for (PlaylistItem track : tracks) {
+			add(track);
+		}
+	}
+	
 	public void add(final PlaylistItem track) {
 		tracks.add(track);
 		if (currentIndex < 0) {
@@ -100,13 +106,6 @@ public class Playlist implements Iterable<PlaylistItem>, Cloneable {
 
 	public void removeCurrent() {
 		remove(currentIndex);
-	}
-	
-	public void invertSelection() {
-		final List<PlaylistItem> newSelectedTracks = new ArrayList<PlaylistItem>(tracks);
-		newSelectedTracks.removeAll(selectedTracks);
-		selectedTracks.clear();
-		selectedTracks.addAll(newSelectedTracks);
 	}
 
 	public void removeSelected() {

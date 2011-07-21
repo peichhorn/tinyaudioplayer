@@ -54,7 +54,7 @@ import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 /**
- * Let's assume that this is the soundcloud json-api:
+ * Let's assume that this is the json-api of the soundcloud player:
  * <pre>
  * {
  *   "id" : 7566583,
@@ -93,13 +93,11 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 */
 public class SoundCloudPlaylistProvider {
 	private final String BUFFER_TRACKS_JSON_REGEXP = "<script type=\"text/javascript\">\\s*window.SC.bufferTracks.push\\((.*)\\);\\s*</script>";
-	private final String NUMBER_OF_PAGES_REGEXP = "/tracks/search\\?page=(\\d*)\\&amp;q%5Bfulltext%5D={0}";
+	private final String NUMBER_OF_PAGES_REGEXP = "/tracks/search\\?page=(\\d*)\\&";
 	private final String SOUNDCLOUD_SEARCH_QUERY = "http://soundcloud.com/search?page={0}&q%5Bfulltext%5D={1}";
 	private final int BUFFER_SIZE = 65536;
 	
 	private final Map<URI, String> pageCache = new Cache<URI, String>(30);
-	private final Map<URI, Playlist> playlistCache = new Cache<URI, Playlist>(30);
-	private final Map<String, Integer> numberOfPagesCache = new Cache<String, Integer>(30);
 	
 	@FluentSetter
 	private IProxyConfiguration proxyConfiguration;
@@ -114,35 +112,24 @@ public class SoundCloudPlaylistProvider {
 		final Playlist playlist = new Playlist();
 		final URI queryURI = getSearchQueryURIFor(searchText, pageNumber);
 		if (queryURI != null) {
-			final Playlist cachedPlaylist = playlistCache.get(queryURI);
-			if (cachedPlaylist != null) {
-				return cachedPlaylist.clone();
-			}
 			final String soundCloudPage = getSoundCloudPageFor(queryURI);
 			final List<String> bufferTracksAsJSON = getBufferTracksAsJSON(soundCloudPage);
 			playlist.add(asPlaylist(bufferTracksAsJSON));
-			playlistCache.put(queryURI, playlist);
 		}
 		return playlist.clone();
 	}
 
 	public int getNumberOfPagesFor(final String searchText) {
 		if ((searchText == null) || searchText.isEmpty()) return 1;
-		final Integer cachedNumberOfPages = numberOfPagesCache.get(searchText);
-		if (cachedNumberOfPages != null) {
-			return cachedNumberOfPages;
-		}
 		int numberOfPagesFor = 1;
 		final URI queryURI = getSearchQueryURIFor(searchText, 1);
 		if (queryURI != null) {
-			String regexp = MessageFormat.format(NUMBER_OF_PAGES_REGEXP, toSearchString(searchText));
 			final String soundCloudPage = getSoundCloudPageFor(queryURI);
-			final Pattern pattern = Pattern.compile(regexp);
+			final Pattern pattern = Pattern.compile(NUMBER_OF_PAGES_REGEXP);
 			final Matcher matcher = pattern.matcher(soundCloudPage);
 			while(matcher.find()) {
 				numberOfPagesFor = Math.max(numberOfPagesFor, Integer.valueOf(matcher.group(1)));
 			}
-			numberOfPagesCache.put(searchText, cachedNumberOfPages);
 		}
 		return numberOfPagesFor;
 	}
