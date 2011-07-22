@@ -14,12 +14,27 @@ import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistKeyListener;
 
 public class PlaylistKeyListenerTest {
 	@Test
-	public void whenInvoked_selectionChanged_shouldSelectTracksInPlaylist() throws Exception {
+	public void whenInvokedWithDeleteKey_keyPressed_shouldRemoveSelectedTracksInPlayer() throws Exception {
 		// setup
 		final TinyAudioPlayer player = mock(TinyAudioPlayer.class);
 		final Event event = new Event();
 		event.widget = mock(Widget.class);
 		event.keyCode = SWT.DEL;
+		final KeyEvent keyEvent = new KeyEvent(event);
+		final PlaylistKeyListener listener = new PlaylistKeyListener(player);
+		// run
+		listener.keyPressed(keyEvent);
+		// assert
+		verify(player).removeSelected();
+	}
+
+	@Test
+	public void whenInvokedWithBackspaceKey_keyPressed_shouldRemoveSelectedTracksInPlayer() throws Exception {
+		// setup
+		final TinyAudioPlayer player = mock(TinyAudioPlayer.class);
+		final Event event = new Event();
+		event.widget = mock(Widget.class);
+		event.keyCode = SWT.BS;
 		final KeyEvent keyEvent = new KeyEvent(event);
 		final PlaylistKeyListener listener = new PlaylistKeyListener(player);
 		// run

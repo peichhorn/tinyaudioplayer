@@ -83,19 +83,21 @@ public class Playlist implements Iterable<PlaylistItem>, Cloneable {
 	}
 
 	public void add(final List<PlaylistItem> tracks) {
-		for (PlaylistItem track : tracks) {
+		if (tracks != null) for (PlaylistItem track : tracks) {
 			add(track);
 		}
 	}
 	
 	public void add(final PlaylistItem track) {
-		tracks.add(track);
-		if (currentIndex < 0) {
-			currentIndex = 0;
-			fireTrackEnqueued(track);
-			fireTrackChanged(track);
-		} else {
-			fireTrackEnqueued(track);
+		if (tracks != null) {
+			tracks.add(track);
+			if (currentIndex < 0) {
+				currentIndex = 0;
+				fireTrackEnqueued(track);
+				fireTrackChanged(track);
+			} else {
+				fireTrackEnqueued(track);
+			}
 		}
 	}
 

@@ -1,13 +1,9 @@
 package de.fips.plugin.tinyaudioplayer.io;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.File;
 import java.io.StringReader;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.Rule;
@@ -43,7 +39,7 @@ public class TextLinesTest {
 		final StringReader reader = new StringReader("");
 		final TextLines lines = TextLines.textLinesIn(reader).ignoringEmptyLines();
 		// run + assert
-		assertFalse(lines.hasNext());
+		assertThat(lines.hasNext()).isFalse();
 		thrown.expect(NoSuchElementException.class);
 		lines.next();
 	}
@@ -53,13 +49,8 @@ public class TextLinesTest {
 		// setup
 		final StringReader reader = new StringReader("a\nb\n\nc");
 		final TextLines lines = TextLines.textLinesIn(reader);
-		final List<String> allExpected = asList("a", "b", "", "c");
 		// run + assert
-		for (String expected : allExpected) {
-			assertTrue(lines.hasNext());
-			assertEquals(expected, lines.next());
-		}
-		assertFalse(lines.hasNext());
+		assertThat(lines.iterator()).containsOnly("a", "b", "", "c");
 	}
 
 	@Test
@@ -67,12 +58,7 @@ public class TextLinesTest {
 		// setup
 		final StringReader reader = new StringReader("a\nb\n\nc");
 		final TextLines lines = TextLines.textLinesIn(reader).ignoringEmptyLines();
-		final List<String> allExpected = asList("a", "b", "c");
 		// run + assert
-		for (String expected : allExpected) {
-			assertTrue(lines.hasNext());
-			assertEquals(expected, lines.next());
-		}
-		assertFalse(lines.hasNext());
+		assertThat(lines.iterator()).containsOnly("a", "b", "c");
 	}
 }

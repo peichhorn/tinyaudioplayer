@@ -1,15 +1,13 @@
 package de.fips.plugin.tinyaudioplayer.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static de.fips.plugin.tinyaudioplayer.assertions.Assertions.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.File;
 
 import org.junit.Test;
 
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
-import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 public class AudioFileReaderTest {
 	@Test
@@ -17,9 +15,9 @@ public class AudioFileReaderTest {
 		// setup
 		final AudioFileReader reader = new AudioFileReader();
 		// run + assert
-		assertEquals("Audio File", reader.formatName());
-		assertEquals("*.mp3;*.ogg;*.wav", reader.formatExtensions());
-		assertEquals("Audio File (*.mp3;*.ogg;*.wav)", reader.completeFormatName());
+		assertThat(reader.formatName()).isEqualTo("Audio File");
+		assertThat(reader.formatExtensions()).isEqualTo("*.mp3;*.ogg;*.wav");
+		assertThat(reader.completeFormatName()).isEqualTo("Audio File (*.mp3;*.ogg;*.wav)");
 	}
 
 	@Test
@@ -27,7 +25,7 @@ public class AudioFileReaderTest {
 		// setup
 		final AudioFileReader reader = new AudioFileReader();
 		// run + assert
-		assertTrue(reader.canHandle(new File("test.mp3")));
+		assertThat(reader.canHandle(new File("test.mp3"))).isTrue();
 	}
 
 	@Test
@@ -35,7 +33,7 @@ public class AudioFileReaderTest {
 		// setup
 		final AudioFileReader reader = new AudioFileReader();
 		// run + assert
-		assertTrue(reader.canHandle(new File("test.ogg")));
+		assertThat(reader.canHandle(new File("test.ogg"))).isTrue();
 	}
 
 	@Test
@@ -43,7 +41,7 @@ public class AudioFileReaderTest {
 		// setup
 		final AudioFileReader reader = new AudioFileReader();
 		// run + assert
-		assertTrue(reader.canHandle(new File("test.wav")));
+		assertThat(reader.canHandle(new File("test.wav"))).isTrue();
 	}
 
 	@Test
@@ -51,51 +49,52 @@ public class AudioFileReaderTest {
 		// setup
 		final AudioFileReader reader = new AudioFileReader();
 		// run + assert
-		assertFalse(reader.canHandle(new File("test.xml")));
+		assertThat(reader.canHandle(new File("test.xml"))).isFalse();
 	}
 
 	@Test
 	public void whenInvokedWithMP3File_read_shouldCreateValidPlaylist() throws Exception {
 		// setup
-		final File testFile = new File(getClass().getResource("track.mp3").toURI());
+		final File testFile = file("track.mp3");
 		final AudioFileReader reader = new AudioFileReader();
 		// run
 		final Playlist playlist = reader.read(testFile);
 		// assert
-		assertEquals(1, playlist.size());
-		final PlaylistItem track1 = playlist.getNextTrack();
-		assertEquals("track", track1.getName());
-		assertEquals(testFile.toURI(), track1.getLocation());
-		assertEquals(0, track1.getLength());
+		assertThat(playlist).hasSize(1);
+		assertThat(playlist.getCurrentTrack()).hasName("track") //
+				.hasLocation(testFile) //
+				.hasLength(0);
 	}
 
 	@Test
 	public void whenInvokedWithWAVFile_read_shouldCreateValidPlaylist() throws Exception {
 		// setup
-		final File testFile = new File(getClass().getResource("track.wav").toURI());
+		final File testFile = file("track.wav");
 		final AudioFileReader reader = new AudioFileReader();
 		// run
 		final Playlist playlist = reader.read(testFile);
 		// assert
-		assertEquals(1, playlist.size());
-		final PlaylistItem track1 = playlist.getNextTrack();
-		assertEquals("track", track1.getName());
-		assertEquals(testFile.toURI(), track1.getLocation());
-		assertEquals(0, track1.getLength());
+		assertThat(playlist).hasSize(1);
+		assertThat(playlist.getCurrentTrack()).hasName("track") //
+				.hasLocation(testFile) //
+				.hasLength(0);
 	}
 
 	@Test
 	public void whenInvokedWithOGGFile_read_shouldCreateValidPlaylist() throws Exception {
 		// setup
-		final File testFile = new File(getClass().getResource("track.ogg").toURI());
+		final File testFile = file("track.ogg");
 		final AudioFileReader reader = new AudioFileReader();
 		// run
 		final Playlist playlist = reader.read(testFile);
 		// assert
-		assertEquals(1, playlist.size());
-		final PlaylistItem track1 = playlist.getNextTrack();
-		assertEquals("track", track1.getName());
-		assertEquals(testFile.toURI(), track1.getLocation());
-		assertEquals(0, track1.getLength());
+		assertThat(playlist).hasSize(1);
+		assertThat(playlist.getCurrentTrack()).hasName("track") //
+				.hasLocation(testFile) //
+				.hasLength(0);
+	}
+	
+	private File file(String path) throws Exception {
+		return new File(getClass().getResource(path).toURI());
 	}
 }

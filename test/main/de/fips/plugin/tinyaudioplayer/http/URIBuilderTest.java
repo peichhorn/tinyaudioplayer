@@ -1,6 +1,6 @@
 package de.fips.plugin.tinyaudioplayer.http;
 
-import static org.junit.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -14,14 +14,13 @@ public class URIBuilderTest {
 	@Test
 	public void testAddParameters() throws Exception {
 		// setup
-		final URI uri = new URI("http://doma.in/service?param1=42");
-		final URI expectedUri = new URI("http://doma.in/service?param1=42&param2=foo&param3=bar");
+		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
 		final Map<String, String> params = new HashMap<String, String>();
 		params.put("param2", "foo");
 		params.put("param3", "bar");
 		
 		// run + assert
-		assertEquals(expectedUri, new URIBuilder().setURI(uri).addParameters(params).toURI());
+		assertThat(builder.addParameters(params).toURI()).isEqualTo(new URI("http://doma.in/service?param1=42&param2=foo&param3=bar"));
 	}
 
 	@Test
@@ -31,37 +30,33 @@ public class URIBuilderTest {
 			private int foo = 21;
 			private String bar = "23";
 		}
-		final URI uri = new URI("http://doma.in/service?param1=42");
-		final URI expectedUri = new URI("http://doma.in/service?param1=42&foo=21&bar=23");
+		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
 		final DemoBean bean = new DemoBean();
-		
 		// run + assert
-		assertEquals(expectedUri, new URIBuilder().setURI(uri).addBeanParameters(bean).toURI());
+		assertThat(builder.addBeanParameters(bean).toString()).isEqualTo("http://doma.in/service?param1=42&foo=21&bar=23");
 	}
 
 	@Test
 	public void testAddParameter() {
 		// setup
-		final String uri = "http://doma.in/service?param1=42";
-		final String expectedUri = "http://doma.in/service?param1=42&param2=foo";
+		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
 		// run + assert
-		assertEquals(expectedUri, new URIBuilder().setURI(uri).addParameter("param2", "foo").toString());
+		assertThat(builder.addParameter("param2", "foo").toString()).isEqualTo("http://doma.in/service?param1=42&param2=foo");
 	}
 
 	@Test
 	public void testRemoveParameter() {
 		// setup
-		final String uri = "http://doma.in/service?param1=42";
-		final String expectedUri = "http://doma.in/service";
+		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
 		// run + assert
-		assertEquals(expectedUri, new URIBuilder().setURI(uri).removeParameter("param1").toString());
+		assertThat(builder.removeParameter("param1").toString()).isEqualTo("http://doma.in/service");
 	}
 
 	@Test
 	public void testGetParameter() {
 		// setup
-		final String uri = "http://doma.in/service?param1=42";
+		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
 		// run + assert
-		assertEquals("42", new URIBuilder().setURI(uri).getParameter("param1"));
+		assertThat(builder.getParameter("param1")).isEqualTo("42");
 	}
 }

@@ -1,7 +1,7 @@
 package de.fips.plugin.tinyaudioplayer.audio;
 
 import static de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag.playlistItemTag;
-import static org.junit.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -15,7 +15,7 @@ public class PlaylistItemTest {
 		// setup
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		// run + assert
-		assertEquals(-1, item1.getBitRate());
+		assertThat(item1.getBitRate()).isEqualTo(-1);
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class PlaylistItemTest {
 		final PlaylistItemTag tag1 = playlistItemTag().bitRate(192000).build();
 		doReturn(tag1).when(item1).getInfoTag();
 		// run + assert
-		assertEquals(192000, item1.getBitRate());
+		assertThat(item1.getBitRate()).isEqualTo(192000);
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class PlaylistItemTest {
 		// setup
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		// run + assert
-		assertEquals(-1, item1.getSampleRate());
+		assertThat(item1.getSampleRate()).isEqualTo(-1);
 	}
 
 	@Test
@@ -43,7 +43,7 @@ public class PlaylistItemTest {
 		final PlaylistItemTag tag1 = playlistItemTag().samplingRate(44100).build();
 		doReturn(tag1).when(item1).getInfoTag();
 		// run + assert
-		assertEquals(44100, item1.getSampleRate());
+		assertThat(item1.getSampleRate()).isEqualTo(44100);
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class PlaylistItemTest {
 		// setup
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		// run + assert
-		assertEquals(-1, item1.getChannels());
+		assertThat(item1.getChannels()).isEqualTo(-1);
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class PlaylistItemTest {
 		final PlaylistItemTag tag1 = playlistItemTag().channels(2).build();
 		doReturn(tag1).when(item1).getInfoTag();
 		// run + assert
-		assertEquals(2, item1.getChannels());
+		assertThat(item1.getChannels()).isEqualTo(2);
 	}
 
 	@Test
@@ -70,8 +70,8 @@ public class PlaylistItemTest {
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		final PlaylistItem item2 = new PlaylistItem("Track 2", uriOfTrack(), 0);
 		// run + assert
-		assertEquals("Track 1 (03:40)", item1.getDisplayableName());
-		assertEquals("Track 2", item2.getDisplayableName());
+		assertThat(item1.getDisplayableName()).isEqualTo("Track 1 (03:40)");
+		assertThat(item2.getDisplayableName()).isEqualTo("Track 2");
 	}
 
 	@Test
@@ -87,9 +87,9 @@ public class PlaylistItemTest {
 		doReturn(tag2).when(item2).getInfoTag();
 		doReturn(tag3).when(item3).getInfoTag();
 		// run + assert
-		assertEquals("Artist - Title (03:43)", item1.getDisplayableName());
-		assertEquals("Title without Artist (04:22)", item2.getDisplayableName());
-		assertEquals("Track 3 (03:56)", item3.getDisplayableName());
+		assertThat(item1.getDisplayableName()).isEqualTo("Artist - Title (03:43)");
+		assertThat(item2.getDisplayableName()).isEqualTo("Title without Artist (04:22)");
+		assertThat(item3.getDisplayableName()).isEqualTo("Track 3 (03:56)");
 	}
 
 	@Test
@@ -99,9 +99,9 @@ public class PlaylistItemTest {
 		final PlaylistItem item2 = new PlaylistItem("", uriOfTrack(), 5000);
 		final PlaylistItem item3 = new PlaylistItem("", uriOfTrack(), -1);
 		// run + assert
-		assertEquals("03:40", item1.getDisplayableLength());
-		assertEquals("1:23:20", item2.getDisplayableLength());
-		assertEquals("unknown", item3.getDisplayableLength());
+		assertThat(item1.getDisplayableLength()).isEqualTo("03:40");
+		assertThat(item2.getDisplayableLength()).isEqualTo("1:23:20");
+		assertThat(item3.getDisplayableLength()).isEqualTo("unknown");
 	}
 
 	private URI uriOfTrack() {

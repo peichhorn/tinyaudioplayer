@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 
 import lombok.Cleanup;
 import lombok.FluentSetter;
+import lombok.VisibleForTesting;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -134,15 +135,17 @@ public class SoundCloudPlaylistProvider {
 		return numberOfPagesFor;
 	}
 	
-	private URI getSearchQueryURIFor(final String searchText, final int pageNumber) {
-		try {
-			return new URI(MessageFormat.format(SOUNDCLOUD_SEARCH_QUERY, pageNumber, toSearchString(searchText)));
-		} catch (URISyntaxException e) {
-			return null;
+	@VisibleForTesting URI getSearchQueryURIFor(final String searchText, final int pageNumber) {
+		if (searchText != null) {
+			try {
+				return new URI(MessageFormat.format(SOUNDCLOUD_SEARCH_QUERY, pageNumber, toSearchString(searchText)));
+			} catch (URISyntaxException e) {
+			}
 		}
+		return null;
 	}
 
-	private String getSoundCloudPageFor(final URI queryURI) {
+	@VisibleForTesting String getSoundCloudPageFor(final URI queryURI) {
 		final String cachedPage = pageCache.get(queryURI);
 		if (cachedPage != null) {
 			return cachedPage;
@@ -165,7 +168,7 @@ public class SoundCloudPlaylistProvider {
 		return "";
 	}
 
-	private List<String> getBufferTracksAsJSON(final String soundCloudPage) {
+	@VisibleForTesting List<String> getBufferTracksAsJSON(final String soundCloudPage) {
 		final List<String> bufferTracksAsJSON = new ArrayList<String>();
 		final Pattern pattern = Pattern.compile(BUFFER_TRACKS_JSON_REGEXP);
 		final Matcher matcher = pattern.matcher(soundCloudPage);
@@ -175,7 +178,7 @@ public class SoundCloudPlaylistProvider {
 		return bufferTracksAsJSON;
 	}
 
-	private Playlist asPlaylist(List<String> bufferTracksAsJSON) {
+	@VisibleForTesting Playlist asPlaylist(List<String> bufferTracksAsJSON) {
 		final Playlist playlist = new Playlist();
 		final Set<URI> uniqueURIs = new HashSet<URI>();
 		for (String bufferTrackAsJSON : bufferTracksAsJSON) {
@@ -197,11 +200,11 @@ public class SoundCloudPlaylistProvider {
 		return playlist;
 	}
 
-	private String toSearchString(final String searchText) {
+	@VisibleForTesting String toSearchString(final String searchText) {
 		return searchText.replace(" ", "+");
 	}
 
-	private String readStreamAsString(final InputStream is) throws IOException {
+	@VisibleForTesting String readStreamAsString(final InputStream is) throws IOException {
 		final char[] buffer = new char[BUFFER_SIZE];
 		StringBuilder out = new StringBuilder();
 		Reader in = new BufferedReader(new InputStreamReader(is));

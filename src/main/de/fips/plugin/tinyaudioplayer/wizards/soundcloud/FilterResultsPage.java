@@ -122,8 +122,7 @@ public class FilterResultsPage extends WizardPage {
 					if (input instanceof Playlist) {
 						final Playlist playlist = (Playlist) input;
 						final int numberOfPages = playlistProvider.getNumberOfPagesFor(searchText);
-						setName(getName() + "(" + numberOfPages + " pages)");
-						for (int currentPage = 0; currentPage < numberOfPages; currentPage++) {
+						for (int currentPage = 1; currentPage <= numberOfPages; currentPage++) {
 							if (isInterrupted()) break;
 							playlist.add(playlistProvider.getPlaylistFor(searchText, currentPage));
 							if (isInterrupted()) break;
