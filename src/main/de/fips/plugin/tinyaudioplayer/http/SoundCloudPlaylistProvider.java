@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.http;
 
+import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -185,7 +187,7 @@ public class SoundCloudPlaylistProvider {
 			try {
 				final JSONParser parser = new JSONParser();
 				JSONObject object = (JSONObject) parser.parse(bufferTrackAsJSON);
-				final String title = (String) object.get("title");
+				final String title = unescapeHtml((String) object.get("title"));
 				final URI location = new URIBuilder().setURI((String) object.get("streamUrl")).removeParameter("stream_token").toURI();
 				final long seconds = TimeUnit.MILLISECONDS.toSeconds((Long) object.get("duration"));
 				if (uniqueURIs.add(location)) {
