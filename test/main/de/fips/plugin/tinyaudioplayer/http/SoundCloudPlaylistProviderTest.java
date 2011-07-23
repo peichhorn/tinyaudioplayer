@@ -26,7 +26,7 @@ public class SoundCloudPlaylistProviderTest {
 		final Playlist playlist = provider.getPlaylistFor("chromeo");
 		// assert
 		assertThat(playlist).hasSize(4);
-		assertThat(playlist.getCurrentTrack()).hasName("Night By Night") //
+		assertThat(playlist.getCurrentTrack()).hasName("Night By Night \"&\"") //
 				.hasLocation(new URI("http://media.soundcloud.com/stream/LHBNmmjRYBmq")) //
 				.hasLength(225);
 		assertThat(playlist.getNextTrack()).hasName("Needy Girl") //
@@ -89,9 +89,9 @@ public class SoundCloudPlaylistProviderTest {
 		final List<String> playlist = provider.getBufferTracksAsJSON(fileAsString(file("simplified_requestdump")));
 		// assert
 		assertThat(playlist).hasSize(5).containsOnly( //
-				"{\"duration\":225312,\"title\":\"Night By Night\",\"streamUrl\":\"http://media.soundcloud.com/stream/LHBNmmjRYBmq?stream_token=kV51k\"}", //
+				"{\"duration\":225312,\"title\":\"Night By Night &quot;&amp;&quot;\",\"streamUrl\":\"http://media.soundcloud.com/stream/LHBNmmjRYBmq?stream_token=kV51k\"}", //
 				"{\"duration\":257220,\"title\":\"Needy Girl\",\"streamUrl\":\"http://media.soundcloud.com/stream/AoIr6ZoEySy4?stream_token=NDZJ5\"}", //
-				"{\"duration\":225312,\"title\":\"Night By Night\",\"streamUrl\":\"http://media.soundcloud.com/stream/LHBNmmjRYBmq?stream_token=kV51k\"}", //
+				"{\"duration\":225312,\"title\":\"Night By Night &quot;&amp;&quot;\",\"streamUrl\":\"http://media.soundcloud.com/stream/LHBNmmjRYBmq?stream_token=kV51k\"}", //
 				"{\"duration\":327673,\"title\":\"Hot Mess featuring Elly Jacson (Duck Sauce Remix)\",\"streamUrl\":\"http://media.soundcloud.com/stream/phq1RrkR47eE?stream_token=hcRwo\"}", //
 				"{\"duration\":333527,\"title\":\"Don't Turn The Lights On (Aeroplane Remix)\",\"streamUrl\":\"http://media.soundcloud.com/stream/rBI1kUevLhn3?stream_token=JBkk7\"}");
 	}
