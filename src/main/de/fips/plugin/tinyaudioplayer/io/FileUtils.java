@@ -51,7 +51,7 @@ public final class FileUtils {
 	}
 
 	public static String relativePath(final File file, File relativeTo) {
-		String path = file.getAbsolutePath();
+		final StringBuilder path = new StringBuilder(file.getAbsolutePath());
 
 		if (relativeTo.isFile()) {
 			relativeTo = relativeTo.getParentFile();
@@ -72,20 +72,20 @@ public final class FileUtils {
 					break;
 				}
 			}
-			path = "";
+			path.setLength(0);
 			for (int i = count; i < relativeToSize; i++) {
-				path += ".." + File.separator;
+				path.append("..").append(File.separator);
 			}
 
 			for (int i = count; i < size; i++) {
-				path += fileList.get(i) + File.separator;
+				path.append(fileList.get(i)).append(File.separator);
 			}
 
 			if (path.indexOf(File.separator) > -1) {
-				path = path.substring(0, path.lastIndexOf(File.separator));
+				return path.substring(0, path.lastIndexOf(File.separator));
 			}
 		}
-		return path;
+		return path.toString();
 	}
 
 	public static boolean removeDirectory(final File directory) {

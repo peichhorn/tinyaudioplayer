@@ -161,7 +161,7 @@ public class PlaylistTest {
 	}
 
 	@Test
-	public void test_clone() {
+	public void test_clone() throws Exception {
 		// setup
 		final Playlist playlist = createPlaylistWithSize(2);
 		// run
@@ -172,7 +172,7 @@ public class PlaylistTest {
 	}
 
 	@Test
-	public void test_clone_resetsCurrentTrack() {
+	public void test_clone_resetsCurrentTrack() throws Exception {
 		// setup
 		final Playlist playlist = createPlaylistWithSize(2);
 		playlist.next();

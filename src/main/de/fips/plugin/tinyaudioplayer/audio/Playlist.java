@@ -208,9 +208,10 @@ public class Playlist implements Iterable<PlaylistItem>, Cloneable {
 		updateIndex(0, (tracks.size() - 1), 1);
 	}
 	
-	public Playlist clone() {
-		final Playlist clone = new Playlist();
+	public Playlist clone() throws CloneNotSupportedException {
+		final Playlist clone = (Playlist) super.clone();
 		clone.add(this);
+		clone.setCurrentTrack(0);
 		return clone;
 	}
 

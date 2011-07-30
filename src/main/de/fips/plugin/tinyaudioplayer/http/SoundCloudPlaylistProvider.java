@@ -95,10 +95,10 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
  * </pre>
 */
 public class SoundCloudPlaylistProvider {
-	private final String BUFFER_TRACKS_JSON_REGEXP = "<script type=\"text/javascript\">\\s*window.SC.bufferTracks.push\\((.*)\\);\\s*</script>";
-	private final String NUMBER_OF_PAGES_REGEXP = "/tracks/search\\?page=(\\d*)\\&";
-	private final String SOUNDCLOUD_SEARCH_QUERY = "http://soundcloud.com/search?page={0}&q%5Bfulltext%5D={1}";
-	private final int BUFFER_SIZE = 65536;
+	private static final String BUFFER_TRACKS_JSON_REGEXP = "<script type=\"text/javascript\">\\s*window.SC.bufferTracks.push\\((.*)\\);\\s*</script>";
+	private static final String NUMBER_OF_PAGES_REGEXP = "/tracks/search\\?page=(\\d*)\\&";
+	private static final String SOUNDCLOUD_SEARCH_QUERY = "http://soundcloud.com/search?page={0}&q%5Bfulltext%5D={1}";
+	private static final int BUFFER_SIZE = 65536;
 	
 	private final Map<URI, String> pageCache = new Cache<URI, String>(30);
 	
@@ -119,7 +119,7 @@ public class SoundCloudPlaylistProvider {
 			final List<String> bufferTracksAsJSON = getBufferTracksAsJSON(soundCloudPage);
 			playlist.add(asPlaylist(bufferTracksAsJSON));
 		}
-		return playlist.clone();
+		return playlist;
 	}
 
 	public int getNumberOfPagesFor(final String searchText) {

@@ -6,7 +6,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import org.junit.Test;
 
@@ -26,12 +27,8 @@ public class URIBuilderTest {
 	@Test
 	public void testAddBeanParameters() throws Exception {
 		// setup
-		@Data class DemoBean {
-			private int foo = 21;
-			private String bar = "23";
-		}
 		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
-		final DemoBean bean = new DemoBean();
+		final DemoBean bean = new DemoBean(21, "23");
 		// run + assert
 		assertThat(builder.addBeanParameters(bean).toString()).isEqualTo("http://doma.in/service?param1=42&foo=21&bar=23");
 	}
@@ -58,5 +55,12 @@ public class URIBuilderTest {
 		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
 		// run + assert
 		assertThat(builder.getParameter("param1")).isEqualTo("42");
+	}
+	
+	@RequiredArgsConstructor
+	@Getter
+	private static class DemoBean {
+		private final int foo;
+		private final String bar;
 	}
 }

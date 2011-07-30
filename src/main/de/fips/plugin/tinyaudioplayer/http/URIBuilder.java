@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import lombok.FluentSetter;
+import lombok.Rethrow;
 
 /**
  * Given a URI and a set of parameters, provide abilities to add and remove
@@ -100,19 +101,16 @@ public class URIBuilder {
 	/**
 	 * Add parameters defined by a bean
 	 */
+	@Rethrow(as=IllegalArgumentException.class, message="Unable to parse bean.")
 	public URIBuilder addBeanParameters(Object obj) {
-		try {
-			Class<?> beanClass = obj.getClass();
-			BeanInfo beanInfo = Introspector.getBeanInfo(beanClass, Object.class);
-			PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-			for (PropertyDescriptor descriptor : descriptors) {
-				if (descriptor.isHidden()) continue;
-				String name = descriptor.getName();
-				Object value = descriptor.getReadMethod().invoke(obj);
-				addParameter(name, value.toString());
-			}
-		} catch (Exception e) {
-			// to bad then
+		Class<?> beanClass = obj.getClass();
+		BeanInfo beanInfo = Introspector.getBeanInfo(beanClass, Object.class);
+		PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+		for (PropertyDescriptor descriptor : descriptors) {
+			if (descriptor.isHidden()) continue;
+			String name = descriptor.getName();
+			Object value = descriptor.getReadMethod().invoke(obj);
+			addParameter(name, value.toString());
 		}
 		return this;
 	}
