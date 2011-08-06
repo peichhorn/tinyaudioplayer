@@ -27,10 +27,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import lombok.AutoGenMethodStub;
 import lombok.Getter;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
+@AutoGenMethodStub
 public class PlaylistBuilder implements IPlaylistFileVisitor {
 	@Getter
 	private Playlist playlist;
@@ -43,10 +45,6 @@ public class PlaylistBuilder implements IPlaylistFileVisitor {
 	@Override
 	public void visitBegin(final File file) throws IOException {
 		playlist = new Playlist();
-	}
-
-	@Override
-	public void visitComment(final String comment) throws IOException {
 	}
 
 	@Override
@@ -87,9 +85,5 @@ public class PlaylistBuilder implements IPlaylistFileVisitor {
 	@Override
 	public void visitNumberOfEntries(final Integer numberofentries) throws IOException {
 		numEntries = numberofentries;
-	}
-
-	@Override
-	public void visitEnd(final File file) throws IOException {
 	}
 }

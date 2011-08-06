@@ -31,6 +31,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -43,6 +44,11 @@ import java.util.regex.Pattern;
 
 import lombok.Cleanup;
 import lombok.FluentSetter;
+import lombok.Rethrow;
+import lombok.Sanitize.Normalize;
+import lombok.Validate;
+import lombok.Validate.NotEmpty;
+import lombok.Validate.NotNull;
 import lombok.VisibleForTesting;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -109,42 +115,38 @@ public class SoundCloudPlaylistProvider {
 		return getPlaylistFor(searchText, 1);
 	}
 
-	public Playlist getPlaylistFor(final String searchText, final int pageNumber) {
-		if ((searchText == null) || searchText.isEmpty()) return new Playlist();
-		if ((pageNumber < 1) || (pageNumber > getNumberOfPagesFor(searchText))) return new Playlist();
+	@Validate
+	public Playlist getPlaylistFor(@NotEmpty final String searchText, final int pageNumber) {
+		if ((pageNumber < 1) || (pageNumber > getNumberOfPagesFor(searchText))) {
+			throw new IllegalArgumentException();
+		}
 		final Playlist playlist = new Playlist();
 		final URI queryURI = getSearchQueryURIFor(searchText, pageNumber);
-		if (queryURI != null) {
-			final String soundCloudPage = getSoundCloudPageFor(queryURI);
-			final List<String> bufferTracksAsJSON = getBufferTracksAsJSON(soundCloudPage);
-			playlist.add(asPlaylist(bufferTracksAsJSON));
-		}
+		final String soundCloudPage = getSoundCloudPageFor(queryURI);
+		final List<String> bufferTracksAsJSON = getBufferTracksAsJSON(soundCloudPage);
+		playlist.add(asPlaylist(bufferTracksAsJSON));
 		return playlist;
 	}
 
-	public int getNumberOfPagesFor(final String searchText) {
-		if ((searchText == null) || searchText.isEmpty()) return 1;
-		int numberOfPagesFor = 1;
+	@Validate
+	public int getNumberOfPagesFor(@NotEmpty final String searchText) {
 		final URI queryURI = getSearchQueryURIFor(searchText, 1);
-		if (queryURI != null) {
-			final String soundCloudPage = getSoundCloudPageFor(queryURI);
-			final Pattern pattern = Pattern.compile(NUMBER_OF_PAGES_REGEXP);
-			final Matcher matcher = pattern.matcher(soundCloudPage);
-			while(matcher.find()) {
-				numberOfPagesFor = Math.max(numberOfPagesFor, Integer.valueOf(matcher.group(1)));
-			}
+		final String soundCloudPage = getSoundCloudPageFor(queryURI);
+		final Pattern pattern = Pattern.compile(NUMBER_OF_PAGES_REGEXP);
+		final Matcher matcher = pattern.matcher(soundCloudPage);
+		int numberOfPagesFor = 1;
+		while(matcher.find()) {
+			numberOfPagesFor = Math.max(numberOfPagesFor, Integer.valueOf(matcher.group(1)));
 		}
 		return numberOfPagesFor;
 	}
 	
-	@VisibleForTesting URI getSearchQueryURIFor(final String searchText, final int pageNumber) {
-		if (searchText != null) {
-			try {
-				return new URI(MessageFormat.format(SOUNDCLOUD_SEARCH_QUERY, pageNumber, toSearchString(searchText)));
-			} catch (URISyntaxException e) {
-			}
-		}
-		return null;
+	@Rethrow(value=URISyntaxException.class, as=IllegalArgumentException.class)
+	@VisibleForTesting URI getSearchQueryURIFor(@NotNull @Normalize(Form.NFKC) final String searchText, final int pageNumber) {
+		if (!Pattern.matches("[a-zA-Z0-9 ]+", searchText)) {
+			throw new IllegalArgumentException();
+		} 
+		return new URI(MessageFormat.format(SOUNDCLOUD_SEARCH_QUERY, pageNumber, toSearchString(searchText)));
 	}
 
 	@VisibleForTesting String getSoundCloudPageFor(final URI queryURI) {
@@ -152,7 +154,7 @@ public class SoundCloudPlaylistProvider {
 		if (cachedPage != null) {
 			return cachedPage;
 		}
-		HttpClient client = new HttpClient();
+		final HttpClient client = new HttpClient();
 		try {
 			if (proxyConfiguration != null) proxyConfiguration.setupProxyFor(client.getHostConfiguration(), queryURI);
 			
@@ -208,8 +210,8 @@ public class SoundCloudPlaylistProvider {
 
 	@VisibleForTesting String readStreamAsString(final InputStream is) throws IOException {
 		final char[] buffer = new char[BUFFER_SIZE];
-		StringBuilder out = new StringBuilder();
-		Reader in = new BufferedReader(new InputStreamReader(is));
+		final StringBuilder out = new StringBuilder();
+		final Reader in = new BufferedReader(new InputStreamReader(is));
 		for (int read = in.read(buffer); read >= 0; read = in.read(buffer)) {
 			out.append(buffer, 0, read);
 		}

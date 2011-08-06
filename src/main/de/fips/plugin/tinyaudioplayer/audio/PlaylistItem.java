@@ -26,6 +26,7 @@ import static java.util.concurrent.TimeUnit.*;
 import java.net.URI;
 
 import lombok.Getter;
+import lombok.LazyGetter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -42,9 +43,9 @@ public class PlaylistItem {
 	private final String name;
 	private final URI location;
 	private final long seconds;
-	@Getter(lazy=true)
+	@LazyGetter
 	private final String displayableName = createDisplayableName();
-	@Getter(lazy=true)
+	@LazyGetter
 	private final PlaylistItemTag infoTag = createInfoTag();
 
 	public long getLength() {

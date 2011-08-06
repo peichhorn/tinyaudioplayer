@@ -39,7 +39,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @ListenerSupport(IPlaylistListener.class)
-public class Playlist implements Iterable<PlaylistItem>, Cloneable {
+public class Playlist implements Iterable<PlaylistItem> {
 	@Delegate(types = IListSubset.class)
 	private final List<PlaylistItem> tracks = new CopyOnWriteArrayList<PlaylistItem>();
 	private final List<PlaylistItem> selectedTracks = new CopyOnWriteArrayList<PlaylistItem>();
@@ -206,13 +206,6 @@ public class Playlist implements Iterable<PlaylistItem>, Cloneable {
 
 	public void next() {
 		updateIndex(0, (tracks.size() - 1), 1);
-	}
-	
-	public Playlist clone() throws CloneNotSupportedException {
-		final Playlist clone = (Playlist) super.clone();
-		clone.add(this);
-		clone.setCurrentTrack(0);
-		return clone;
 	}
 
 	private void updateIndex(final int first, final int last, final int diff) {

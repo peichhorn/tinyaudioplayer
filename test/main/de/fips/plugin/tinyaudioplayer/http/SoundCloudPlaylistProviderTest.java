@@ -11,11 +11,15 @@ import java.io.FileInputStream;
 import java.net.URI;
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 
 public class SoundCloudPlaylistProviderTest {
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void test_getPlaylistFor() throws Exception {
@@ -65,20 +69,18 @@ public class SoundCloudPlaylistProviderTest {
 	public void test_getSearchQueryURIFor_invalid() throws Exception {
 		// setup
 		final SoundCloudPlaylistProvider provider = new SoundCloudPlaylistProvider();
-		// run
-		final URI uri = provider.getSearchQueryURIFor("<(''<)", 0); // Oh noes kirby breaks URIs xD
-		// assert
-		assertThat(uri).isNull();
+		// run + assert
+		thrown.expect(IllegalArgumentException.class);
+		provider.getSearchQueryURIFor("<(''<)", 0); // Oh noes kirby breaks URIs xD 
 	}
 
 	@Test
 	public void test_getSearchQueryURIFor_null() throws Exception {
 		// setup
 		final SoundCloudPlaylistProvider provider = new SoundCloudPlaylistProvider();
-		// run
-		final URI uri = provider.getSearchQueryURIFor(null, 0);
-		// assert
-		assertThat(uri).isNull();
+		// run + assert
+		thrown.expect(IllegalArgumentException.class);
+		provider.getSearchQueryURIFor(null, 0);
 	}
 
 	@Test

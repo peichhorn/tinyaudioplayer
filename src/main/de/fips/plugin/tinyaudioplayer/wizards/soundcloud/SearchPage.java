@@ -25,6 +25,8 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -39,7 +41,7 @@ public class SearchPage extends WizardPage {
 		setTitle("Search SoundCloud");
 		setDescription("Search SoundCloud...");
 	}
-	
+
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
@@ -60,6 +62,11 @@ public class SearchPage extends WizardPage {
 				if (!getSearchText().isEmpty()) {
 					setPageComplete(true);
 				}
+			}
+		});
+		searchText.addVerifyListener(new VerifyListener() {
+			public void verifyText(VerifyEvent e) {
+				e.doit = e.text.matches("[a-zA-Z0-9 ]*");
 			}
 		});
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);

@@ -160,29 +160,6 @@ public class PlaylistTest {
 		assertThat(playlist.getCurrentTrack()).isEqualTo(iter.next());
 	}
 
-	@Test
-	public void test_clone() throws Exception {
-		// setup
-		final Playlist playlist = createPlaylistWithSize(2);
-		// run
-		final Playlist clone = playlist.clone();
-		// assert
-		assertThat(playlist == clone).isFalse();
-		assertThat(playlist.toString()).isEqualTo(playlist.toString());
-	}
-
-	@Test
-	public void test_clone_resetsCurrentTrack() throws Exception {
-		// setup
-		final Playlist playlist = createPlaylistWithSize(2);
-		playlist.next();
-		// run
-		final Playlist clone = playlist.clone();
-		// assert
-		assertThat(playlist.getCurrentTrack()).isNotEqualTo(clone.getCurrentTrack());
-		assertThat(clone.getCurrentTrack()).isEqualTo(clone.iterator().next());
-	}
-
 	private Playlist createPlaylistWithSize(final int size) {
 		final Playlist playlist = new Playlist();
 		for (int i = 1; i <= size; i++) {
