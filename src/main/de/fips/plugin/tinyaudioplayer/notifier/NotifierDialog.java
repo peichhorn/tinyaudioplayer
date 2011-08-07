@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer.notifier;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,21 +58,23 @@ import de.fips.plugin.tinyaudioplayer.preference.PreferencesConstants;
 public class NotifierDialog {
 	private static List<Shell> activeShells = new ArrayList<Shell>();
 	private static Image oldImage;
+	
+	private final NotifierCoverProvider coverProvider = new NotifierCoverProvider();
 
-	public static void notifyAsync(final String title, final String message, final Image image) {
+	public static void notifyAsync(final String title, final String message, final URI location) {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				NotifierDialog.notify(title, message, image);
+				NotifierDialog.notify(title, message, location);
 			}
 		});
 	}
 
-	public static void notify(final String title, final String message, final Image image) {
-		new NotifierDialog().show(title, message, image);
+	public static void notify(final String title, final String message, final URI location) {
+		new NotifierDialog().show(title, message, location);
 	}
 
-	private void show(final String title, final String message, final Image image) {
+	private void show(final String title, final String message, final URI location) {
 		final Shell shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
 		shell.setLayout(new FillLayout());
 		shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
@@ -80,7 +83,7 @@ public class NotifierDialog {
 		registerResizeListener(shell);
 
 		final Composite inner = createInnerComposite(shell);
-		createImageLabel(inner, image);
+		createImageLabel(inner, location);
 		Composite right = createRightComposite(inner);
 		createTitleLabel(right, title);
 		createTextLabel(right, message);
@@ -191,9 +194,10 @@ public class NotifierDialog {
 		return right;
 	}
 
-	private void createImageLabel(final Composite parent, final Image image) {
+	private void createImageLabel(final Composite parent, final URI location) {
 		final CLabel imgLabel = new CLabel(parent, SWT.NONE);
 		imgLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
+		final Image image = coverProvider.loadCoverFor(location);
 		if (image != null) {
 			imgLabel.setImage(image);
 		}

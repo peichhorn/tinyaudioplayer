@@ -68,9 +68,7 @@ public class TinyAudioPlayerPlugin extends AbstractUIPlugin {
 	}
 
 	private static void log(final IStatus status) {
-		if (getDefault() != null) {
-			getDefault().getLog().log(status);
-		}
+		getDefault().getLog().log(status);
 	}
 
 	/**

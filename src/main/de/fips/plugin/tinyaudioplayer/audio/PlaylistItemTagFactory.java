@@ -104,7 +104,7 @@ public class PlaylistItemTagFactory {
 				}
 				currentValue = props.get("duration");
 				if (currentValue != null) {
-					builder.playTime(((Long) props.get("duration")) / 1000000L);
+					builder.playTime(((Long) currentValue) / 1000000L);
 				}
 				currentValue = props.get("ogg.comment.genre");
 				if (currentValue != null) {
@@ -158,7 +158,7 @@ public class PlaylistItemTagFactory {
 				}
 				currentValue = props.get("duration");
 				if (currentValue != null) {
-					builder.playTime(((Long) props.get("duration")) / 1000000L);
+					builder.playTime(((Long) currentValue) / 1000000L);
 				}
 				currentValue = props.get("mp3.id3tag.genre");
 				if (currentValue != null) {

@@ -20,7 +20,7 @@ public class PlaylistTest {
 		assertThat(new Playlist().add((Playlist) null)).isEqualTo(0);
 		assertThat(new Playlist().add((Playlist) null, false)).isEqualTo(0);
 	}
-	
+
 	@Test
 	public void test_add() {
 		// setup
@@ -34,20 +34,20 @@ public class PlaylistTest {
 		assertThat(itemsFromOtherPlaylist).isEqualTo(2);
 		assertThat(playlist).hasSize(5);
 		assertThat(playlist.getCurrentTrack()).hasName("Track 01") //
-				.hasLocation(new File("01 - Track 01.mp3")) //
-				.hasLength(110);
+			.hasLocation(new File("01 - Track 01.mp3")) //
+			.hasLength(110);
 		assertThat(playlist.getNextTrack()).hasName("Track 02") //
-				.hasLocation(new File("02 - Track 02.mp3")) //
-				.hasLength(220);
+			.hasLocation(new File("02 - Track 02.mp3")) //
+			.hasLength(220);
 		assertThat(playlist.getNextTrack()).hasName("Track 04") //
-				.hasLocation(new File("04 - Track 04.mp3")) //
-				.hasLength(440);
+			.hasLocation(new File("04 - Track 04.mp3")) //
+			.hasLength(440);
 		assertThat(playlist.getNextTrack()).hasName("Track 01") //
-				.hasLocation(new File("01 - Track 01.mp3")) //
-				.hasLength(110);
+			.hasLocation(new File("01 - Track 01.mp3")) //
+			.hasLength(110);
 		assertThat(playlist.getNextTrack()).hasName("Track 02") //
-				.hasLocation(new File("02 - Track 02.mp3")) //
-				.hasLength(220);
+			.hasLocation(new File("02 - Track 02.mp3")) //
+			.hasLength(220);
 	}
 
 	@Test
@@ -63,20 +63,20 @@ public class PlaylistTest {
 		assertThat(itemsFromOtherPlaylist).isEqualTo(1);
 		assertThat(playlist).hasSize(5);
 		assertThat(playlist.getCurrentTrack()).hasName("Track 01") //
-				.hasLocation(new File("01 - Track 01.mp3")) //
-				.hasLength(110);
+			.hasLocation(new File("01 - Track 01.mp3")) //
+			.hasLength(110);
 		assertThat(playlist.getNextTrack()).hasName("Track 02") //
-				.hasLocation(new File("02 - Track 02.mp3")) //
-				.hasLength(220);
+			.hasLocation(new File("02 - Track 02.mp3")) //
+			.hasLength(220);
 		assertThat(playlist.getNextTrack()).hasName("Track 04") //
-				.hasLocation(new File("04 - Track 04.mp3")) //
-				.hasLength(440);
+			.hasLocation(new File("04 - Track 04.mp3")) //
+			.hasLength(440);
 		assertThat(playlist.getNextTrack()).hasName("Track 05") //
-				.hasLocation(new File("05 - Track 05.mp3")) //
-				.hasLength(550);
+			.hasLocation(new File("05 - Track 05.mp3")) //
+			.hasLength(550);
 		assertThat(playlist.getNextTrack()).hasName("Track 03") //
-				.hasLocation(new File("03 - Track 03.mp3")) //
-				.hasLength(330);
+			.hasLocation(new File("03 - Track 03.mp3")) //
+			.hasLength(330);
 	}
 
 	@Test
@@ -89,11 +89,11 @@ public class PlaylistTest {
 		// assert
 		assertThat(playlist).hasSize(2);
 		assertThat(playlist.getCurrentTrack()).hasName("Track 01") //
-				.hasLocation(new File("01 - Track 01.mp3")) //
-				.hasLength(110);
+			.hasLocation(new File("01 - Track 01.mp3")) //
+			.hasLength(110);
 		assertThat(playlist.getNextTrack()).hasName("Track 03") //
-		.hasLocation(new File("03 - Track 03.mp3")) //
-		.hasLength(330);
+			.hasLocation(new File("03 - Track 03.mp3")) //
+			.hasLength(330);
 	}
 
 	@Test
@@ -158,6 +158,26 @@ public class PlaylistTest {
 		playlist.next();
 		// assert
 		assertThat(playlist.getCurrentTrack()).isEqualTo(iter.next());
+	}
+
+	@Test
+	public void test_toString() {
+		// setup
+		final Playlist playlist = createPlaylistWithSize(4);
+		final PlaylistItem track1 = playlist.getCurrentTrack();
+		playlist.next();
+		playlist.next();
+		playlist.next();
+		final PlaylistItem track4 = playlist.getCurrentTrack();
+		playlist.selectTracks(asList(track1, track4));
+		// run
+		final String output = playlist.toString();
+		// assert
+		assertThat(output).isEqualTo("Playlist\n" + //
+			"[1] - PlaylistItem(displayableName=Track 01 (01:50))\n" + //
+			" 2  - PlaylistItem(displayableName=Track 02 (03:40))\n" + //
+			" 3  - PlaylistItem(displayableName=Track 03 (05:30))\n" + //
+			"[4] - PlaylistItem(displayableName=Track 04 (07:20))\n");
 	}
 
 	private Playlist createPlaylistWithSize(final int size) {

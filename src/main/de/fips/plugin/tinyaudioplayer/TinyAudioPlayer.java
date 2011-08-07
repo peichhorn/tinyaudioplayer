@@ -21,20 +21,12 @@ THE SOFTWARE.
 */
 package de.fips.plugin.tinyaudioplayer;
 
-import static de.fips.plugin.tinyaudioplayer.TinyAudioPlayerConstants.COVER_DETECTION_PATTERN;
-
 import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.util.regex.Matcher;
 
 import lombok.Delegate;
 import lombok.VisibleForTesting;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -44,7 +36,6 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
-import de.fips.plugin.tinyaudioplayer.http.SoundCloudPlaylistProvider;
 import de.fips.plugin.tinyaudioplayer.io.AudioFileReader;
 import de.fips.plugin.tinyaudioplayer.io.PlaylistReader;
 import de.fips.plugin.tinyaudioplayer.io.PlaylistWriter;
@@ -96,13 +87,6 @@ public class TinyAudioPlayer {
 		player.getPlaylist().removeDuplicates();
 	}
 
-	public void importFromSoundCloud() {
-		final Playlist newPlaylist = new SoundCloudPlaylistProvider().getPlaylistFor("daft punk too long");
-		if (newPlaylist != null) {
-			player.getPlaylist().add(newPlaylist);
-		}
-	}
-
 	@VisibleForTesting Playlist loadNewPlaylist() {
 		Playlist newPlaylist = null;
 		final Shell shell = new Shell(Display.getDefault());
@@ -139,41 +123,6 @@ public class TinyAudioPlayer {
 		}
 	}
 
-	private Image loadCoverFor(final PlaylistItem track){
-		Image thumbnail = null;
-		File parent = null;
-		try {
-			final File file = new File(track.getLocation());
-			parent = file.getParentFile();
-		} catch(IllegalArgumentException ignore) {
-			// File(URI) preconditions did not hold
-		}
-		if (parent != null) {
-			String[] coverNames = parent.list(new FilenameFilter() {
-				@Override
-				public boolean accept(File file, String s) {
-					final Matcher matcher = COVER_DETECTION_PATTERN.matcher(s.toLowerCase());
-					return matcher.matches();
-				}
-			});
-			if (coverNames.length > 0) {
-				try {
-					final File coverFile = new File(parent, coverNames[0]).getCanonicalFile().getAbsoluteFile();
-					thumbnail = TinyAudioPlayerPlugin.getDefaultImageRegistry().get(coverFile.getPath());
-					if (thumbnail == null) {
-						final URL imageURL = coverFile.toURI().toURL();
-						final ImageDescriptor descriptor = ImageDescriptor.createFromURL(imageURL);
-						thumbnail = descriptor.createImage();
-						thumbnail = new Image(Display.getDefault(), thumbnail.getImageData().scaledTo(80, 80));
-						TinyAudioPlayerPlugin.getDefaultImageRegistry().put(coverFile.getPath(), thumbnail);
-					}
-				} catch (IOException ignore) {
-				}
-			}
-		}
-		return thumbnail;
-	}
-
 	private class PlaybackHandler implements IPlaybackListener {
 
 		@Override
@@ -184,7 +133,7 @@ public class TinyAudioPlayer {
 				break;
 			case Started:
 				final PlaylistItem track = player.getPlaylist().getCurrentTrack();
-				NotifierDialog.notifyAsync("Now playing:", track.getDisplayableName(), loadCoverFor(track));
+				NotifierDialog.notifyAsync("Now playing:", track.getDisplayableName(), track.getLocation());
 				break;
 			default:
 				break;

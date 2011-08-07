@@ -8,8 +8,11 @@ import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+
+import lombok.Cleanup;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -123,7 +126,8 @@ public class SoundCloudPlaylistProviderTest {
 	}
 
 	private String fileAsString(File file) throws Exception {
-		return new SoundCloudPlaylistProvider().readStreamAsString(new FileInputStream(file));
+		@Cleanup final InputStream is = new FileInputStream(file);
+		return new SoundCloudPlaylistProvider().readStreamAsString(is);
 	}
 
 	private File file(String path) throws Exception {
