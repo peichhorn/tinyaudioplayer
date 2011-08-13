@@ -61,7 +61,9 @@ public class MThreeUFileReader {
 					visitor.visitEntryBegin();
 				}
 				try {
-					visitor.visitLocation(new URI(line));
+					final URI uri = new URI(line);
+					if (!uri.isAbsolute()) throw new URISyntaxException(line, "URI is not absolute");
+					visitor.visitLocation(uri);
 				} catch (URISyntaxException  e) {
 					File f = new File(file.getParentFile(), line);
 					if (!f.exists()) {

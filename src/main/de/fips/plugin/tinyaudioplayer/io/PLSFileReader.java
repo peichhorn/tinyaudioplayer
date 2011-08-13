@@ -54,7 +54,9 @@ public class PLSFileReader {
 				st.nextToken();
 				final String fileNameOrURL = st.nextToken().trim();
 				try {
-					visitor.visitLocation(new URI(fileNameOrURL));
+					final URI uri = new URI(fileNameOrURL);
+					if (!uri.isAbsolute()) throw new URISyntaxException(line, "URI is not absolute");
+					visitor.visitLocation(uri);
 				} catch (URISyntaxException  e) {
 					File f = new File(file.getParentFile(), fileNameOrURL);
 					if (!f.exists()) {
