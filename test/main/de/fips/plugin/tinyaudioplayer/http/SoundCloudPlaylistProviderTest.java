@@ -3,6 +3,7 @@ package de.fips.plugin.tinyaudioplayer.http;
 import static de.fips.plugin.tinyaudioplayer.assertions.Assertions.assertThat;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.MapAssert.entry;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -112,8 +113,8 @@ public class SoundCloudPlaylistProviderTest {
 		// assert
 		assertThat(playlist).hasSize(1);
 		assertThat(playlist.getCurrentTrack()).hasName("Artist - Title") //
-				.hasLocation(new URI("http://media.soundcloud.com/stream/EXAMPLE")) //
-				.hasLength(220);
+		                                      .hasLocation(new URI("http://media.soundcloud.com/stream/EXAMPLE")) //
+		                                      .hasLength(220);
 	}
 
 	@Test
@@ -123,6 +124,20 @@ public class SoundCloudPlaylistProviderTest {
 		// run + assert
 		assertThat(provider.toSearchString("daft punk")).isEqualTo("daft+punk");
 		assertThat(provider.toSearchString("chromeo")).isEqualTo("chromeo");
+	}
+	
+	@Test
+	public void test_cacheHoldsLimitedAmountOfElements() throws Exception {
+		// setup
+		final SoundCloudPlaylistProvider.Cache<String, String> cache = new SoundCloudPlaylistProvider.Cache<String, String>(2);
+		// run
+		cache.put("key1", "value1");
+		cache.put("key2", "value2");
+		cache.put("key3", "value3");
+		// assert
+		assertThat(cache).hasSize(2)
+		                 .includes(entry("key2", "value2"), entry("key3", "value3"))
+		                 .excludes(entry("key1", "value1"));
 	}
 
 	private String fileAsString(File file) throws Exception {

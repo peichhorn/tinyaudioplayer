@@ -13,46 +13,45 @@ import org.junit.Test;
 
 public class URIBuilderTest {
 	@Test
-	public void testAddParameters() throws Exception {
+	public void testWithParameters() throws Exception {
 		// setup
-		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
+		final URIBuilder builder = URIBuilder.uri("http://doma.in/service?param1=42");
 		final Map<String, String> params = new HashMap<String, String>();
 		params.put("param2", "foo");
 		params.put("param3", "bar");
-		
 		// run + assert
-		assertThat(builder.addParameters(params).toURI()).isEqualTo(new URI("http://doma.in/service?param1=42&param2=foo&param3=bar"));
+		assertThat(builder.withParameters(params).build()).isEqualTo(new URI("http://doma.in/service?param1=42&param2=foo&param3=bar"));
 	}
 
 	@Test
-	public void testAddBeanParameters() throws Exception {
+	public void testWithBeanParameters() throws Exception {
 		// setup
-		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
+		final URIBuilder builder = URIBuilder.uri("http://doma.in/service?param1=42");
 		final DemoBean bean = new DemoBean(21, "23");
 		// run + assert
-		assertThat(builder.addBeanParameters(bean).toString()).isEqualTo("http://doma.in/service?param1=42&foo=21&bar=23");
+		assertThat(builder.withBeanParameters(bean).toString()).isEqualTo("http://doma.in/service?param1=42&foo=21&bar=23");
 	}
 
 	@Test
-	public void testAddParameter() {
+	public void testWithParameter() {
 		// setup
-		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
+		final URIBuilder builder = URIBuilder.uri("http://doma.in/service?param1=42");
 		// run + assert
-		assertThat(builder.addParameter("param2", "foo").toString()).isEqualTo("http://doma.in/service?param1=42&param2=foo");
+		assertThat(builder.withParameter("param2", "foo").toString()).isEqualTo("http://doma.in/service?param1=42&param2=foo");
 	}
 
 	@Test
-	public void testRemoveParameter() {
+	public void testWithoutParameter() {
 		// setup
-		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
+		final URIBuilder builder = URIBuilder.uri("http://doma.in/service?param1=42");
 		// run + assert
-		assertThat(builder.removeParameter("param1").toString()).isEqualTo("http://doma.in/service");
+		assertThat(builder.withoutParameter("param1").toString()).isEqualTo("http://doma.in/service");
 	}
 
 	@Test
 	public void testGetParameter() {
 		// setup
-		final URIBuilder builder = new URIBuilder().setURI("http://doma.in/service?param1=42");
+		final URIBuilder builder = URIBuilder.uri("http://doma.in/service?param1=42");
 		// run + assert
 		assertThat(builder.getParameter("param1")).isEqualTo("42");
 	}

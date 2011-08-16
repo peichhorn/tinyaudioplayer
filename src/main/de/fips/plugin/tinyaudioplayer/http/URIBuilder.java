@@ -1,24 +1,24 @@
 /*
-Copyright © 2011 Philipp Eichhorn.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
+ * Copyright © 2011 Philipp Eichhorn.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package de.fips.plugin.tinyaudioplayer.http;
 
 import java.beans.BeanInfo;
@@ -34,7 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import lombok.FluentSetter;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.Rethrow;
 
 /**
@@ -43,34 +44,37 @@ import lombok.Rethrow;
  * reconstruct the proper URI. For example:
  * 
  * <pre>
- * URIBuilder builder = new URIBuilder()
- *                        .setURI( strUri ))
- *                        .addParameters( request.getParameterMap() );
- *                        .removeParameter( "id" )
- *                        .addParameter( "session", strSession );
+ * URIBuilder builder = URIBuilder.uri(strUri))
+ *                                .withParameters(request.getParameterMap())
+ *                                .withourParameter("id")
+ *                                .withParameter("session", strSession);
  * </pre>
  * 
  * Note that this class currently does not support URI rewriting of cookie
  * strings (though it should).
  */
-public class URIBuilder {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class URIBuilder {
 	private final static List<String> RESTRICTED = Arrays.asList(new String[] { "j_username", "j_password", "username", "password" });
 
-	private String urlWithoutParameters;
+	private final String urlWithoutParameters;
+	private final String encoding;
 	private final Map<String, String> parameters = new HashMap<String, String>();
-	@FluentSetter
-	private String encoding = "UTF-8";
 
-	public URIBuilder setURI(URI uri) {
-		return setURI(uri.toString());
+	public static URIBuilder uri(final URI uri) {
+		return uri(uri.toString());
 	}
 
-	public URIBuilder setURI(String uri) {
+	public static URIBuilder uri(final String uri) {
+		return uri(uri, "UTF-8");
+	}
+
+	public static URIBuilder uri(final String uri, final String encoding) {
 		if (uri == null || uri.isEmpty()) {
-			urlWithoutParameters = "";
+			return new URIBuilder("", encoding);
 		} else {
-			StringTokenizer tokenizerQueryString = new StringTokenizer(uri, "?");
-			urlWithoutParameters = tokenizerQueryString.nextToken();
+			final StringTokenizer tokenizerQueryString = new StringTokenizer(uri, "?");
+			final URIBuilder builder = new URIBuilder(tokenizerQueryString.nextToken(), encoding);
 			if (tokenizerQueryString.hasMoreTokens()) {
 				String queryString = tokenizerQueryString.nextToken();
 				if (queryString != null) {
@@ -80,20 +84,20 @@ public class URIBuilder {
 						StringTokenizer tokenizerValue = new StringTokenizer(nameValuePair, "=");
 						String name = tokenizerValue.nextToken();
 						String value = tokenizerValue.nextToken();
-						parameters.put(name, value);
+						builder.withParameter(name, value);
 					}
 				}
 			}
+			return builder;
 		}
-		return this;
 	}
 
 	/**
 	 * Add parameters from a map
 	 */
-	public URIBuilder addParameters(Map<String, String> params) {
+	public URIBuilder withParameters(Map<String, String> params) {
 		if (params != null) for (Map.Entry<String, String> param : params.entrySet()) {
-			addParameter(param.getKey(), param.getValue());
+			withParameter(param.getKey(), param.getValue());
 		}
 		return this;
 	}
@@ -101,16 +105,17 @@ public class URIBuilder {
 	/**
 	 * Add parameters defined by a bean
 	 */
-	@Rethrow(as=IllegalArgumentException.class, message="Unable to parse bean.")
-	public URIBuilder addBeanParameters(Object obj) {
+	@Rethrow(as = IllegalArgumentException.class, message = "Unable to parse bean.")
+	public URIBuilder withBeanParameters(Object obj) {
 		Class<?> beanClass = obj.getClass();
 		BeanInfo beanInfo = Introspector.getBeanInfo(beanClass, Object.class);
 		PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
 		for (PropertyDescriptor descriptor : descriptors) {
-			if (descriptor.isHidden()) continue;
+			if (descriptor.isHidden())
+				continue;
 			String name = descriptor.getName();
 			Object value = descriptor.getReadMethod().invoke(obj);
-			addParameter(name, value.toString());
+			withParameter(name, value.toString());
 		}
 		return this;
 	}
@@ -118,7 +123,7 @@ public class URIBuilder {
 	/**
 	 * Add a single parameter
 	 */
-	public URIBuilder addParameter(String name, String value) {
+	public URIBuilder withParameter(String name, String value) {
 		if ((name != null) && (value != null)) {
 			try {
 				parameters.put(name, URLEncoder.encode(value, encoding));
@@ -129,7 +134,7 @@ public class URIBuilder {
 		return this;
 	}
 
-	public URIBuilder removeParameter(String strName) {
+	public URIBuilder withoutParameter(String strName) {
 		parameters.remove(strName);
 		return this;
 	}
@@ -137,8 +142,8 @@ public class URIBuilder {
 	public String getParameter(String strName) {
 		return parameters.get(strName);
 	}
-	
-	public URI toURI() throws URISyntaxException{
+
+	public URI build() throws URISyntaxException {
 		return new URI(toString());
 	}
 
