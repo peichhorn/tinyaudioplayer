@@ -1,6 +1,6 @@
 package de.fips.plugin.tinyaudioplayer.http;
 
-import static de.fips.plugin.tinyaudioplayer.assertions.Assertions.assertThat;
+import static de.fips.plugin.tinyaudioplayer.junit.Assertions.assertThat;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.MapAssert.entry;

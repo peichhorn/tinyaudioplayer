@@ -21,17 +21,17 @@
  */
 package de.fips.plugin.tinyaudioplayer;
 
-import lombok.NoArgsConstructor;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
+import org.fest.util.VisibleForTesting;
 
 /**
  * Simple Volume Control that allows to modify the
@@ -40,27 +40,40 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
  * @see TinyAudioPlayer#setVolume(float)
  * @author Philipp Eichhorn
  */
-@NoArgsConstructor
 public class VolumeControl extends WorkbenchWindowControlContribution {
 	private float volume = 1.0f;
+	
+	private final Image baseVolumeImage;
+	private final Image volumeImage;
+	
+	public VolumeControl() {
+		this(new ImageLocator());
+	}
+	
+	@VisibleForTesting VolumeControl(final IImageLocator imageLocator) {
+		super();
+		baseVolumeImage = imageLocator.getImage("icons/16px-volume-base.png");
+		volumeImage = imageLocator.getImage("icons/16px-volume.png");
+	}
 
 	@Override
-	protected Control createControl(Composite parent) {
+	protected Control createControl(final Composite parent) {
 		final Composite volumeControl = new Composite(parent, SWT.NONE);
+		volumeControl.setData("org.eclipse.swtbot.widget.key", "volumeControl");
 		volumeControl.setBackgroundMode(SWT.INHERIT_DEFAULT);
 		volumeControl.addPaintListener(new PaintListener() {
 			@Override
-			public void paintControl(PaintEvent e) {
-				e.gc.drawImage(TinyAudioPlayerPlugin.getImageDescriptor("icons/16px-volume-base.png").createImage(), 0, 0);
+			public void paintControl(final PaintEvent e) {
+				e.gc.drawImage(baseVolumeImage, 0, 0);
 				e.gc.setClipping(0, 0, (int) (32 * volume), 16);
-				e.gc.drawImage(TinyAudioPlayerPlugin.getImageDescriptor("icons/16px-volume.png").createImage(), 0, 0);
+				e.gc.drawImage(volumeImage, 0, 0);
 				e.gc.dispose();
 			}
 		});
-		Listener listener = new Listener() {
+		final Listener listener = new Listener() {
 			private boolean mouseDown;
 			@Override
-			public void handleEvent(Event event) {
+			public void handleEvent(final Event event) {
 				switch (event.type) {
 				case SWT.MouseDown:
 					mouseDown = true;
@@ -77,7 +90,7 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 				}
 			}
 
-			private void updateVolume(Event event) {
+			private void updateVolume(final Event event) {
 				if (mouseDown) {
 					final Rectangle rect = volumeControl.getBounds();
 					volume = ((float) event.x / (float) rect.width * 2.0f);
@@ -93,5 +106,23 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 		volumeControl.addListener(SWT.MouseExit, listener);
 		volumeControl.setSize(64, 16);
 		return volumeControl;
+	}
+	
+	@Override
+	public void dispose() {
+		baseVolumeImage.dispose();
+		volumeImage.dispose();
+		super.dispose();
+	}
+	
+	@VisibleForTesting static interface IImageLocator {
+		public Image getImage(String imagePath);
+	}
+	
+	private static class ImageLocator implements IImageLocator {
+		@Override
+		public Image getImage(final String imagePath) {
+			return TinyAudioPlayerPlugin.getImageDescriptor(imagePath).createImage();
+		}
 	}
 }

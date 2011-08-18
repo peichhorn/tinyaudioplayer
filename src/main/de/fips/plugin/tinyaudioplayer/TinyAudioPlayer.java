@@ -21,24 +21,13 @@
  */
 package de.fips.plugin.tinyaudioplayer;
 
-import java.io.File;
-
 import lombok.Delegate;
-import lombok.VisibleForTesting;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
 
 import de.fips.plugin.tinyaudioplayer.audio.IPlaybackListener;
 import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
-import de.fips.plugin.tinyaudioplayer.io.AudioFileReader;
-import de.fips.plugin.tinyaudioplayer.io.PlaylistReader;
-import de.fips.plugin.tinyaudioplayer.io.PlaylistWriter;
 import de.fips.plugin.tinyaudioplayer.notifier.NotifierDialog;
 
 /**
@@ -48,26 +37,28 @@ import de.fips.plugin.tinyaudioplayer.notifier.NotifierDialog;
 public class TinyAudioPlayer {
 	@Delegate
 	private final PlaylistAudioPlayer player;
+	private final PlaylistIOHandler playlistIOHandler;
 
 	public TinyAudioPlayer() {
-		this(new PlaylistAudioPlayer());
+		this(new PlaylistAudioPlayer(), new PlaylistIOHandler());
 	}
 
-	public TinyAudioPlayer(final PlaylistAudioPlayer player) {
+	public TinyAudioPlayer(final PlaylistAudioPlayer player, final PlaylistIOHandler playlistIOHandler) {
 		super();
 		this.player = player;
 		this.player.setPlaybackHandler(new PlaybackHandler());
+		this.playlistIOHandler = playlistIOHandler;
 	}
 
 	public void enqueue() {
-		final Playlist newPlaylist = loadNewPlaylist();
+		final Playlist newPlaylist = playlistIOHandler.loadNewPlaylist();
 		if (newPlaylist != null) {
 			player.getPlaylist().add(newPlaylist);
 		}
 	}
 
 	public void eject() {
-		final Playlist newPlaylist = loadNewPlaylist();
+		final Playlist newPlaylist = playlistIOHandler.loadNewPlaylist();
 		if (newPlaylist != null) {
 			player.getPlaylist().clear();
 			player.getPlaylist().add(newPlaylist);
@@ -76,7 +67,7 @@ public class TinyAudioPlayer {
 	}
 
 	public void export() {
-		savePlaylist(player.getPlaylist());
+		playlistIOHandler.savePlaylist(player.getPlaylist());
 	}
 
 	public void removeSelected() {
@@ -85,42 +76,6 @@ public class TinyAudioPlayer {
 
 	public void removeDuplicates() {
 		player.getPlaylist().removeDuplicates();
-	}
-
-	@VisibleForTesting Playlist loadNewPlaylist() {
-		Playlist newPlaylist = null;
-		final Shell shell = new Shell(Display.getDefault());
-		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
-		final String audioFileExtensions = new AudioFileReader().formatExtensions();
-		final String playlistFileExtensions = new PlaylistReader().formatExtensions();
-		dialog.setFilterExtensions(new String[] { audioFileExtensions + ";" + playlistFileExtensions, audioFileExtensions, playlistFileExtensions });
-		dialog.setFilterNames(new String[] { "All Supported Files", new AudioFileReader().completeFormatName(), new PlaylistReader().completeFormatName() });
-		final String selectedFileName = dialog.open();
-		if (selectedFileName != null) {
-			final File selectedFile = new File(selectedFileName);
-			if (new AudioFileReader().canHandle(selectedFile)) {
-				newPlaylist = new AudioFileReader().read(selectedFile);
-			} else if (new PlaylistReader().canHandle(selectedFile)) {
-				newPlaylist = new PlaylistReader().read(selectedFile);
-			}
-		}
-		return newPlaylist;
-	}
-	
-	@VisibleForTesting void savePlaylist(final Playlist playlist) {
-		if (!playlist.isEmpty()) {
-			final Shell shell = new Shell(Display.getDefault());
-			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
-			dialog.setFilterExtensions(new String[] { new PlaylistWriter().formatExtensions() });
-			dialog.setFilterNames(new String[] { new PlaylistWriter().completeFormatName() });
-			final String selectedFileName = dialog.open();
-			if (selectedFileName != null) {
-				final File selectedFile = new File(selectedFileName);
-				if (new PlaylistWriter().canHandle(selectedFile)) {
-					new PlaylistWriter().write(selectedFile, playlist);
-				}
-			}
-		}
 	}
 
 	private class PlaybackHandler implements IPlaybackListener {

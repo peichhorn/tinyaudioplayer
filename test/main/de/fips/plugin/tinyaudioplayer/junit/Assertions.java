@@ -1,4 +1,4 @@
-package de.fips.plugin.tinyaudioplayer.assertions;
+package de.fips.plugin.tinyaudioplayer.junit;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

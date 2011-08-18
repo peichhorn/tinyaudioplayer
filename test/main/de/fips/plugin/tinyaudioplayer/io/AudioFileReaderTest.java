@@ -1,6 +1,6 @@
 package de.fips.plugin.tinyaudioplayer.io;
 
-import static de.fips.plugin.tinyaudioplayer.assertions.Assertions.assertThat;
+import static de.fips.plugin.tinyaudioplayer.junit.Assertions.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.File;
