@@ -36,8 +36,6 @@ import org.eclipse.swt.widgets.Composite;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
-import de.fips.plugin.tinyaudioplayer.http.EclipseProxyConfiguration;
-import de.fips.plugin.tinyaudioplayer.http.IProxyConfiguration;
 import de.fips.plugin.tinyaudioplayer.http.SoundCloudPlaylistProvider;
 import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistContentProvider;
 import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistItemLabelProvider;
@@ -45,18 +43,12 @@ import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistItemLabelProvider;
 public class FilterResultsPage extends WizardPage {
 	private CheckboxTableViewer viewer;
 	private Composite container;
-	private final SoundCloudPlaylistProvider playlistProvider;
 	private Thread soundCloudScanner;
-
-	public FilterResultsPage() {
-		this(new EclipseProxyConfiguration());
-	}
 	
-	public FilterResultsPage(final IProxyConfiguration proxyConfiguration) {
+	public FilterResultsPage() {
 		super("filter.results");
 		setTitle("Filter Results");
 		setDescription("Select the tracks you want to import.\nPlease note that it may take a few moments for the table to show results.");
-		playlistProvider = new SoundCloudPlaylistProvider().proxyConfiguration(proxyConfiguration);
 	}
 
 	@Override
@@ -102,7 +94,9 @@ public class FilterResultsPage extends WizardPage {
 		final IWizard wizard = getWizard();
 		if (wizard instanceof SoundCloudWizard) {
 			stopScanner();
-			startScanner(((SoundCloudWizard) getWizard()).getSearchText());
+			final String searchText = ((SoundCloudWizard) getWizard()).getSearchText();
+			final SoundCloudPlaylistProvider playlistProvider = ((SoundCloudWizard) getWizard()).getPlaylistProvider();
+			startScanner(searchText, playlistProvider);
 		}
 	}
 
@@ -113,7 +107,7 @@ public class FilterResultsPage extends WizardPage {
 		soundCloudScanner = null;
 	}
 	
-	private void startScanner(final String searchText) {
+	private void startScanner(final String searchText, final SoundCloudPlaylistProvider playlistProvider) {
 		soundCloudScanner = new Thread("Scan Soundcloud for: '" + searchText + "'") {
 			@Override
 			public void run() {

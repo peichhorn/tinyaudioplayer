@@ -18,7 +18,7 @@ public class TinyAudioPlayerTest {
 		final PlaylistIOHandler playlistIOHandler = mock(PlaylistIOHandler.class);
 		final TinyAudioPlayer player = new TinyAudioPlayer(internalPlayer, playlistIOHandler);
 		doReturn(internalPlayersPlaylist).when(internalPlayer).getPlaylist();
-		doReturn(newPlaylist).when(playlistIOHandler).loadNewPlaylist();
+		doReturn(newPlaylist).when(playlistIOHandler).loadPlaylist();
 		// run
 		player.enqueue();
 		// assert
@@ -34,7 +34,7 @@ public class TinyAudioPlayerTest {
 		final PlaylistIOHandler playlistIOHandler = mock(PlaylistIOHandler.class);
 		final TinyAudioPlayer player = new TinyAudioPlayer(internalPlayer, playlistIOHandler);
 		doReturn(internalPlayersPlaylist).when(internalPlayer).getPlaylist();
-		doReturn(newPlaylist).when(playlistIOHandler).loadNewPlaylist();
+		doReturn(newPlaylist).when(playlistIOHandler).loadPlaylist();
 		// run
 		player.eject();
 		// assert
@@ -68,7 +68,7 @@ public class TinyAudioPlayerTest {
 		final PlaylistIOHandler playlistIOHandler = mock(PlaylistIOHandler.class);
 		final TinyAudioPlayer player = new TinyAudioPlayer(internalPlayer, playlistIOHandler);
 		doReturn(internalPlayersPlaylist).when(internalPlayer).getPlaylist();
-		doReturn(newPlaylist).when(playlistIOHandler).loadNewPlaylist();
+		doReturn(newPlaylist).when(playlistIOHandler).loadPlaylist();
 		// run
 		player.removeSelected();
 		// assert

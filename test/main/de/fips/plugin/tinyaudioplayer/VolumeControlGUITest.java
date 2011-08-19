@@ -9,37 +9,39 @@ import lombok.SneakyThrows;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.junit.Rule;
+import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
+import org.eclipse.swtbot.swt.finder.results.VoidResult;
+import org.eclipse.swtbot.swt.finder.utils.SWTUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 import de.fips.plugin.tinyaudioplayer.VolumeControl.IImageLocator;
-import de.fips.plugin.tinyaudioplayer.junit.SWTBotApplication;
+import de.fips.plugin.tinyaudioplayer.junit.SWTBotApplicationTestRunner;
 import de.fips.plugin.tinyaudioplayer.junit.SWTBotVolumeControl;
 
+@RunWith(SWTBotApplicationTestRunner.class)
 public class VolumeControlGUITest {
-	@Rule
-	public final SWTBotApplication application = new SWTBotApplication(getClass().getSimpleName()) {
-		@Override
-		protected void configureShell(final Shell shell) {
-			final IImageLocator locator = new IImageLocator() {
-				@SneakyThrows
-				@Override
-				public Image getImage(final String imagePath) {
-					return ImageDescriptor.createFromURL(new File(imagePath).toURI().toURL()).createImage();
-				}
-			};
-			new VolumeControl(locator).createControl(shell);
-		}
-	};
 
 	@Test
-	public void test() throws Exception {
+	public void changesVolumeOfPlayer() throws Exception {
 		// setup
+		UIThreadRunnable.syncExec(new VoidResult() {
+			@Override
+			public void run() {
+				final IImageLocator locator = new IImageLocator() {
+					@SneakyThrows
+					@Override
+					public Image getImage(final String imagePath) {
+						return ImageDescriptor.createFromURL(new File(imagePath).toURI().toURL()).createImage();
+					}
+				};
+				new VolumeControl(locator).createControl(SWTUtils.display().getActiveShell());
+			}
+		});
 		final SWTBot bot = new SWTBot();
 		final TinyAudioPlayer player = mock(TinyAudioPlayer.class);
 		final BundleContext context = mock(BundleContext.class);

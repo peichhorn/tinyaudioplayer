@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class PlaylistItemTest {
 	@Test
-	public void test_getBitRate() {
+	public void test_getDisplayableBitRate() {
 		// setup
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		// run + assert
@@ -19,7 +19,7 @@ public class PlaylistItemTest {
 	}
 
 	@Test
-	public void test_getBitRate_withInfoTag() {
+	public void test_getDisplayableBitRate_withInfoTag() {
 		// setup
 		final PlaylistItem item1 = spy(new PlaylistItem("Track 1", uriOfTrack(), 220));
 		final PlaylistItemTag tag1 = playlistItemTag().bitRate(192000).build();
@@ -29,7 +29,7 @@ public class PlaylistItemTest {
 	}
 
 	@Test
-	public void test_getSampleRate() {
+	public void test_getDisplayableSampleRate() {
 		// setup
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		// run + assert
@@ -37,7 +37,7 @@ public class PlaylistItemTest {
 	}
 
 	@Test
-	public void test_getSampleRate_withInfoTag() {
+	public void test_getDisplayableSampleRate_withInfoTag() {
 		// setup
 		final PlaylistItem item1 = spy(new PlaylistItem("Track 1", uriOfTrack(), 220));
 		final PlaylistItemTag tag1 = playlistItemTag().samplingRate(44100).build();

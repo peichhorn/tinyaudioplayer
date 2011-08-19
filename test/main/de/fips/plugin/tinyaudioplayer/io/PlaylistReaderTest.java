@@ -55,14 +55,14 @@ public class PlaylistReaderTest {
 		// assert
 		assertThat(playlist).hasSize(3);
 		assertThat(playlist.getCurrentTrack()).hasName("Artist - Track 01") //
-				.hasLocation(new File("01 - Track 01.mp3")) //
-				.hasLength(220);
+			.hasLocation(new File("01 - Track 01.mp3")) //
+			.hasLength(220);
 		assertThat(playlist.getNextTrack()).hasName("Author - Book - Chapter 03 - Title") //
-				.hasLocation(new File("Chapter 03 - Title.mp3")) //
-				.hasLength(1167);
+			.hasLocation(new File("Chapter 03 - Title.mp3")) //
+			.hasLength(1167);
 		assertThat(playlist.getNextTrack()).hasName("Chapter 04 - Title") //
-				.hasLocation(new File("Chapter 04 - Title.mp3")) //
-				.hasLength(0);
+			.hasLocation(new File("Chapter 04 - Title.mp3")) //
+			.hasLength(0);
 	}
 
 	@Test
@@ -75,14 +75,14 @@ public class PlaylistReaderTest {
 		// assert
 		assertThat(playlist).hasSize(3);
 		assertThat(playlist.getCurrentTrack()).hasName("Artist - Track 01") //
-				.hasLocation(new File("01 - Track 01.mp3")) //
-				.hasLength(220);
+			.hasLocation(new File("01 - Track 01.mp3")) //
+			.hasLength(220);
 		assertThat(playlist.getNextTrack()).hasName("Author - Book - Chapter 03 - Title") //
-				.hasLocation(new File("Chapter 03 - Title.mp3")) //
-				.hasLength(1167);
+			.hasLocation(new File("Chapter 03 - Title.mp3")) //
+			.hasLength(1167);
 		assertThat(playlist.getNextTrack()).hasName("Chapter 04 - Title") //
-				.hasLocation(new File("Chapter 04 - Title.mp3")) //
-				.hasLength(0);
+			.hasLocation(new File("Chapter 04 - Title.mp3")) //
+			.hasLength(0);
 	}
 
 	private File file(String path) throws Exception {

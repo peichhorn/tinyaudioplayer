@@ -21,6 +21,10 @@
  */
 package de.fips.plugin.tinyaudioplayer.wizards.soundcloud;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
@@ -28,14 +32,18 @@ import org.eclipse.ui.IWorkbench;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
+import de.fips.plugin.tinyaudioplayer.http.SoundCloudPlaylistProvider;
 
 public class SoundCloudWizard extends Wizard implements IImportWizard {
 	private SearchPage searchPage;
 	private FilterResultsPage filterResultsPage;
+	@Getter(AccessLevel.PACKAGE) @Setter
+	private SoundCloudPlaylistProvider playlistProvider;
 
 	public SoundCloudWizard() {
 		super();
 		setNeedsProgressMonitor(true);
+		setWindowTitle("Import from Soundcloud");
 	}
 
 	@Override

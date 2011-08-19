@@ -6,23 +6,25 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.io.File;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
+import org.eclipse.swtbot.swt.finder.results.VoidResult;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
 
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
-import de.fips.plugin.tinyaudioplayer.junit.SWTBotApplication;
+import de.fips.plugin.tinyaudioplayer.junit.SWTBotApplicationTestRunner;
 
+@RunWith(SWTBotApplicationTestRunner.class)
 public class PlaylistIOHandlerGUITest {
-	@Rule
-	public final SWTBotApplication application = new SWTBotApplication(getClass().getSimpleName());
 	@Rule
 	public TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Test
-	public void loadNewPlaylist() throws Exception {
+	public void loadPlaylist() throws Exception {
 		// setup
 		FileChooser.IS_IN_TEST_MODE = true;
 		final SWTBot bot = new SWTBot();
@@ -30,28 +32,27 @@ public class PlaylistIOHandlerGUITest {
 		final File testFile = file("io/playlist.m3u");
 		final Playlist[] playlists = new Playlist[1];
 		// run
-		bot.getDisplay().asyncExec(new Runnable() {
+		UIThreadRunnable.asyncExec(new VoidResult() {
 			@Override
 			public void run() {
-				playlists[0] = handler.loadNewPlaylist();
+				playlists[0] = handler.loadPlaylist();
 			}
 		});
 		final SWTBotShell shell = bot.shell("FileChooser");
 		shell.bot().text(0).setText(testFile.getAbsolutePath());
 		shell.bot().button("OK").click();
-		shell.close();
 		// assert
 		final Playlist playlist = playlists[0];
 		assertThat(playlist).hasSize(3);
 		assertThat(playlist.getCurrentTrack()).hasName("Artist - Track 01") //
-				.hasLocation(new File("01 - Track 01.mp3")) //
-				.hasLength(220);
+			.hasLocation(new File("01 - Track 01.mp3")) //
+			.hasLength(220);
 		assertThat(playlist.getNextTrack()).hasName("Author - Book - Chapter 03 - Title") //
-				.hasLocation(new File("Chapter 03 - Title.mp3")) //
-				.hasLength(1167);
+			.hasLocation(new File("Chapter 03 - Title.mp3")) //
+			.hasLength(1167);
 		assertThat(playlist.getNextTrack()).hasName("Chapter 04 - Title") //
-				.hasLocation(new File("Chapter 04 - Title.mp3")) //
-				.hasLength(0);
+			.hasLocation(new File("Chapter 04 - Title.mp3")) //
+			.hasLength(0);
 	}
 
 	@Test
@@ -64,7 +65,7 @@ public class PlaylistIOHandlerGUITest {
 		final File testFile = new File(testDir, "playlist.m3u");
 		final Playlist playlist = createPlaylist(testDir);
 		// run
-		bot.getDisplay().asyncExec(new Runnable() {
+		UIThreadRunnable.asyncExec(new VoidResult() {
 			@Override
 			public void run() {
 				handler.savePlaylist(playlist);

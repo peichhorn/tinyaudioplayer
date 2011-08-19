@@ -21,7 +21,7 @@ public class PlaylistIOHandler {
 		this(Display.getDefault());
 	}
 
-	public Playlist loadNewPlaylist() {
+	public Playlist loadPlaylist() {
 		Playlist newPlaylist = null;
 		final Shell shell = display.getActiveShell();
 		final FileChooser dialog = new FileChooser(shell, SWT.OPEN);

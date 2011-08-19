@@ -13,7 +13,7 @@ import org.junit.Test;
 public class PlaylistTest {
 
 	@Test
-	public void test_add_nullsafe() {
+	public void test_add_isNullsafe() {
 		// run + assert
 		new Playlist().add((PlaylistItem) null);
 		new Playlist().add((List<PlaylistItem>) null);
@@ -108,14 +108,14 @@ public class PlaylistTest {
 		assertThat(duplicatesRemoved).isEqualTo(4);
 		assertThat(playlist).hasSize(3);
 		assertThat(playlist.getCurrentTrack()).hasName("Track 01") //
-				.hasLocation(new File("01 - Track 01.mp3")) //
-				.hasLength(110);
+			.hasLocation(new File("01 - Track 01.mp3")) //
+			.hasLength(110);
 		assertThat(playlist.getNextTrack()).hasName("Track 02") //
-				.hasLocation(new File("02 - Track 02.mp3")) //
-				.hasLength(220);
+			.hasLocation(new File("02 - Track 02.mp3")) //
+			.hasLength(220);
 		assertThat(playlist.getNextTrack()).hasName("Track 03") //
-				.hasLocation(new File("03 - Track 03.mp3")) //
-				.hasLength(330);
+			.hasLocation(new File("03 - Track 03.mp3")) //
+			.hasLength(330);
 	}
 
 	@Test

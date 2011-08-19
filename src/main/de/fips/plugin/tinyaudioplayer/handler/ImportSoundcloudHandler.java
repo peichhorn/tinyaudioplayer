@@ -27,6 +27,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import de.fips.plugin.tinyaudioplayer.http.EclipseProxyConfiguration;
+import de.fips.plugin.tinyaudioplayer.http.SoundCloudPlaylistProvider;
 import de.fips.plugin.tinyaudioplayer.wizards.soundcloud.SoundCloudWizard;
 
 public final class ImportSoundcloudHandler extends AbstractHandler {
@@ -34,6 +36,7 @@ public final class ImportSoundcloudHandler extends AbstractHandler {
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		final SoundCloudWizard wizard = new SoundCloudWizard();
+		wizard.setPlaylistProvider(new SoundCloudPlaylistProvider().proxyConfiguration(new EclipseProxyConfiguration()));
 		final WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShell(event), wizard);
 		dialog.open();
 		return null;

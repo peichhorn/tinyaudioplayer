@@ -56,6 +56,7 @@ public class SearchPage extends WizardPage {
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
 		searchText = new Text(container, SWT.BORDER | SWT.SINGLE);
+		searchText.setData("org.eclipse.swtbot.widget.key", "searchText");
 		searchText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {

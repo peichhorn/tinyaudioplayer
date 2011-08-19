@@ -51,14 +51,14 @@ public class TinyAudioPlayer {
 	}
 
 	public void enqueue() {
-		final Playlist newPlaylist = playlistIOHandler.loadNewPlaylist();
+		final Playlist newPlaylist = playlistIOHandler.loadPlaylist();
 		if (newPlaylist != null) {
 			player.getPlaylist().add(newPlaylist);
 		}
 	}
 
 	public void eject() {
-		final Playlist newPlaylist = playlistIOHandler.loadNewPlaylist();
+		final Playlist newPlaylist = playlistIOHandler.loadPlaylist();
 		if (newPlaylist != null) {
 			player.getPlaylist().clear();
 			player.getPlaylist().add(newPlaylist);

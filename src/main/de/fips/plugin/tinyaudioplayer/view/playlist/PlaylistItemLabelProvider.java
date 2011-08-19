@@ -53,16 +53,18 @@ public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
 
 	public String getToolTipText(Object element) {
 		final PlaylistItem item = (PlaylistItem) element;
-		final PlaylistItemTag tag = item.getInfoTag();
 		final StringBuilder text = new StringBuilder();
-		if (StringUtils.isNotEmpty(tag.getAlbum())) {
-			text.append("album: ").append(tag.getAlbum()).append("\n");
-		}
-		if (StringUtils.isNotEmpty(tag.getGenre())) {
-			text.append("genre: ").append(tag.getGenre()).append("\n");
-		}
-		if (StringUtils.isNotEmpty(tag.getYear())) {
-			text.append("year: ").append(tag.getYear()).append("\n");
+		final PlaylistItemTag tag = item.getInfoTag();
+		if (tag != null) {
+			if (StringUtils.isNotEmpty(tag.getAlbum())) {
+				text.append("album: ").append(tag.getAlbum()).append("\n");
+			}
+			if (StringUtils.isNotEmpty(tag.getGenre())) {
+				text.append("genre: ").append(tag.getGenre()).append("\n");
+			}
+			if (StringUtils.isNotEmpty(tag.getYear())) {
+				text.append("year: ").append(tag.getYear()).append("\n");
+			}
 		}
 		text.append("channels: ").append(item.getDisplayableChannels()).append("\n");
 		text.append("sampling rate: ").append(item.getDisplayableSampleRate()).append("\n");
