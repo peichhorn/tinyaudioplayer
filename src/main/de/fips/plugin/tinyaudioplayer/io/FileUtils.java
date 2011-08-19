@@ -88,30 +88,6 @@ public final class FileUtils {
 		return path.toString();
 	}
 
-	public static boolean removeDirectory(final File directory) {
-		if (directory == null) {
-			return false;
-		} else if (!directory.exists()) {
-			return true;
-		} else if (!directory.isDirectory()) {
-			return false;
-		}
-		final String[] list = directory.list();
-		if (list != null) {
-			for (String file : list) {
-				File entry = new File(directory, file);
-				if (entry.isDirectory()) {
-					if (!removeDirectory(entry)) {
-						return false;
-					}
-				} else if (!entry.delete()) {
-					return false;
-				}
-			}
-		}
-		return directory.delete();
-	}
-
 	private static List<String> getDelimitedStringAsList(final String str, final String delimiter) {
 		final List<String> resultList = new ArrayList<String>();
 		final StringTokenizer st = new StringTokenizer(str, delimiter);
