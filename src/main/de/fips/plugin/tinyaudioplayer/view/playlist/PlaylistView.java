@@ -21,7 +21,9 @@
  */
 package de.fips.plugin.tinyaudioplayer.view.playlist;
 
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -42,6 +44,7 @@ public class PlaylistView extends ViewPart {
 		viewer.setLabelProvider(new PlaylistItemLabelProvider(player));
 		viewer.getTable().addKeyListener(new PlaylistKeyListener(player));
 		viewer.setInput(player.getPlaylist());
+		ColumnViewerToolTipSupport.enableFor(viewer, ToolTip.RECREATE);
 	}
 
 	@Override

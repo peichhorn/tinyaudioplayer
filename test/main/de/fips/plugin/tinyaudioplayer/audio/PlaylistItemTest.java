@@ -15,7 +15,7 @@ public class PlaylistItemTest {
 		// setup
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		// run + assert
-		assertThat(item1.getBitRate()).isEqualTo(-1);
+		assertThat(item1.getDisplayableBitRate()).isEqualTo("unknown");
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class PlaylistItemTest {
 		final PlaylistItemTag tag1 = playlistItemTag().bitRate(192000).build();
 		doReturn(tag1).when(item1).getInfoTag();
 		// run + assert
-		assertThat(item1.getBitRate()).isEqualTo(192000);
+		assertThat(item1.getDisplayableBitRate()).isEqualTo("192000 bit/s");
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class PlaylistItemTest {
 		// setup
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		// run + assert
-		assertThat(item1.getSampleRate()).isEqualTo(-1);
+		assertThat(item1.getDisplayableSampleRate()).isEqualTo("unknown");
 	}
 
 	@Test
@@ -43,25 +43,25 @@ public class PlaylistItemTest {
 		final PlaylistItemTag tag1 = playlistItemTag().samplingRate(44100).build();
 		doReturn(tag1).when(item1).getInfoTag();
 		// run + assert
-		assertThat(item1.getSampleRate()).isEqualTo(44100);
+		assertThat(item1.getDisplayableSampleRate()).isEqualTo("44100 Hz");
 	}
 
 	@Test
-	public void test_getChannels() {
+	public void test_getDisplayableChannels() {
 		// setup
 		final PlaylistItem item1 = new PlaylistItem("Track 1", uriOfTrack(), 220);
 		// run + assert
-		assertThat(item1.getChannels()).isEqualTo(-1);
+		assertThat(item1.getDisplayableChannels()).isEqualTo("unknown");
 	}
 
 	@Test
-	public void test_getChannels_withInfoTag() {
+	public void test_getDisplayableChannels_withInfoTag() {
 		// setup
 		final PlaylistItem item1 = spy(new PlaylistItem("Track 1", uriOfTrack(), 220));
 		final PlaylistItemTag tag1 = playlistItemTag().channels(2).build();
 		doReturn(tag1).when(item1).getInfoTag();
 		// run + assert
-		assertThat(item1.getChannels()).isEqualTo(2);
+		assertThat(item1.getDisplayableChannels()).isEqualTo("stereo");
 	}
 
 	@Test

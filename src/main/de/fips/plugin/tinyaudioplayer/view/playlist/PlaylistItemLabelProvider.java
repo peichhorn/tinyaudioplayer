@@ -23,6 +23,7 @@ package de.fips.plugin.tinyaudioplayer.view.playlist;
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
@@ -30,6 +31,7 @@ import org.eclipse.swt.graphics.Color;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag;
 
 @RequiredArgsConstructor
 public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
@@ -37,7 +39,7 @@ public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
 
 	@Override
 	public void update(final ViewerCell cell) {
-		final PlaylistItem item = (PlaylistItem)cell.getElement();
+		final PlaylistItem item = (PlaylistItem) cell.getElement();
 		cell.setText(item.getDisplayableName());
 		if (player != null) {
 			final Playlist playlist = player.getPlaylist();
@@ -47,5 +49,24 @@ public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
 				cell.setBackground(new Color(null, 255, 255, 255));
 			}
 		}
+	}
+
+	public String getToolTipText(Object element) {
+		final PlaylistItem item = (PlaylistItem) element;
+		final PlaylistItemTag tag = item.getInfoTag();
+		final StringBuilder text = new StringBuilder();
+		if (StringUtils.isNotEmpty(tag.getAlbum())) {
+			text.append("album: ").append(tag.getAlbum()).append("\n");
+		}
+		if (StringUtils.isNotEmpty(tag.getGenre())) {
+			text.append("genre: ").append(tag.getGenre()).append("\n");
+		}
+		if (StringUtils.isNotEmpty(tag.getYear())) {
+			text.append("year: ").append(tag.getYear()).append("\n");
+		}
+		text.append("channels: ").append(item.getDisplayableChannels()).append("\n");
+		text.append("sampling rate: ").append(item.getDisplayableSampleRate()).append("\n");
+		text.append("bitrate: ").append(item.getDisplayableBitRate());
+		return text.toString();
 	}
 }

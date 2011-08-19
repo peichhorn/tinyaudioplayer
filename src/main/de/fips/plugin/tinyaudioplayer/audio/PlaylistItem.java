@@ -53,19 +53,26 @@ public class PlaylistItem {
 		return ((tag == null) || (tag.getPlayTime() <= 0)) ? seconds : tag.getPlayTime();
 	}
 
-	public int getBitRate() {
+	public String getDisplayableBitRate() {
 		final PlaylistItemTag tag = getInfoTag();
-		return (tag == null) ? -1 : tag.getBitRate();
+		final int bitRate = (tag == null) ? -1 : tag.getBitRate();
+		return (bitRate < 1) ? "unknown" : bitRate + " bit/s";
 	}
 
-	public int getSampleRate() {
+	public String getDisplayableSampleRate() {
 		final PlaylistItemTag tag = getInfoTag();
-		return (tag == null) ? -1 : tag.getSamplingRate();
+		final int sampleRate = (tag == null) ? -1 : tag.getSamplingRate();
+		return (sampleRate < 1) ? "unknown" : sampleRate + " Hz";
 	}
 
-	public int getChannels() {
+	public String getDisplayableChannels() {
 		final PlaylistItemTag tag = getInfoTag();
-		return (tag == null) ? -1 : tag.getChannels();
+		final int channels = (tag == null) ? -1 : tag.getChannels();
+		switch(channels) {
+		case 1: return "mono";
+		case 2: return "stereo";
+		default: return (channels < 1) ? "unknown" : channels + "-channel";
+		}
 	}
 
 	public String getDisplayableLength() {
@@ -84,9 +91,9 @@ public class PlaylistItem {
 		final PlaylistItemTag tag = getInfoTag();
 		final StringBuilder builder = new StringBuilder();
 		if (tag != null) {
-			if (!(StringUtils.isEmpty(tag.getTitle()) || StringUtils.isEmpty(tag.getArtist()))) {
+			if (StringUtils.isNotEmpty(tag.getTitle()) && StringUtils.isNotEmpty(tag.getArtist())) {
 				builder.append(tag.getArtist()).append(" - ").append(tag.getTitle());
-			} else if (!StringUtils.isEmpty(tag.getTitle())) {
+			} else if (StringUtils.isNotEmpty(tag.getTitle())) {
 				builder.append(tag.getTitle());
 			} else {
 				builder.append(name);
