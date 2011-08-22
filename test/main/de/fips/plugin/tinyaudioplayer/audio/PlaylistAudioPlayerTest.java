@@ -78,8 +78,9 @@ public class PlaylistAudioPlayerTest {
 		// run
 		player.stop();
 		// assert
-		verify(internalPlayer, never()).removePlaybackListener(any(IPlaybackListener.class));
-		verify(internalPlayer, never()).stop();
+		final InOrder inorder = inOrder(internalPlayer);
+		inorder.verify(internalPlayer, never()).removePlaybackListener(any(IPlaybackListener.class));
+		inorder.verify(internalPlayer, never()).stop();
 	}
 
 	@Test
