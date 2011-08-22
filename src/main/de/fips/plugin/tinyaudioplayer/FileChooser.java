@@ -35,10 +35,6 @@ public class FileChooser {
 	
 	public final FileDialog dialog;
 
-	public FileChooser(final Shell parent) {
-		dialog = new FileDialog(parent);
-	}
-
 	public FileChooser(final Shell parent, int style) {
 		dialog = new FileDialog(parent, style);
 	}

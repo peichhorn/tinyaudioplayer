@@ -21,15 +21,13 @@
  */
 package de.fips.plugin.tinyaudioplayer.audio;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 /**
  *
  * @author: Philipp Eichhorn
  */
-@Builder(AccessLevel.PACKAGE)
+@Builder
 @Getter
 public class PlaylistItemTag {
 	private int samplingRate = 0;

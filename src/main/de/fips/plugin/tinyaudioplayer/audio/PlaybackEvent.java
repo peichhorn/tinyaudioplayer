@@ -21,7 +21,7 @@
  */
 package de.fips.plugin.tinyaudioplayer.audio;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  * @author Philipp Eichhorn
  */
 @RequiredArgsConstructor
-@Data
+@Getter
 public class PlaybackEvent {
 	public enum Type {
 		Started, Paused, Resumed, Progress, Finished, Canceled

@@ -25,6 +25,7 @@ import java.net.URI;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.VisibleForTesting;
 
 /**
  *
@@ -61,7 +62,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 
 	private void play(final URI location) {
 		stop();
-		player = new SingleTrackAudioPlayer(location, volume, mute);
+		player = createInternalPlayer(location, volume, mute);
 		if (playbackListener != null) {
 			player.addPlaybackListener(playbackListener);
 		}
@@ -132,5 +133,9 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		if (player != null) {
 			player.setVolume(volume);
 		}
+	}
+
+	@VisibleForTesting SingleTrackAudioPlayer createInternalPlayer(final URI location, final float volume, final boolean mute) {
+		return new SingleTrackAudioPlayer(location, volume, mute);
 	}
 }

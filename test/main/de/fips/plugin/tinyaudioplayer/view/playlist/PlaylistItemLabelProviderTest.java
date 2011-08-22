@@ -1,9 +1,11 @@
 package de.fips.plugin.tinyaudioplayer.view.playlist;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag.playlistItemTag;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.io.File;
 
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
@@ -12,6 +14,7 @@ import org.junit.Test;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
+import de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag;
 import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistItemLabelProvider;
 
 public class PlaylistItemLabelProviderTest {
@@ -67,5 +70,42 @@ public class PlaylistItemLabelProviderTest {
 		labelProvider.update(cell);
 		// assert
 		verify(cell).setBackground(eq(new Color(null, 255, 255, 255)));
+	}
+
+	@Test
+	public void test_getToolTipText() throws Exception {
+		// setup
+		final TinyAudioPlayer player = mock(TinyAudioPlayer.class);
+		final PlaylistItemTag tag = playlistItemTag() //
+				.channels(2) //
+				.samplingRate(44100) //
+				.bitRate(192000) //
+				.album("Album 01").genre("Audiobook").year("2002").build();
+		final PlaylistItem item = spy(new PlaylistItem("Track 01", new File("01 - Track 01.mp3").toURI(), 220));
+		doReturn(tag).when(item).getInfoTag();
+		final PlaylistItemLabelProvider labelProvider = new PlaylistItemLabelProvider(player);
+		// run
+		final String tooltip = labelProvider.getToolTipText(item);
+		// assert
+		assertThat(tooltip).isEqualTo("album: Album 01\n" + //
+				"genre: Audiobook\n" + //
+				"year: 2002\n" + //
+				"channels: stereo\n" + //
+				"sampling rate: 44100 Hz\n" + //
+				"bitrate: 192000 bit/s");
+	}
+
+	@Test
+	public void test_getToolTipText_unknown() throws Exception {
+		// setup
+		final TinyAudioPlayer player = mock(TinyAudioPlayer.class);
+		final PlaylistItem item = new PlaylistItem("Track 01", new File("01 - Track 01.mp3").toURI(), -1);
+		final PlaylistItemLabelProvider labelProvider = new PlaylistItemLabelProvider(player);
+		// run
+		final String tooltip = labelProvider.getToolTipText(item);
+		// assert
+		assertThat(tooltip).isEqualTo("channels: unknown\n" + //
+				"sampling rate: unknown\n" + //
+				"bitrate: unknown");
 	}
 }
