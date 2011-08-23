@@ -1,6 +1,8 @@
 package de.fips.plugin.tinyaudioplayer.view.playlist;
 
 import static de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag.playlistItemTag;
+import static de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistItemLabelProvider.GREY;
+import static de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistItemLabelProvider.WHITE;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -19,7 +21,7 @@ import de.fips.plugin.tinyaudioplayer.view.playlist.PlaylistItemLabelProvider;
 
 public class PlaylistItemLabelProviderTest {
 	@Test
-	public void whenInvoked_update_shouldUseFormattedDisplayNameAsText() throws Exception {
+	public void whenInvoked_update_shouldUseDisplayNameAsText() throws Exception {
 		// setup
 		final TinyAudioPlayer player = mock(TinyAudioPlayer.class);
 		doReturn(mock(Playlist.class)).when(player).getPlaylist();
@@ -50,7 +52,7 @@ public class PlaylistItemLabelProviderTest {
 		// run
 		labelProvider.update(cell);
 		// assert
-		verify(cell).setBackground(eq(new Color(null, 225, 225, 225)));
+		verify(cell).setBackground(eq(new Color(null, GREY)));
 	}
 
 	@Test
@@ -69,7 +71,7 @@ public class PlaylistItemLabelProviderTest {
 		// run
 		labelProvider.update(cell);
 		// assert
-		verify(cell).setBackground(eq(new Color(null, 255, 255, 255)));
+		verify(cell).setBackground(eq(new Color(null, WHITE)));
 	}
 
 	@Test

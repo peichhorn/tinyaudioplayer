@@ -13,7 +13,9 @@ import org.mockito.InOrder;
 public class PlaylistAudioPlayerTest {
 	private IPlaybackListener playbackListener;
 	private Playlist playlist;
-	private URI location;
+	private URI location1;
+	private URI location2;
+	private URI location3;
 	private PlaylistAudioPlayer player;
 	private SingleTrackAudioPlayer internalPlayer;
 	
@@ -22,8 +24,12 @@ public class PlaylistAudioPlayerTest {
 		// setup
 		playbackListener = mock(IPlaybackListener.class);
 		playlist = spy(new Playlist());
-		location = new File("Track 01.mp3").toURI();
-		playlist.add(new PlaylistItem("Track 01", location, 220));
+		location1 = new File("Track 01.mp3").toURI();
+		playlist.add(new PlaylistItem("Track 01", location1, 220));
+		location2 = new File("Track 02.mp3").toURI();
+		playlist.add(new PlaylistItem("Track 02", location2, 220));
+		location3 = new File("Track 03.mp3").toURI();
+		playlist.add(new PlaylistItem("Track 03", location3, 220));
 		player = spy(new PlaylistAudioPlayer(playlist));
 		internalPlayer = mock(SingleTrackAudioPlayer.class);
 		player.setPlaybackHandler(playbackListener);
@@ -35,7 +41,7 @@ public class PlaylistAudioPlayerTest {
 		// run
 		player.play();
 		// assert
-		verify(player).createInternalPlayer(eq(location), anyFloat(), anyBoolean());
+		verify(player).createInternalPlayer(eq(location1), anyFloat(), anyBoolean());
 		final InOrder inorder = inOrder(internalPlayer);
 		inorder.verify(internalPlayer).addPlaybackListener(eq(playbackListener));
 		inorder.verify(internalPlayer).play();
@@ -47,7 +53,7 @@ public class PlaylistAudioPlayerTest {
 		player.play();
 		player.play();
 		// assert
-		verify(player, times(2)).createInternalPlayer(eq(location), anyFloat(), anyBoolean());
+		verify(player, times(2)).createInternalPlayer(eq(location1), anyFloat(), anyBoolean());
 		final InOrder inorder = inOrder(internalPlayer);
 		inorder.verify(internalPlayer).addPlaybackListener(eq(playbackListener));
 		inorder.verify(internalPlayer).play();
@@ -65,7 +71,7 @@ public class PlaylistAudioPlayerTest {
 		doReturn(true).when(internalPlayer).isPaused();
 		player.play();
 		// assert
-		verify(player).createInternalPlayer(eq(location), anyFloat(), anyBoolean());
+		verify(player).createInternalPlayer(eq(location1), anyFloat(), anyBoolean());
 		final InOrder inorder = inOrder(internalPlayer);
 		inorder.verify(internalPlayer).addPlaybackListener(eq(playbackListener));
 		inorder.verify(internalPlayer).play();
@@ -78,9 +84,7 @@ public class PlaylistAudioPlayerTest {
 		// run
 		player.stop();
 		// assert
-		final InOrder inorder = inOrder(internalPlayer);
-		inorder.verify(internalPlayer, never()).removePlaybackListener(any(IPlaybackListener.class));
-		inorder.verify(internalPlayer, never()).stop();
+		verifyZeroInteractions(internalPlayer);
 	}
 
 	@Test
@@ -91,7 +95,7 @@ public class PlaylistAudioPlayerTest {
 		doReturn(true).when(internalPlayer).isPaused();
 		player.pause();
 		// assert
-		verify(player).createInternalPlayer(eq(location), anyFloat(), anyBoolean());
+		verify(player).createInternalPlayer(eq(location1), anyFloat(), anyBoolean());
 		final InOrder inorder = inOrder(internalPlayer);
 		inorder.verify(internalPlayer).addPlaybackListener(eq(playbackListener));
 		inorder.verify(internalPlayer).play();
@@ -109,13 +113,17 @@ public class PlaylistAudioPlayerTest {
 
 	@Test
 	public void whenInternalPlayerIsRunning_previous_shouldStopRunningInternalPlayerAndPlayPreviousTrack() {
+		// setup
+		player.toggleRepeat();
 		// run
 		player.play();
 		player.previous();
 		// assert
-		verify(player, times(2)).createInternalPlayer(eq(location), anyFloat(), anyBoolean());
 		verify(playlist).previous();
-		final InOrder inorder = inOrder(internalPlayer);
+		InOrder inorder = inOrder(player);
+		inorder.verify(player).createInternalPlayer(eq(location1), anyFloat(), anyBoolean());
+		inorder.verify(player).createInternalPlayer(eq(location3), anyFloat(), anyBoolean());
+		inorder = inOrder(internalPlayer);
 		inorder.verify(internalPlayer).addPlaybackListener(eq(playbackListener));
 		inorder.verify(internalPlayer).play();
 		inorder.verify(internalPlayer).stop();
@@ -138,9 +146,11 @@ public class PlaylistAudioPlayerTest {
 		player.play();
 		player.next();
 		// assert
-		verify(player, times(2)).createInternalPlayer(eq(location), anyFloat(), anyBoolean());
 		verify(playlist).next();
-		final InOrder inorder = inOrder(internalPlayer);
+		InOrder inorder = inOrder(player);
+		inorder.verify(player).createInternalPlayer(eq(location1), anyFloat(), anyBoolean());
+		inorder.verify(player).createInternalPlayer(eq(location2), anyFloat(), anyBoolean());
+		inorder = inOrder(internalPlayer);
 		inorder.verify(internalPlayer).addPlaybackListener(eq(playbackListener));
 		inorder.verify(internalPlayer).play();
 		inorder.verify(internalPlayer).stop();

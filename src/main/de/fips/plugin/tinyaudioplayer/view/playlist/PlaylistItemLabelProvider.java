@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
@@ -35,6 +36,9 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag;
 
 @RequiredArgsConstructor
 public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
+	static RGB GREY = new RGB(225, 225, 225);
+	static RGB WHITE = new RGB(255, 255, 255);
+	
 	private final TinyAudioPlayer player;
 
 	@Override
@@ -44,9 +48,9 @@ public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
 		if (player != null) {
 			final Playlist playlist = player.getPlaylist();
 			if (!playlist.isEmpty() && (item.equals(playlist.getCurrentTrack()))) {
-				cell.setBackground(new Color(null, 225, 225, 225));
+				cell.setBackground(new Color(null, GREY));
 			} else {
-				cell.setBackground(new Color(null, 255, 255, 255));
+				cell.setBackground(new Color(null, WHITE));
 			}
 		}
 	}
