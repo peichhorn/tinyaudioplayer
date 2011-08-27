@@ -21,44 +21,46 @@
  */
 package de.fips.plugin.tinyaudioplayer.notifier;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.themes.IThemeManager;
+import org.eclipse.ui.themes.ITheme;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access=AccessLevel.PACKAGE)
 public final class NotifierTheming {
+	private final ITheme theme;
 
-	public static void theme(final Control control, final int what, final String themeVariable) {
-		final IThemeManager themeManager = TinyAudioPlayerPlugin.getDefaultWorkbench().getThemeManager();
+	public NotifierTheming() {
+		this(TinyAudioPlayerPlugin.getDefaultWorkbench().getThemeManager().getCurrentTheme());
+	}
+
+	public void theme(final Control control, final int what, final String themeVariable) {
 		switch (what) {
 		case SWT.FOREGROUND:
-			control.setForeground(themeManager.getCurrentTheme().getColorRegistry().get(themeVariable));
+			control.setForeground(theme.getColorRegistry().get(themeVariable));
 			break;
 		case SWT.BACKGROUND:
-			control.setBackground(themeManager.getCurrentTheme().getColorRegistry().get(themeVariable));
+			control.setBackground(theme.getColorRegistry().get(themeVariable));
 			break;
 		default:
-			control.setFont(themeManager.getCurrentTheme().getFontRegistry().get(themeVariable));
+			control.setFont(theme.getFontRegistry().get(themeVariable));
 		}
 	}
 
-	public static void theme(final GC gc, final int what, final String themeVariable) {
-		final IThemeManager themeManager = TinyAudioPlayerPlugin.getDefaultWorkbench().getThemeManager();
+	public void theme(final GC gc, final int what, final String themeVariable) {
 		switch (what) {
 		case SWT.FOREGROUND:
-			gc.setForeground(themeManager.getCurrentTheme().getColorRegistry().get(themeVariable));
+			gc.setForeground(theme.getColorRegistry().get(themeVariable));
 			break;
 		case SWT.BACKGROUND:
-			gc.setBackground(themeManager.getCurrentTheme().getColorRegistry().get(themeVariable));
+			gc.setBackground(theme.getColorRegistry().get(themeVariable));
 			break;
 		default:
-			gc.setFont(themeManager.getCurrentTheme().getFontRegistry().get(themeVariable));
+			gc.setFont(theme.getFontRegistry().get(themeVariable));
 		}
 	}
 }
