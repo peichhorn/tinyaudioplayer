@@ -28,8 +28,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * Some constants used by the TinyAudioPlayer.
- *
- * @author Philipp Eichhorn
  */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public final class TinyAudioPlayerConstants {

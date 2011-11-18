@@ -41,10 +41,6 @@ import lombok.Signal;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent.Type;
 
-/**
- *
- * @author: Philipp Eichhorn
- */
 @ListenerSupport(IPlaybackListener.class)
 public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	private final static int EXTERNAL_BUFFER_SIZE = 0x10000;

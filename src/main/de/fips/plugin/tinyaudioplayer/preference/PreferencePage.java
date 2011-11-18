@@ -33,8 +33,6 @@ import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
 /**
  * A preference page that allows the configuration of the {@link TinyAudioPlayer}.
- *
- * @author Philipp Eichhorn
  */
 @NoArgsConstructor
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {

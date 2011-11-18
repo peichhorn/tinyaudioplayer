@@ -27,10 +27,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.VisibleForTesting;
 
-/**
- *
- * @author Philipp Eichhorn
- */
 @RequiredArgsConstructor
 public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 	@Getter

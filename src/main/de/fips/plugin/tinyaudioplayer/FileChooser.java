@@ -27,8 +27,6 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Workaround to be able to test code that uses the {@link FileDialog}.
- *
- * @author Philipp Eichhorn
  */
 public class FileChooser {
 	public static boolean IS_IN_TEST_MODE = false;

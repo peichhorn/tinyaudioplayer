@@ -33,10 +33,6 @@ import lombok.Delegate;
 import lombok.ListenerSupport;
 import lombok.NoArgsConstructor;
 
-/**
- *
- * @author: Philipp Eichhorn
- */
 @NoArgsConstructor
 @ListenerSupport(IPlaylistListener.class)
 public class Playlist implements Iterable<PlaylistItem> {

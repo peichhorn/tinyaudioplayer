@@ -23,10 +23,6 @@ package de.fips.plugin.tinyaudioplayer.audio;
 
 import lombok.*;
 
-/**
- *
- * @author: Philipp Eichhorn
- */
 @Builder
 @Getter
 public class PlaylistItemTag {

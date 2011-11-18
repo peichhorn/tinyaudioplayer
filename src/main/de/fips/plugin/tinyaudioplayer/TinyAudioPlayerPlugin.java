@@ -34,8 +34,6 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Entrypoint of the TinyAudioplayer Plugin.
- *
- * @author Philipp Eichhorn
  */
 @RequiredArgsConstructor
 public class TinyAudioPlayerPlugin extends AbstractUIPlugin {

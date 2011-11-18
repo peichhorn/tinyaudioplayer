@@ -30,10 +30,6 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 import de.fips.plugin.tinyaudioplayer.notifier.NotifierDialog;
 
-/**
- *
- * @author Philipp Eichhorn
- */
 public class TinyAudioPlayer {
 	@Delegate
 	private final PlaylistAudioPlayer player;

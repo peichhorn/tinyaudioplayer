@@ -8,12 +8,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
-
-import lombok.Cleanup;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +25,7 @@ public class SoundCloudPlaylistProviderTest {
 	public void test_getPlaylistFor() throws Exception {
 		// setup
 		final SoundCloudPlaylistProvider provider = spy(new SoundCloudPlaylistProvider());
-		doReturn(fileAsString(file("simplified_requestdump"))).when(provider).getSoundCloudPageFor(any(URI.class));
+		doReturn(As.string(file("simplified_requestdump"))).when(provider).getSoundCloudPageFor(any(URI.class));
 		// run
 		final Playlist playlist = provider.getPlaylistFor("chromeo");
 		// assert
@@ -52,7 +48,7 @@ public class SoundCloudPlaylistProviderTest {
 	public void test_getNumberOfPagesFor() throws Exception {
 		// setup
 		final SoundCloudPlaylistProvider provider = spy(new SoundCloudPlaylistProvider());
-		doReturn(fileAsString(file("simplified_requestdump"))).when(provider).getSoundCloudPageFor(any(URI.class));
+		doReturn(As.string(file("simplified_requestdump"))).when(provider).getSoundCloudPageFor(any(URI.class));
 		// run
 		final int numberOfPages = provider.getNumberOfPagesFor("chromeo");
 		// assert
@@ -83,7 +79,8 @@ public class SoundCloudPlaylistProviderTest {
 		// setup
 		final SoundCloudPlaylistProvider provider = new SoundCloudPlaylistProvider();
 		// run + assert
-		thrown.expect(IllegalArgumentException.class);
+		thrown.expect(NullPointerException.class);
+		thrown.expectMessage("The validated object 'searchText' (argument #1) is null");
 		provider.getSearchQueryURIFor(null, 0);
 	}
 
@@ -92,7 +89,7 @@ public class SoundCloudPlaylistProviderTest {
 		// setup
 		final SoundCloudPlaylistProvider provider = new SoundCloudPlaylistProvider();
 		// run
-		final List<String> playlist = provider.getBufferTracksAsJSON(fileAsString(file("simplified_requestdump")));
+		final List<String> playlist = provider.getBufferTracksAsJSON(As.string(file("simplified_requestdump")));
 		// assert
 		assertThat(playlist).hasSize(5).containsOnly( //
 				"{\"duration\":225312,\"title\":\"Night By Night &quot;&amp;&quot;\",\"streamUrl\":\"http://media.soundcloud.com/stream/LHBNmmjRYBmq?stream_token=kV51k\"}", //
@@ -138,11 +135,6 @@ public class SoundCloudPlaylistProviderTest {
 		assertThat(cache).hasSize(2)
 		                 .includes(entry("key2", "value2"), entry("key3", "value3"))
 		                 .excludes(entry("key1", "value1"));
-	}
-
-	private String fileAsString(File file) throws Exception {
-		@Cleanup final InputStream is = new FileInputStream(file);
-		return new SoundCloudPlaylistProvider().readStreamAsString(is);
 	}
 
 	private File file(String path) throws Exception {

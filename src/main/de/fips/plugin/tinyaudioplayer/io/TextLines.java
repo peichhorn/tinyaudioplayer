@@ -22,108 +22,36 @@
 package de.fips.plugin.tinyaudioplayer.io;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.Rethrow;
+import lombok.Yield.yield;
 
-/**
- * {@link Iterator} over lines of text.
- *
- * @author Philipp Eichhorn
- */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class TextLines implements Iterable<String>, Iterator<String>, Closeable {
-	private final BufferedReader in;
-	private volatile boolean ignoreEmptyLines;
-	private volatile boolean hasNext;
-	private volatile boolean nextDefined;
-	private String next;
-
-	/**
-	 * Tell the {@link Iterator} to skip empty lines.
-	 */
-	public TextLines ignoringEmptyLines() {
-		ignoreEmptyLines = true;
-		return this;
+public class TextLines {
+	public static Iterable<String> in(final File file, final boolean ignoreEmptyLines) throws FileNotFoundException {
+		return in(new FileReader(file), ignoreEmptyLines);
 	}
 
-	@Override
-	public boolean hasNext() {
-		if (!nextDefined) {
-			hasNext = getNext();
-			nextDefined = true;
-		}
-		return hasNext;
+	public static Iterable<String> in(final InputStream inputStream, final boolean ignoreEmptyLines) {
+		return in(new InputStreamReader(inputStream), ignoreEmptyLines);
 	}
 
-	@Override
-	public String next() {
-		if (!hasNext()) {
-			throw new NoSuchElementException();
-		}
-		nextDefined = false;
-		return next;
+	public static Iterable<String> in(final Reader reader, final boolean ignoreEmptyLines) {
+		return in(new BufferedReader(reader), ignoreEmptyLines);
 	}
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void close() {
+	private static Iterable<String> in(final BufferedReader in, final boolean ignoreEmptyLines) {
 		try {
-			in.close();
-		} catch (IOException ignore) {
-		}
-		next = null;
-		nextDefined = true;
-		hasNext = false;
-	}
-
-	@Override
-	public Iterator<String> iterator() {
-		return this;
-	}
-
-	private boolean getNext() {
-		try {
-			for (next = in.readLine(); ignoreEmptyLines && (next != null); next = in.readLine()) {
+			for (String next = in.readLine(); next != null; next = in.readLine()) {
 				next = next.trim();
-				if (!next.isEmpty()) {
-					break;
-				}
+				if (!(next.isEmpty() && ignoreEmptyLines)) yield(next);
 			}
-			return (next != null);
-		} catch (IOException e) {
-			return false;
+		} finally {
+			in.close();
 		}
-	}
-
-	/** Creates a {@link TextLines} for an {@link InputStream}. */
-	public static TextLines textLinesIn(final InputStream inputStream) {
-		return textLinesIn(new InputStreamReader(inputStream));
-	}
-
-	/** Creates a {@link TextLines} for a {@link File}. */
-	@Rethrow(value = FileNotFoundException.class, as = IllegalArgumentException.class)
-	public static TextLines textLinesIn(final File file) {
-		return textLinesIn(new FileReader(file));
-	}
-
-	/** Creates a {@link TextLines} for a {@link Reader}. */
-	public static TextLines textLinesIn(final Reader reader) {
-		return new TextLines(new BufferedReader(reader));
 	}
 }

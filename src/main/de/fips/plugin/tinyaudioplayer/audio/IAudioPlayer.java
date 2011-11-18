@@ -21,10 +21,6 @@
  */
 package de.fips.plugin.tinyaudioplayer.audio;
 
-/**
- *
- * @author Philipp Eichhorn
- */
 public interface IAudioPlayer {
 
 	public void stop();

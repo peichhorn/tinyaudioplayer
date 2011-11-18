@@ -52,8 +52,6 @@ import java.net.URI;
  *   ...
  * visitEnd(File)
  * </pre>
- *
- * @author Philipp Eichhorn
  */
 public interface IPlaylistFileVisitor {
 	public void visitBegin(File file) throws IOException;

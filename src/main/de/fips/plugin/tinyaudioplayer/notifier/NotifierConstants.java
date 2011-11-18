@@ -26,8 +26,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * Some constants used by the {@link NotifierDialog}.
- *
- * @author Philipp Eichhorn
  */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public final class NotifierConstants {

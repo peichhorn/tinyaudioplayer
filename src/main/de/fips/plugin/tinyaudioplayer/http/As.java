@@ -21,29 +21,32 @@
  */
 package de.fips.plugin.tinyaudioplayer.http;
 
-import java.net.URI;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
-import lombok.Cleanup;
+import lombok.*;
 
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class As {
+	private static final int BUFFER_SIZE = 65536;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.eclipse.core.net.proxy.IProxyData;
-import org.eclipse.core.net.proxy.IProxyService;
+	public static String string(final File file) throws IOException {
+		@Cleanup final InputStream is = new FileInputStream(file);
+		return string(is);
+	}
 
-public final class EclipseProxyConfiguration implements IProxyConfiguration {
-
-	@Override
-	public void setupProxyFor(final HostConfiguration hostConfig, final URI uri) {
-		@Cleanup("close") final ServiceTracker proxyTracker = new ServiceTracker(FrameworkUtil.getBundle(this.getClass()).getBundleContext(), IProxyService.class.getName(), null);
-		proxyTracker.open();
-		IProxyService proxyService = (IProxyService) proxyTracker.getService();
-		IProxyData[] proxyDataForHost = proxyService.select(uri);
-		for (IProxyData data : proxyDataForHost) {
-			if (data.getHost() == null) continue;
-			hostConfig.setProxy(data.getHost(), data.getPort());
-			break;
+	public static String string(final InputStream is) throws IOException {
+		final char[] buffer = new char[BUFFER_SIZE];
+		final StringBuilder out = new StringBuilder();
+		final Reader in = new BufferedReader(new InputStreamReader(is));
+		for (int read = in.read(buffer); read >= 0; read = in.read(buffer)) {
+			out.append(buffer, 0, read);
 		}
+		return out.toString();
 	}
 }

@@ -25,8 +25,6 @@ import lombok.NoArgsConstructor;
 
 /**
  * Some constants used by the PreferencePage.
- *
- * @author Philipp Eichhorn
  */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public final class PreferencesConstants {

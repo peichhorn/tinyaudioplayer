@@ -40,10 +40,6 @@ import lombok.NoArgsConstructor;
 
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
-/**
- * 
- * @author: Philipp Eichhorn
- */
 @NoArgsConstructor()
 public class PlaylistItemTagFactory {
 	private final static Map<String, IPlaylistItemTagBuilder> builder = new HashMap<String, IPlaylistItemTagBuilder>();

@@ -38,7 +38,6 @@ import org.fest.util.VisibleForTesting;
  * volume of the {@link TinyAudioPlayerPlugin}.
  *
  * @see TinyAudioPlayer#setVolume(float)
- * @author Philipp Eichhorn
  */
 public class VolumeControl extends WorkbenchWindowControlContribution {
 	private float volume = 1.0f;

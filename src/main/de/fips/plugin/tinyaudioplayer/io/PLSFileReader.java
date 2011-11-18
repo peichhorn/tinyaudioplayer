@@ -21,8 +21,6 @@
  */
 package de.fips.plugin.tinyaudioplayer.io;
 
-import static de.fips.plugin.tinyaudioplayer.io.TextLines.textLinesIn;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -38,7 +36,7 @@ public class PLSFileReader {
 
 	public void read(final File file) throws IOException {
 		visitor.visitBegin(file);
-		@Cleanup final TextLines lines = textLinesIn(file).ignoringEmptyLines();
+		@Cleanup final Iterable<String> lines = TextLines.in(file, true);
 		boolean entryOpen = false;
 		for (final String line : lines) {
 			if (line.startsWith("[")) {

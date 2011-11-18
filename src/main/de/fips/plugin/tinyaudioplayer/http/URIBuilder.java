@@ -44,10 +44,11 @@ import lombok.Rethrow;
  * reconstruct the proper URI. For example:
  * 
  * <pre>
- * URIBuilder builder = URIBuilder.uri(strUri))
- *                                .withParameters(request.getParameterMap())
- *                                .withourParameter("id")
- *                                .withParameter("session", strSession);
+ * URI uri = URIBuilder.uri(strUri))
+ *                     .withParameters(request.getParameterMap())
+ *                     .withourParameter("id")
+ *                     .withParameter("session", strSession)
+ *                     .build();
  * </pre>
  * 
  * Note that this class currently does not support URI rewriting of cookie

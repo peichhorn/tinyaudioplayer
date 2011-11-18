@@ -23,11 +23,8 @@ package de.fips.plugin.tinyaudioplayer.http;
 
 import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -104,7 +101,6 @@ public class SoundCloudPlaylistProvider {
 	private static final String BUFFER_TRACKS_JSON_REGEXP = "<script type=\"text/javascript\">\\s*window.SC.bufferTracks.push\\((.*)\\);\\s*</script>";
 	private static final String NUMBER_OF_PAGES_REGEXP = "/tracks/search\\?page=(\\d*)\\&";
 	private static final String SOUNDCLOUD_SEARCH_QUERY = "http://soundcloud.com/search?page={0}&q%5Bfulltext%5D={1}";
-	private static final int BUFFER_SIZE = 65536;
 	
 	private final Map<URI, String> pageCache = new Cache<URI, String>(30);
 	
@@ -162,7 +158,7 @@ public class SoundCloudPlaylistProvider {
 			client.executeMethod(method);
 			if (method.getStatusCode() == HttpStatus.SC_OK) {
 				@Cleanup InputStream response = method.getResponseBodyAsStream();
-				final String page = readStreamAsString(response);
+				final String page = As.string(response);
 				pageCache.put(queryURI, page);
 				return page;
 			}
@@ -208,16 +204,6 @@ public class SoundCloudPlaylistProvider {
 		return searchText.replace(" ", "+");
 	}
 
-	@VisibleForTesting String readStreamAsString(final InputStream is) throws IOException {
-		final char[] buffer = new char[BUFFER_SIZE];
-		final StringBuilder out = new StringBuilder();
-		final Reader in = new BufferedReader(new InputStreamReader(is));
-		for (int read = in.read(buffer); read >= 0; read = in.read(buffer)) {
-			out.append(buffer, 0, read);
-		}
-		return out.toString();
-	}
-	
 	@VisibleForTesting static class Cache<K, V> extends LinkedHashMap<K, V> {
 		private static final long serialVersionUID = -1586143843840611967L;
 

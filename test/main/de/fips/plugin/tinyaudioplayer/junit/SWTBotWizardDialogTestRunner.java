@@ -7,6 +7,8 @@ import java.lang.annotation.*;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Rethrow;
 import lombok.SneakyThrows;
 

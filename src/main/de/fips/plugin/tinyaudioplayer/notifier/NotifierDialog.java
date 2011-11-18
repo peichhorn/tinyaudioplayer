@@ -48,10 +48,6 @@ import org.eclipse.swt.widgets.Shell;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.preference.PreferencesConstants;
 
-/**
- *
- * @author Philipp Eichhorn
- */
 @NoArgsConstructor(access=AccessLevel.PRIVATE)
 public class NotifierDialog {
 	private static List<Shell> activeShells = new ArrayList<Shell>();
