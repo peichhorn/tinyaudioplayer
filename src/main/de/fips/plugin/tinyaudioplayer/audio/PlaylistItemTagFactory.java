@@ -37,6 +37,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import lombok.NoArgsConstructor;
+import lombok.VisibleForTesting;
 
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
@@ -66,7 +67,7 @@ public class PlaylistItemTagFactory {
 		return tag;
 	}
 
-	private static class OggPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
+	@VisibleForTesting static class OggPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
 			final PlaylistItemTag.$OptionalDef builder = playlistItemTag();
@@ -120,7 +121,7 @@ public class PlaylistItemTagFactory {
 		}
 	}
 
-	private static class MpegPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
+	@VisibleForTesting static class MpegPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
 			final PlaylistItemTag.$OptionalDef builder = playlistItemTag();
@@ -166,7 +167,8 @@ public class PlaylistItemTagFactory {
 					while (matcher.find()) {
 						final String id3tagGenre = matcher.group();
 						try {
-							genre.append(ID3TAG_GENRES[Integer.valueOf(id3tagGenre)]);
+							int index = Integer.valueOf(id3tagGenre);
+							genre.append(index < ID3TAG_GENRES.length ? ID3TAG_GENRES[index] : "Custom");
 						} catch (NumberFormatException e) {
 							genre.append(id3tagGenre);
 						}
