@@ -28,17 +28,19 @@ import java.net.URISyntaxException;
 import java.util.StringTokenizer;
 
 import lombok.Cleanup;
+import lombok.ExtensionMethod;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@ExtensionMethod(Strings.class)
 public class PLSFileReader {
 	private final IPlaylistFileVisitor visitor;
 
 	public void read(final File file) throws IOException {
 		visitor.visitBegin(file);
-		@Cleanup final Iterable<String> lines = TextLines.in(file, true);
+		@Cleanup final Iterable<String> lines = Lines.in(file);
 		boolean entryOpen = false;
-		for (final String line : lines) {
+		for (final String line : lines.trim().filterNonEmpty()) {
 			if (line.startsWith("[")) {
 				visitor.visitComment(line);
 			} else if ((line.toLowerCase().startsWith("file"))) {

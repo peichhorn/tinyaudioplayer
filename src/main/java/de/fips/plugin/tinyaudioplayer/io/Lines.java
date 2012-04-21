@@ -19,22 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package de.fips.plugin.tinyaudioplayer.audio;
+package de.fips.plugin.tinyaudioplayer.io;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
-@RequiredArgsConstructor
-@Getter
-public class PlaybackEvent {
-	public enum Type {
-		STARTED, PAUSED, RESUMED, PROGRESS, FINISHED, CANCELED
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Yield.yield;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Lines {
+	public static Iterable<String> in(final File file) throws FileNotFoundException {
+		return in(new FileReader(file));
 	}
 
-	private final Type type;
-	private final long progress;
+	public static Iterable<String> in(final InputStream inputStream) {
+		return in(new InputStreamReader(inputStream));
+	}
 
-	public PlaybackEvent(final Type type) {
-		this(type, -1);
+	public static Iterable<String> in(final Reader reader) {
+		return in(new BufferedReader(reader));
+	}
+
+	private static Iterable<String> in(final BufferedReader in) {
+		try {
+			for (String next = in.readLine(); next != null; next = in.readLine()) yield(next);
+		} finally {
+			in.close();
+		}
 	}
 }

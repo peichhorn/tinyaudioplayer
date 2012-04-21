@@ -79,10 +79,10 @@ public class TinyAudioPlayer {
 		@Override
 		public void handlePlaybackEvent(PlaybackEvent event) {
 			switch (event.getType()) {
-			case Finished:
+			case FINISHED:
 				player.next();
 				break;
-			case Started:
+			case STARTED:
 				final PlaylistItem track = player.getPlaylist().getCurrentTrack();
 				NotifierDialog.notifyAsync("Now playing:", track.getDisplayableName(), track.getLocation());
 				break;

@@ -32,7 +32,7 @@ import java.io.Reader;
 import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class As {
+final class As {
 	private static final int BUFFER_SIZE = 65536;
 
 	public static String string(final File file) throws IOException {

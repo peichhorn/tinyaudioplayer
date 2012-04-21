@@ -101,7 +101,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	public void run() {
 		final AudioInputStream encodedAudioInputStream = getEncodeAudioInputStream();
 		if (encodedAudioInputStream != null) {
-			fireHandlePlaybackEvent(new PlaybackEvent(Type.Started));
+			fireHandlePlaybackEvent(new PlaybackEvent(Type.STARTED));
 
 			final AudioFormat decodedFormat = decodeAudioFormat(encodedAudioInputStream.getFormat());
 			AudioInputStream decodedAudioInputStream = null;
@@ -122,20 +122,20 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 								line.flush();
 								line.stop();
 							}
-							fireHandlePlaybackEvent(new PlaybackEvent(Type.Paused));
+							fireHandlePlaybackEvent(new PlaybackEvent(Type.PAUSED));
 							runPause();
-							fireHandlePlaybackEvent(new PlaybackEvent(Type.Resumed));
+							fireHandlePlaybackEvent(new PlaybackEvent(Type.RESUMED));
 							if (!line.isRunning()) {
 								line.start();
 							}
 						}
 						line.write(abData, 0, nBytesRead);
-						fireHandlePlaybackEvent(new PlaybackEvent(Type.Progress, line.getMicrosecondPosition()));
+						fireHandlePlaybackEvent(new PlaybackEvent(Type.PROGRESS, line.getMicrosecondPosition()));
 					}
 				}
 				decodedAudioInputStream.close();
 				line.drain();
-				fireHandlePlaybackEvent(new PlaybackEvent(Type.Finished));
+				fireHandlePlaybackEvent(new PlaybackEvent(Type.FINISHED));
 			} catch (Exception e) {
 				if (decodedAudioInputStream != null) {
 					try {
@@ -143,7 +143,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 					} catch(IOException ignore) {
 					}
 				}
-				fireHandlePlaybackEvent(new PlaybackEvent(Type.Canceled));
+				fireHandlePlaybackEvent(new PlaybackEvent(Type.CANCELED));
 			} finally {
 				stop();
 			}

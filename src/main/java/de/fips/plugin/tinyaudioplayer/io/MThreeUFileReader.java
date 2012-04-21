@@ -27,18 +27,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import lombok.Cleanup;
+import lombok.ExtensionMethod;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@ExtensionMethod(Strings.class)
 public class MThreeUFileReader {
 	private final IPlaylistFileVisitor visitor;
 
 	public void read(final File file) throws IOException {
 		visitor.visitBegin(file);
-		@Cleanup final Iterable<String> lines = TextLines.in(file, true);
+		@Cleanup final Iterable<String> lines = Lines.in(file);
 		boolean entryOpen = false;
 		int entryCounter = 0;
-		for (final String line : lines) {
+		for (final String line : lines.trim().filterNonEmpty()) {
 			if (line.startsWith("#")) {
 				if (line.toUpperCase().startsWith("#EXTINF")) {
 					visitor.visitEntryBegin();

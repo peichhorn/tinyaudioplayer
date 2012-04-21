@@ -70,7 +70,7 @@ public class PlaylistItemTagFactory {
 	@VisibleForTesting static class OggPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
-			final PlaylistItemTag.$OptionalDef builder = playlistItemTag();
+			final PlaylistItemTag.OptionalDef builder = playlistItemTag();
 			if (aff instanceof TAudioFileFormat) {
 				final Map<?, ?> props = ((TAudioFileFormat) aff).properties();
 				Object currentValue = props.get("ogg.channels");
@@ -124,7 +124,7 @@ public class PlaylistItemTagFactory {
 	@VisibleForTesting static class MpegPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
-			final PlaylistItemTag.$OptionalDef builder = playlistItemTag();
+			final PlaylistItemTag.OptionalDef builder = playlistItemTag();
 			if (aff instanceof TAudioFileFormat) {
 				final Map<?, ?> props = ((TAudioFileFormat) aff).properties();
 				Object currentValue = props.get("mp3.channels");
