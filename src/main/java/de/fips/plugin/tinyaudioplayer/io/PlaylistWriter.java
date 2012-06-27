@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,10 @@ package de.fips.plugin.tinyaudioplayer.io;
 import java.io.File;
 import java.io.IOException;
 
+import lombok.val;
+
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
-import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 public class PlaylistWriter extends AbstractWriter<Playlist>{
 
@@ -51,7 +52,7 @@ public class PlaylistWriter extends AbstractWriter<Playlist>{
 		if (visitor != null) {
 			try {
 				visitor.visitBegin(file);
-				for (final PlaylistItem pli : playlist) {
+				for (val pli : playlist) {
 					visitor.visitEntryBegin();
 					visitor.visitLocation(pli.getLocation());
 					visitor.visitLength(pli.getSeconds());

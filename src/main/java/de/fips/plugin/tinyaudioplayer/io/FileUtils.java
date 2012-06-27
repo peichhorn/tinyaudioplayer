@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FileUtils {
@@ -51,18 +50,18 @@ public final class FileUtils {
 	}
 
 	public static String relativePath(final File file, File relativeTo) {
-		final StringBuilder path = new StringBuilder(file.getAbsolutePath());
+		val path = new StringBuilder(file.getAbsolutePath());
 
 		if (relativeTo.isFile()) {
 			relativeTo = relativeTo.getParentFile();
 		}
 
-		List<String> fileList = getDelimitedStringAsList(file.getAbsolutePath(), File.separator);
-		List<String> relativeToList = getDelimitedStringAsList(relativeTo.getAbsolutePath(), File.separator);
+		val fileList = getDelimitedStringAsList(file.getAbsolutePath(), File.separator);
+		val relativeToList = getDelimitedStringAsList(relativeTo.getAbsolutePath(), File.separator);
 		
 		if (fileList.get(0).equals(relativeToList.get(0))) {
-			int size = fileList.size();
-			int relativeToSize = relativeToList.size();
+			val size = fileList.size();
+			val relativeToSize = relativeToList.size();
 			int count = 0;
 
 			while ((count < size) && (count < relativeToSize)) {
@@ -89,8 +88,8 @@ public final class FileUtils {
 	}
 
 	private static List<String> getDelimitedStringAsList(final String str, final String delimiter) {
-		final List<String> resultList = new ArrayList<String>();
-		final StringTokenizer st = new StringTokenizer(str, delimiter);
+		val resultList = new ArrayList<String>();
+		val st = new StringTokenizer(str, delimiter);
 		while (st.hasMoreTokens()) {
 			resultList.add(st.nextToken());
 		}

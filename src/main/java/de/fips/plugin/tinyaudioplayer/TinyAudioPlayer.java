@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,11 @@
  */
 package de.fips.plugin.tinyaudioplayer;
 
-import lombok.Delegate;
+import lombok.*;
 
 import de.fips.plugin.tinyaudioplayer.audio.IPlaybackListener;
 import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent;
-import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistAudioPlayer;
-import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 import de.fips.plugin.tinyaudioplayer.notifier.NotifierDialog;
 
 public class TinyAudioPlayer {
@@ -47,14 +45,14 @@ public class TinyAudioPlayer {
 	}
 
 	public void enqueue() {
-		final Playlist newPlaylist = playlistIOHandler.loadPlaylist();
+		val newPlaylist = playlistIOHandler.loadPlaylist();
 		if (newPlaylist != null) {
 			player.getPlaylist().add(newPlaylist);
 		}
 	}
 
 	public void eject() {
-		final Playlist newPlaylist = playlistIOHandler.loadPlaylist();
+		val newPlaylist = playlistIOHandler.loadPlaylist();
 		if (newPlaylist != null) {
 			player.getPlaylist().clear();
 			player.getPlaylist().add(newPlaylist);
@@ -83,7 +81,7 @@ public class TinyAudioPlayer {
 				player.next();
 				break;
 			case STARTED:
-				final PlaylistItem track = player.getPlaylist().getCurrentTrack();
+				val track = player.getPlaylist().getCurrentTrack();
 				NotifierDialog.notifyAsync("Now playing:", track.getDisplayableName(), track.getLocation());
 				break;
 			default:

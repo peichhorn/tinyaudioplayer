@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 
 import lombok.*;
 
@@ -36,14 +35,15 @@ final class As {
 	private static final int BUFFER_SIZE = 65536;
 
 	public static String string(final File file) throws IOException {
-		@Cleanup final InputStream is = new FileInputStream(file);
+		@Cleanup
+		val is = new FileInputStream(file);
 		return string(is);
 	}
 
 	public static String string(final InputStream is) throws IOException {
-		final char[] buffer = new char[BUFFER_SIZE];
-		final StringBuilder out = new StringBuilder();
-		final Reader in = new BufferedReader(new InputStreamReader(is));
+		val buffer = new char[BUFFER_SIZE];
+		val out = new StringBuilder();
+		val in = new BufferedReader(new InputStreamReader(is));
 		for (int read = in.read(buffer); read >= 0; read = in.read(buffer)) {
 			out.append(buffer, 0, read);
 		}

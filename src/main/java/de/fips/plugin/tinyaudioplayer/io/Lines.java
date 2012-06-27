@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,8 @@
  */
 package de.fips.plugin.tinyaudioplayer.io;
 
+import static lombok.Yield.yield;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,7 +33,6 @@ import java.io.Reader;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.Yield.yield;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Lines {

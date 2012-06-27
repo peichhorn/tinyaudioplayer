@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +28,12 @@ import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.val;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -48,7 +47,7 @@ import org.eclipse.swt.widgets.Shell;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.preference.PreferencesConstants;
 
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NotifierDialog {
 	private static List<Shell> activeShells = new ArrayList<Shell>();
 	private static Image oldImage;
@@ -70,14 +69,14 @@ public class NotifierDialog {
 	}
 
 	private void show(final String title, final String message, final URI location) {
-		final Shell shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
+		val shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
 		shell.setLayout(new FillLayout());
 		shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
 		theming.theme(shell, SWT.FOREGROUND, NotifierConstants.COLOR_ID);
 		registerDisposeListener(shell);
 		registerResizeListener(shell);
 
-		final Composite inner = createInnerComposite(shell);
+		val inner = createInnerComposite(shell);
 		createImageLabel(inner, location);
 		Composite right = createRightComposite(inner);
 		createTitleLabel(right, title);
@@ -99,8 +98,8 @@ public class NotifierDialog {
 	}
 
 	private void removeUnwantedShells() {
-		final int allowedActiveShells = getActiveNotifications() - 1;
-		for (Shell s : new ArrayList<Shell>(activeShells)) {
+		val allowedActiveShells = getActiveNotifications() - 1;
+		for (val s : new ArrayList<Shell>(activeShells)) {
 			if (activeShells.size() <= allowedActiveShells) {
 				break;
 			}
@@ -114,17 +113,17 @@ public class NotifierDialog {
 	}
 
 	private void repositionShell(final Shell shell) {
-		Rectangle clientArea = Display.getDefault().getActiveShell().getMonitor().getClientArea();
-		int startX = clientArea.x + clientArea.width - shell.getBounds().width - 2;
-		int startY = clientArea.y + clientArea.height - shell.getBounds().height - 2;
+		val clientArea = Display.getDefault().getActiveShell().getMonitor().getClientArea();
+		val startX = clientArea.x + clientArea.width - shell.getBounds().width - 2;
+		val startY = clientArea.y + clientArea.height - shell.getBounds().height - 2;
 		shell.setLocation(startX, startY);
 	}
 
 	private void rearrangeActiveShells(final int newShellHeight) {
-		List<Shell> modifiable = new ArrayList<Shell>(activeShells);
+		val modifiable = new ArrayList<Shell>(activeShells);
 		Collections.reverse(modifiable);
-		for (Shell s : modifiable) {
-			Point curLoc = s.getLocation();
+		for (val s : modifiable) {
+			val curLoc = s.getLocation();
 			s.setLocation(curLoc.x, curLoc.y - newShellHeight);
 			if (curLoc.y - newShellHeight < 0) {
 				activeShells.remove(s);
@@ -158,9 +157,9 @@ public class NotifierDialog {
 	}
 
 	private Image updateBackgroundImage(final Shell shell) {
-		Rectangle rect = shell.getClientArea();
-		Image newImage = new Image(Display.getDefault(), Math.max(1, rect.width), rect.height);
-		GC gc = new GC(newImage);
+		val rect = shell.getClientArea();
+		val newImage = new Image(Display.getDefault(), Math.max(1, rect.width), rect.height);
+		val gc = new GC(newImage);
 		theming.theme(gc, SWT.FOREGROUND, NotifierConstants.GRADIENT_COLOR_1_ID);
 		theming.theme(gc, SWT.BACKGROUND, NotifierConstants.GRADIENT_COLOR_2_ID);
 		gc.fillGradientRectangle(rect.x, rect.y, rect.width, rect.height, true);
@@ -173,8 +172,8 @@ public class NotifierDialog {
 	}
 
 	private Composite createInnerComposite(final Composite parent) {
-		final Composite inner = new Composite(parent, SWT.NONE);
-		final GridLayout gl = new GridLayout(2, false);
+		val inner = new Composite(parent, SWT.NONE);
+		val gl = new GridLayout(2, false);
 		gl.marginLeft = 2;
 		gl.marginTop = 2;
 		gl.marginRight = 2;
@@ -184,22 +183,22 @@ public class NotifierDialog {
 	}
 
 	private Composite createRightComposite(final Composite parent) {
-		final Composite right = new Composite(parent, SWT.NONE);
+		val right = new Composite(parent, SWT.NONE);
 		right.setLayout(new GridLayout(1, false));
 		return right;
 	}
 
 	private void createImageLabel(final Composite parent, final URI location) {
-		final CLabel imgLabel = new CLabel(parent, SWT.NONE);
+		val imgLabel = new CLabel(parent, SWT.NONE);
 		imgLabel.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_BEGINNING));
-		final Image image = coverProvider.loadCoverFor(location);
+		val image = coverProvider.loadCoverFor(location);
 		if (image != null) {
 			imgLabel.setImage(image);
 		}
 	}
 
 	private void createTitleLabel(final Composite parent, final String title) {
-		final CLabel titleLabel = new CLabel(parent, SWT.NONE);
+		val titleLabel = new CLabel(parent, SWT.NONE);
 		titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
 		titleLabel.setText(title);
 		theming.theme(titleLabel, SWT.FOREGROUND, NotifierConstants.TITLE_COLOR_ID);
@@ -207,9 +206,9 @@ public class NotifierDialog {
 	}
 
 	private void createTextLabel(final Composite parent, final String message) {
-		final Label text = new Label(parent, SWT.WRAP);
+		val text = new Label(parent, SWT.WRAP);
 		theming.theme(text, SWT.NONE, NotifierConstants.TEXT_FONT_ID);
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		val gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan = 2;
 		text.setLayoutData(gd);
 		theming.theme(text, SWT.FOREGROUND, NotifierConstants.COLOR_ID);
@@ -220,8 +219,7 @@ public class NotifierDialog {
 		Display.getDefault().timerExec(NotifierConstants.FADE_TIMER, new RunnableWithShell(shell) {
 			@Override
 			public void guardedRun(Shell shell) {
-				int cur = shell.getAlpha();
-				cur += NotifierConstants.FADE_IN_STEP;
+				val cur = shell.getAlpha() + NotifierConstants.FADE_IN_STEP;
 				if (cur > NotifierConstants.FINAL_ALPHA) {
 					shell.setAlpha(NotifierConstants.FINAL_ALPHA);
 					startTimer(shell);
@@ -246,7 +244,7 @@ public class NotifierDialog {
 		Display.getDefault().timerExec(NotifierConstants.FADE_TIMER, new RunnableWithShell(shell) {
 			@Override
 			public void guardedRun(Shell shell) {
-				int cur = shell.getAlpha() - NotifierConstants.FADE_OUT_STEP;
+				val cur = shell.getAlpha() - NotifierConstants.FADE_OUT_STEP;
 				if (cur <= 0) {
 					shell.setAlpha(0);
 					if (oldImage != null) {

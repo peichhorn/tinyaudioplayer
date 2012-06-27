@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,13 @@
  */
 package de.fips.plugin.tinyaudioplayer.view.playlist;
 
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
-import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 @RequiredArgsConstructor
@@ -37,10 +36,10 @@ public class PlaylistDoubleClickListener implements IDoubleClickListener {
 
 	@Override
 	public void doubleClick(final DoubleClickEvent event) {
-		final Playlist playlist = player.getPlaylist();
+		val playlist = player.getPlaylist();
 		if (!playlist.isEmpty()) {
-			final StructuredSelection selection = (StructuredSelection)event.getSelection();
-			playlist.setCurrentTrack((PlaylistItem)selection.getFirstElement());
+			val selection = (StructuredSelection) event.getSelection();
+			playlist.setCurrentTrack((PlaylistItem) selection.getFirstElement());
 			player.play();
 			event.getViewer().refresh();
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@ package de.fips.plugin.tinyaudioplayer.http;
 import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -34,22 +33,14 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.Cleanup;
-import lombok.FluentSetter;
-import lombok.Rethrow;
-import lombok.Sanitize.Normalize;
-import lombok.Validate;
-import lombok.Validate.NotEmpty;
-import lombok.Validate.NotNull;
-import lombok.VisibleForTesting;
+import lombok.*;
+import lombok.Sanitize.*;
+import lombok.Validate.*;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.json.simple.JSONObject;
@@ -61,6 +52,7 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
 /**
  * Let's assume that this is the json-api of the soundcloud player:
+ * 
  * <pre>
  * {
  *   "id" : 7566583,
@@ -96,14 +88,14 @@ import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
  *   }
  * }
  * </pre>
-*/
+ */
 public class SoundCloudPlaylistProvider {
 	private static final String BUFFER_TRACKS_JSON_REGEXP = "<script type=\"text/javascript\">\\s*window.SC.bufferTracks.push\\((.*)\\);\\s*</script>";
 	private static final String NUMBER_OF_PAGES_REGEXP = "/tracks/search\\?page=(\\d*)\\&";
 	private static final String SOUNDCLOUD_SEARCH_QUERY = "http://soundcloud.com/search?page={0}&q%5Bfulltext%5D={1}";
-	
+
 	private final Map<URI, String> pageCache = new Cache<URI, String>(30);
-	
+
 	@FluentSetter
 	private IProxyConfiguration proxyConfiguration;
 
@@ -116,49 +108,53 @@ public class SoundCloudPlaylistProvider {
 		if ((pageNumber < 1) || (pageNumber > getNumberOfPagesFor(searchText))) {
 			throw new IllegalArgumentException();
 		}
-		final Playlist playlist = new Playlist();
-		final URI queryURI = getSearchQueryURIFor(searchText, pageNumber);
-		final String soundCloudPage = getSoundCloudPageFor(queryURI);
-		final List<String> bufferTracksAsJSON = getBufferTracksAsJSON(soundCloudPage);
+		val playlist = new Playlist();
+		val queryURI = getSearchQueryURIFor(searchText, pageNumber);
+		val soundCloudPage = getSoundCloudPageFor(queryURI);
+		val bufferTracksAsJSON = getBufferTracksAsJSON(soundCloudPage);
 		playlist.add(asPlaylist(bufferTracksAsJSON));
 		return playlist;
 	}
 
 	@Validate
 	public int getNumberOfPagesFor(@NotEmpty final String searchText) {
-		final URI queryURI = getSearchQueryURIFor(searchText, 1);
-		final String soundCloudPage = getSoundCloudPageFor(queryURI);
-		final Pattern pattern = Pattern.compile(NUMBER_OF_PAGES_REGEXP);
-		final Matcher matcher = pattern.matcher(soundCloudPage);
+		val queryURI = getSearchQueryURIFor(searchText, 1);
+		val soundCloudPage = getSoundCloudPageFor(queryURI);
+		val pattern = Pattern.compile(NUMBER_OF_PAGES_REGEXP);
+		val matcher = pattern.matcher(soundCloudPage);
 		int numberOfPagesFor = 1;
-		while(matcher.find()) {
+		while (matcher.find()) {
 			numberOfPagesFor = Math.max(numberOfPagesFor, Integer.valueOf(matcher.group(1)));
 		}
 		return numberOfPagesFor;
 	}
-	
-	@Rethrow(value=URISyntaxException.class, as=IllegalArgumentException.class)
-	@VisibleForTesting URI getSearchQueryURIFor(@NotNull @Normalize(Form.NFKC) final String searchText, final int pageNumber) {
+
+	@Rethrow(value = URISyntaxException.class, as = IllegalArgumentException.class)
+	@VisibleForTesting
+	URI getSearchQueryURIFor(@NotNull @Normalize(Form.NFKC) final String searchText, final int pageNumber) {
 		if (!Pattern.matches("[a-zA-Z0-9 ]+", searchText)) {
 			throw new IllegalArgumentException();
-		} 
+		}
 		return new URI(MessageFormat.format(SOUNDCLOUD_SEARCH_QUERY, pageNumber, toSearchString(searchText)));
 	}
 
-	@VisibleForTesting String getSoundCloudPageFor(final URI queryURI) {
-		final String cachedPage = pageCache.get(queryURI);
+	@VisibleForTesting
+	String getSoundCloudPageFor(final URI queryURI) {
+		val cachedPage = pageCache.get(queryURI);
 		if (cachedPage != null) {
 			return cachedPage;
 		}
-		final HttpClient client = new HttpClient();
+		val client = new HttpClient();
 		try {
 			if (proxyConfiguration != null) proxyConfiguration.setupProxyFor(client.getHostConfiguration(), queryURI);
-			
-			@Cleanup("releaseConnection") HttpMethod method = new GetMethod(queryURI.toString());
+
+			@Cleanup("releaseConnection")
+			val method = new GetMethod(queryURI.toString());
 			client.executeMethod(method);
 			if (method.getStatusCode() == HttpStatus.SC_OK) {
-				@Cleanup InputStream response = method.getResponseBodyAsStream();
-				final String page = As.string(response);
+				@Cleanup
+				val response = method.getResponseBodyAsStream();
+				val page = As.string(response);
 				pageCache.put(queryURI, page);
 				return page;
 			}
@@ -168,26 +164,28 @@ public class SoundCloudPlaylistProvider {
 		return "";
 	}
 
-	@VisibleForTesting List<String> getBufferTracksAsJSON(final String soundCloudPage) {
-		final List<String> bufferTracksAsJSON = new ArrayList<String>();
-		final Pattern pattern = Pattern.compile(BUFFER_TRACKS_JSON_REGEXP);
-		final Matcher matcher = pattern.matcher(soundCloudPage);
-		while(matcher.find()) {
+	@VisibleForTesting
+	List<String> getBufferTracksAsJSON(final String soundCloudPage) {
+		val bufferTracksAsJSON = new ArrayList<String>();
+		val pattern = Pattern.compile(BUFFER_TRACKS_JSON_REGEXP);
+		val matcher = pattern.matcher(soundCloudPage);
+		while (matcher.find()) {
 			bufferTracksAsJSON.add(matcher.group(1));
 		}
 		return bufferTracksAsJSON;
 	}
 
-	@VisibleForTesting Playlist asPlaylist(List<String> bufferTracksAsJSON) {
-		final Playlist playlist = new Playlist();
-		final Set<URI> uniqueURIs = new HashSet<URI>();
-		for (String bufferTrackAsJSON : bufferTracksAsJSON) {
+	@VisibleForTesting
+	Playlist asPlaylist(List<String> bufferTracksAsJSON) {
+		val playlist = new Playlist();
+		val uniqueURIs = new HashSet<URI>();
+		for (val bufferTrackAsJSON : bufferTracksAsJSON) {
 			try {
-				final JSONParser parser = new JSONParser();
-				JSONObject object = (JSONObject) parser.parse(bufferTrackAsJSON);
-				final String title = unescapeHtml((String) object.get("title"));
-				final URI location = URIBuilder.uri((String) object.get("streamUrl")).withoutParameter("stream_token").build();
-				final long seconds = TimeUnit.MILLISECONDS.toSeconds((Long) object.get("duration"));
+				val parser = new JSONParser();
+				val object = (JSONObject) parser.parse(bufferTrackAsJSON);
+				val title = unescapeHtml((String) object.get("title"));
+				val location = URIBuilder.uri((String) object.get("streamUrl")).withoutParameter("stream_token").build();
+				val seconds = TimeUnit.MILLISECONDS.toSeconds((Long) object.get("duration"));
 				if (uniqueURIs.add(location)) {
 					playlist.add(new PlaylistItem(title, location, seconds));
 				}
@@ -200,11 +198,13 @@ public class SoundCloudPlaylistProvider {
 		return playlist;
 	}
 
-	@VisibleForTesting String toSearchString(final String searchText) {
+	@VisibleForTesting
+	String toSearchString(final String searchText) {
 		return searchText.replace(" ", "+");
 	}
 
-	@VisibleForTesting static class Cache<K, V> extends LinkedHashMap<K, V> {
+	@VisibleForTesting
+	static class Cache<K, V> extends LinkedHashMap<K, V> {
 		private static final long serialVersionUID = -1586143843840611967L;
 
 		private final int maxEntries;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 @RequiredArgsConstructor
-public abstract class RunnableWithShell  implements Runnable {
+public abstract class RunnableWithShell implements Runnable {
 	private final Shell shell;
 
 	protected abstract void guardedRun(final Shell shell);

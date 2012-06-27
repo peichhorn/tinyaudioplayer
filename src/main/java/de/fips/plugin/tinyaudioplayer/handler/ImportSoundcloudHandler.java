@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,8 @@
  */
 package de.fips.plugin.tinyaudioplayer.handler;
 
+import lombok.*;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -35,10 +37,9 @@ public final class ImportSoundcloudHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		final SoundCloudWizard wizard = new SoundCloudWizard();
+		val wizard = new SoundCloudWizard();
 		wizard.setPlaylistProvider(new SoundCloudPlaylistProvider().proxyConfiguration(new EclipseProxyConfiguration()));
-		final WizardDialog dialog = new WizardDialog(HandlerUtil.getActiveShell(event), wizard);
-		dialog.open();
+		new WizardDialog(HandlerUtil.getActiveShell(event), wizard).open();
 		return null;
 	}
 }

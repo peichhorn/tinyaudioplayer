@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,8 @@
  */
 package de.fips.plugin.tinyaudioplayer.view.playlist;
 
+import lombok.val;
+
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.ToolTip;
@@ -28,7 +30,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
 public class PlaylistView extends ViewPart {
@@ -36,7 +37,7 @@ public class PlaylistView extends ViewPart {
 
 	@Override
 	public void createPartControl(final Composite parent) {
-		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
+		val player = TinyAudioPlayerPlugin.getDefaultPlayer();
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		viewer.addDoubleClickListener(new PlaylistDoubleClickListener(player));
 		viewer.addSelectionChangedListener(new PlaylistSelectionChangedListener(player));

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,11 +34,11 @@ import de.fips.plugin.tinyaudioplayer.http.SoundCloudPlaylistProvider;
 public class SoundCloudWizard extends Wizard implements IImportWizard {
 	private SearchPage searchPage;
 	private FilterResultsPage filterResultsPage;
-	@Getter(AccessLevel.PACKAGE) @Setter
+	@Getter(AccessLevel.PACKAGE)
+	@Setter
 	private SoundCloudPlaylistProvider playlistProvider;
 
 	public SoundCloudWizard() {
-		super();
 		setNeedsProgressMonitor(true);
 		setWindowTitle("Import from Soundcloud");
 	}
@@ -53,7 +53,7 @@ public class SoundCloudWizard extends Wizard implements IImportWizard {
 
 	@Override
 	public boolean performFinish() {
-		final Playlist newPlaylist = getPlaylist();
+		val newPlaylist = getPlaylist();
 		if (newPlaylist != null) {
 			TinyAudioPlayerPlugin.getDefaultPlayer().getPlaylist().add(newPlaylist);
 		}

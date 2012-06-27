@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@ package de.fips.plugin.tinyaudioplayer.io;
 
 import java.io.File;
 
+import lombok.val;
+
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 
@@ -40,17 +42,15 @@ public class PlaylistReader extends AbstractReader<Playlist> {
 
 	@Override
 	public Playlist read(final File file) {
-		Playlist playlist = new Playlist();
 		if (file.isFile() && file.exists()) {
 			try {
-				final PlaylistBuilder builder = new PlaylistBuilder();
+				val builder = new PlaylistBuilder();
 				if (file.getName().toLowerCase().endsWith(".m3u")) {
 					new MThreeUFileReader(builder).read(file);
 				} else if (file.getName().toLowerCase().endsWith(".pls")) {
 					new PLSFileReader(builder).read(file);
 				}
-				playlist = builder.getPlaylist();
-
+				val playlist = builder.getPlaylist();
 				int numEntries = 0;
 				if (builder.getNumEntries() != null) {
 					numEntries = builder.getNumEntries() - playlist.size();
@@ -58,10 +58,11 @@ public class PlaylistReader extends AbstractReader<Playlist> {
 				if (numEntries > 0) {
 					TinyAudioPlayerPlugin.logWarn("%s playlist entries are missing!", numEntries);
 				}
+				return playlist;
 			} catch (Exception e) {
 				TinyAudioPlayerPlugin.logErr("Reading playlist failed!", e);
 			}
 		}
-		return playlist;
+		return new Playlist();
 	}
 }

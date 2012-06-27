@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import org.eclipse.ui.themes.ITheme;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
-@RequiredArgsConstructor(access=AccessLevel.PACKAGE)
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public final class NotifierTheming {
 	private final ITheme theme;
 

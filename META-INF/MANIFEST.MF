@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: TinyAudioplayer
 Bundle-Vendor: Philipp Eichhorn
 Bundle-SymbolicName: de.fips.plugin.tinyaudioplayer;singleton:=true
-Bundle-Version: 1.0.11
+Bundle-Version: 1.0.12
 Bundle-Activator: de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

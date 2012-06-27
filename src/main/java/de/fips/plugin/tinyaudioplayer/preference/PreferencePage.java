@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  */
 package de.fips.plugin.tinyaudioplayer.preference;
 
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -43,7 +43,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
 	@Override
 	protected void createFieldEditors() {
-		final IntegerFieldEditor activeNotifiers = new IntegerFieldEditor(PreferencesConstants.ACTIVE_NOTIFICATIONS, "Number of active notifications:", getFieldEditorParent());
+		val activeNotifiers = new IntegerFieldEditor(PreferencesConstants.ACTIVE_NOTIFICATIONS, "Number of active notifications:", getFieldEditorParent());
 		activeNotifiers.setValidRange(1, 20);
 		addField(activeNotifiers);
 	}

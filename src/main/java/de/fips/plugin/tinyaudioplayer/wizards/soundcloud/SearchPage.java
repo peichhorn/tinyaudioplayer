@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 package de.fips.plugin.tinyaudioplayer.wizards.soundcloud;
+
+import lombok.val;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -53,7 +55,7 @@ public class SearchPage extends WizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
+		val layout = new GridLayout();
 		container.setLayout(layout);
 		searchText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		searchText.setData("org.eclipse.swtbot.widget.key", "searchText");
@@ -70,7 +72,7 @@ public class SearchPage extends WizardPage {
 				e.doit = e.text.matches("[a-zA-Z0-9 ]*");
 			}
 		});
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		val gd = new GridData(GridData.FILL_HORIZONTAL);
 		searchText.setLayoutData(gd);
 		setControl(container);
 		setPageComplete(false);

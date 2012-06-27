@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,16 +28,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import lombok.NoArgsConstructor;
-import lombok.VisibleForTesting;
+import lombok.*;
 
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
@@ -53,9 +50,9 @@ public class PlaylistItemTagFactory {
 	public PlaylistItemTag formURI(final URI uri) {
 		PlaylistItemTag tag = null;
 		try {
-			AudioFileFormat aff = AudioSystem.getAudioFileFormat(new File(uri));
-			final String type = aff.getType().toString().toLowerCase();
-			final IPlaylistItemTagBuilder tagBuilder = builder.get(type);
+			val aff = AudioSystem.getAudioFileFormat(new File(uri));
+			val type = aff.getType().toString().toLowerCase();
+			val tagBuilder = builder.get(type);
 			if (tagBuilder != null) {
 				tag = tagBuilder.fromAudioFileFormat(aff);
 			}
@@ -67,10 +64,11 @@ public class PlaylistItemTagFactory {
 		return tag;
 	}
 
-	@VisibleForTesting static class OggPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
+	@VisibleForTesting
+	static class OggPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
-			final PlaylistItemTag.OptionalDef builder = playlistItemTag();
+			val builder = playlistItemTag();
 			if (aff instanceof TAudioFileFormat) {
 				final Map<?, ?> props = ((TAudioFileFormat) aff).properties();
 				Object currentValue = props.get("ogg.channels");
@@ -121,10 +119,11 @@ public class PlaylistItemTagFactory {
 		}
 	}
 
-	@VisibleForTesting static class MpegPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
+	@VisibleForTesting
+	static class MpegPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
-			final PlaylistItemTag.OptionalDef builder = playlistItemTag();
+			val builder = playlistItemTag();
 			if (aff instanceof TAudioFileFormat) {
 				final Map<?, ?> props = ((TAudioFileFormat) aff).properties();
 				Object currentValue = props.get("mp3.channels");
@@ -161,9 +160,9 @@ public class PlaylistItemTagFactory {
 				}
 				currentValue = props.get("mp3.id3tag.genre");
 				if (currentValue != null) {
-					final StringBuilder genre = new StringBuilder();
-					final Pattern pattern = Pattern.compile("[^()]+");
-					final Matcher matcher = pattern.matcher((String) currentValue);
+					val genre = new StringBuilder();
+					val pattern = Pattern.compile("[^()]+");
+					val matcher = pattern.matcher((String) currentValue);
 					while (matcher.find()) {
 						final String id3tagGenre = matcher.group();
 						try {
@@ -190,11 +189,11 @@ public class PlaylistItemTagFactory {
 	private static class FlacPlaylistItemTagBuilder implements IPlaylistItemTagBuilder {
 		@Override
 		public PlaylistItemTag fromAudioFileFormat(final AudioFileFormat aff) {
-			final AudioFormat af = aff.getFormat();
+			val af = aff.getFormat();
 			return playlistItemTag() //
-				.channels(af.getChannels()) //
-				.samplingRate((int) af.getSampleRate()) //
-				.bitRate(af.getSampleSizeInBits()).build();
+					.channels(af.getChannels()) //
+					.samplingRate((int) af.getSampleRate()) //
+					.bitRate(af.getSampleSizeInBits()).build();
 		}
 	}
 
@@ -204,17 +203,18 @@ public class PlaylistItemTagFactory {
 
 	// http://www.id3.org/id3v2.3.0#head-129376727ebe5309c1de1888987d070288d7c7e7
 	private final static String[] ID3TAG_GENRES = new String[] { "Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz", "Metal", "New Age",
-		"Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno", "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno",
-		"Ambient", "Trip-Hop", "Vocal", "Jazz+Funk", "Fusion", "Trance", "Classical", "Instrumental", "Acid", "House", "Game", "Sound Clip", "Gospel", "Noise", "AlternRock",
-		"Bass", "Soul", "Punk", "Space", "Meditative", "Instrumental Pop", "Instrumental Rock", "Ethnic", "Gothic", "Darkwave", "Techno-Industrial", "Electronic", "Pop-Folk",
-		"Eurodance", "Dream", "Southern Rock", "Comedy", "Cult", "Gangsta", "Top 40", "Christian Rap", "Pop/Funk", "Jungle", "Native American", "Cabaret", "New Wave",
-		"Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal", "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock",
-		// These were made up by the authors of Winamp but backported into the ID3 spec
-		"Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin", "Revival", "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock",
-		"Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band", "Chorus", "Easy Listening", "Acoustic", "Humour", "Speech", "Chanson", "Opera", "Chamber Music",
-		"Sonata", "Symphony", "Booty Bass", "Primus", "Porn Groove", "Satire", "Slow Jam", "Club", "Tango", "Samba", "Folklore", "Ballad", "Power Ballad", "Rhythmic Soul",
-		"Freestyle", "Duet", "Punk Rock", "Drum Solo", "A capella", "Euro-House", "Dance Hall",
-		// These were also invented by the Winamp folks but ignored by the ID3 authors.
-		"Goa", "Drum & Bass", "Club-House", "Hardcore", "Terror", "Indie", "BritPop", "Negerpunk", "Polsk Punk", "Beat", "Christian Gangsta Rap", "Heavy Metal", "Black Metal",
-		"Crossover", "Contemporary Christian", "Christian Rock", "Merengue", "Salsa", "Thrash Metal", "Anime", "Jpop", "Synthpop" };
+			"Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno", "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno",
+			"Ambient", "Trip-Hop", "Vocal", "Jazz+Funk", "Fusion", "Trance", "Classical", "Instrumental", "Acid", "House", "Game", "Sound Clip", "Gospel", "Noise", "AlternRock",
+			"Bass", "Soul", "Punk", "Space", "Meditative", "Instrumental Pop", "Instrumental Rock", "Ethnic", "Gothic", "Darkwave", "Techno-Industrial", "Electronic", "Pop-Folk",
+			"Eurodance", "Dream", "Southern Rock", "Comedy", "Cult", "Gangsta", "Top 40", "Christian Rap", "Pop/Funk", "Jungle", "Native American", "Cabaret", "New Wave",
+			"Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal", "Acid Punk", "Acid Jazz", "Polka", "Retro",
+			"Musical", "Rock & Roll", "Hard Rock",
+			// These were made up by the authors of Winamp but backported into the ID3 spec
+			"Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin", "Revival", "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock",
+			"Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band", "Chorus", "Easy Listening", "Acoustic", "Humour", "Speech", "Chanson", "Opera", "Chamber Music",
+			"Sonata", "Symphony", "Booty Bass", "Primus", "Porn Groove", "Satire", "Slow Jam", "Club", "Tango", "Samba", "Folklore", "Ballad", "Power Ballad", "Rhythmic Soul",
+			"Freestyle", "Duet", "Punk Rock", "Drum Solo", "A capella", "Euro-House", "Dance Hall",
+			// These were also invented by the Winamp folks but ignored by the ID3 authors.
+			"Goa", "Drum & Bass", "Club-House", "Hardcore", "Terror", "Indie", "BritPop", "Negerpunk", "Polsk Punk", "Beat", "Christian Gangsta Rap", "Heavy Metal", "Black Metal",
+			"Crossover", "Contemporary Christian", "Christian Rock", "Merengue", "Salsa", "Thrash Metal", "Anime", "Jpop", "Synthpop" };
 }

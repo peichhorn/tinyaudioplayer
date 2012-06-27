@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@ import static de.fips.plugin.tinyaudioplayer.io.FileUtils.fileNameWithoutExtensi
 
 import java.io.File;
 
+import lombok.val;
+
 import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
 
@@ -41,7 +43,7 @@ public class AudioFileReader extends AbstractReader<Playlist> {
 
 	@Override
 	public Playlist read(File file) {
-		final Playlist playlist = new Playlist();
+		val playlist = new Playlist();
 		if (file.isFile() && file.exists()) {
 			playlist.add(new PlaylistItem(fileNameWithoutExtension(file), file.toURI(), 0L));
 		}

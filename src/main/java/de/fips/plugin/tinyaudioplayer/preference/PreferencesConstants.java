@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,13 +20,14 @@
  * THE SOFTWARE.
  */
 package de.fips.plugin.tinyaudioplayer.preference;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
  * Some constants used by the PreferencePage.
  */
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PreferencesConstants {
 	public static final String ACTIVE_NOTIFICATIONS = "de.fips.plugin.tinyaudioplayer.notifier.activenotifications"; //$NON-NLS-1$
 }

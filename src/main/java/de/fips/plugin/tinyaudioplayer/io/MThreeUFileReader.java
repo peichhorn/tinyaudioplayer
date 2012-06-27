@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import lombok.Cleanup;
-import lombok.ExtensionMethod;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @RequiredArgsConstructor
 @ExtensionMethod(Strings.class)
@@ -37,21 +35,22 @@ public class MThreeUFileReader {
 
 	public void read(final File file) throws IOException {
 		visitor.visitBegin(file);
-		@Cleanup final Iterable<String> lines = Lines.in(file);
+		@Cleanup
+		val lines = Lines.in(file);
 		boolean entryOpen = false;
 		int entryCounter = 0;
-		for (final String line : lines.trim().filterNonEmpty()) {
+		for (val line : lines.trim().filterNonEmpty()) {
 			if (line.startsWith("#")) {
 				if (line.toUpperCase().startsWith("#EXTINF")) {
 					visitor.visitEntryBegin();
 					entryOpen = true;
-					final int indA = line.indexOf(",", 0);
+					val indA = line.indexOf(",", 0);
 					if (indA != -1) {
 						visitor.visitTitle(line.substring(indA + 1, line.length()));
 					}
-					final int indB = line.indexOf(":", 0);
+					val indB = line.indexOf(":", 0);
 					if ((indB != -1) && (indB < indA)) {
-						visitor.visitLength(Long.valueOf( (line.substring(indB + 1, indA)).trim()));
+						visitor.visitLength(Long.valueOf((line.substring(indB + 1, indA)).trim()));
 					}
 				} else {
 					visitor.visitComment(line);
@@ -61,10 +60,10 @@ public class MThreeUFileReader {
 					visitor.visitEntryBegin();
 				}
 				try {
-					final URI uri = new URI(line);
+					val uri = new URI(line);
 					if (!uri.isAbsolute()) throw new URISyntaxException(line, "URI is not absolute");
 					visitor.visitLocation(uri);
-				} catch (URISyntaxException  e) {
+				} catch (URISyntaxException e) {
 					File f = new File(file.getParentFile(), line);
 					if (!f.exists()) {
 						f = new File(line);

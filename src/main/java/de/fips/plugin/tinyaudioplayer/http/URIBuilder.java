@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,7 @@
  */
 package de.fips.plugin.tinyaudioplayer.http;
 
-import java.beans.BeanInfo;
 import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -34,15 +32,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.Rethrow;
+import lombok.*;
 
 /**
- * Given a URI and a set of parameters, provide abilities to add and remove
- * parameters (either directly, from a Map, or from a Bean), and finally
- * reconstruct the proper URI. For example:
- * 
+ * <p>
+ * Given a URI and a set of parameters, provide abilities to add and remove parameters (either directly, from a Map, or
+ * from a Bean), and finally reconstruct the proper URI. For example:
+ * </p>
+ * <p>
  * <pre>
  * URI uri = URIBuilder.uri(strUri))
  *                     .withParameters(request.getParameterMap())
@@ -50,9 +47,9 @@ import lombok.Rethrow;
  *                     .withParameter("session", strSession)
  *                     .build();
  * </pre>
+ * </p>
  * 
- * Note that this class currently does not support URI rewriting of cookie
- * strings (though it should).
+ * Note that this class currently does not support URI rewriting of cookie strings (though it should).
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class URIBuilder {
@@ -74,17 +71,17 @@ public final class URIBuilder {
 		if (uri == null || uri.isEmpty()) {
 			return new URIBuilder("", encoding);
 		} else {
-			final StringTokenizer tokenizerQueryString = new StringTokenizer(uri, "?");
-			final URIBuilder builder = new URIBuilder(tokenizerQueryString.nextToken(), encoding);
+			val tokenizerQueryString = new StringTokenizer(uri, "?");
+			val builder = new URIBuilder(tokenizerQueryString.nextToken(), encoding);
 			if (tokenizerQueryString.hasMoreTokens()) {
-				String queryString = tokenizerQueryString.nextToken();
+				val queryString = tokenizerQueryString.nextToken();
 				if (queryString != null) {
-					StringTokenizer tokenizerNameValuePair = new StringTokenizer(queryString, "&");
+					val tokenizerNameValuePair = new StringTokenizer(queryString, "&");
 					while (tokenizerNameValuePair.hasMoreTokens()) {
-						String nameValuePair = tokenizerNameValuePair.nextToken();
-						StringTokenizer tokenizerValue = new StringTokenizer(nameValuePair, "=");
-						String name = tokenizerValue.nextToken();
-						String value = tokenizerValue.nextToken();
+						val nameValuePair = tokenizerNameValuePair.nextToken();
+						val tokenizerValue = new StringTokenizer(nameValuePair, "=");
+						val name = tokenizerValue.nextToken();
+						val value = tokenizerValue.nextToken();
 						builder.withParameter(name, value);
 					}
 				}
@@ -108,14 +105,13 @@ public final class URIBuilder {
 	 */
 	@Rethrow(as = IllegalArgumentException.class, message = "Unable to parse bean.")
 	public URIBuilder withBeanParameters(Object obj) {
-		Class<?> beanClass = obj.getClass();
-		BeanInfo beanInfo = Introspector.getBeanInfo(beanClass, Object.class);
-		PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-		for (PropertyDescriptor descriptor : descriptors) {
-			if (descriptor.isHidden())
-				continue;
-			String name = descriptor.getName();
-			Object value = descriptor.getReadMethod().invoke(obj);
+		val beanClass = obj.getClass();
+		val beanInfo = Introspector.getBeanInfo(beanClass, Object.class);
+		val descriptors = beanInfo.getPropertyDescriptors();
+		for (val descriptor : descriptors) {
+			if (descriptor.isHidden()) continue;
+			val name = descriptor.getName();
+			val value = descriptor.getReadMethod().invoke(obj);
 			withParameter(name, value.toString());
 		}
 		return this;
@@ -149,10 +145,10 @@ public final class URIBuilder {
 	}
 
 	public String toString() {
-		StringBuilder queryString = new StringBuilder();
+		val queryString = new StringBuilder();
 		queryString.append(urlWithoutParameters);
 		boolean firstTime = true;
-		for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+		for (val parameter : parameters.entrySet()) {
 			if (RESTRICTED.contains(parameter.getKey())) continue;
 			if (parameter.getKey().isEmpty()) continue;
 			if (firstTime) {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,7 @@ import static java.util.concurrent.TimeUnit.*;
 
 import java.net.URI;
 
-import lombok.Getter;
-import lombok.LazyGetter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -45,25 +42,25 @@ public class PlaylistItem {
 	private final PlaylistItemTag infoTag = createInfoTag();
 
 	public long getLength() {
-		final PlaylistItemTag tag = getInfoTag();
+		val tag = getInfoTag();
 		return ((tag == null) || (tag.getPlayTime() <= 0)) ? seconds : tag.getPlayTime();
 	}
 
 	public String getDisplayableBitRate() {
-		final PlaylistItemTag tag = getInfoTag();
-		final int bitRate = (tag == null) ? -1 : tag.getBitRate();
+		val tag = getInfoTag();
+		val bitRate = (tag == null) ? -1 : tag.getBitRate();
 		return (bitRate < 1) ? "unknown" : bitRate + " bit/s";
 	}
 
 	public String getDisplayableSampleRate() {
-		final PlaylistItemTag tag = getInfoTag();
-		final int sampleRate = (tag == null) ? -1 : tag.getSamplingRate();
+		val tag = getInfoTag();
+		val sampleRate = (tag == null) ? -1 : tag.getSamplingRate();
 		return (sampleRate < 1) ? "unknown" : sampleRate + " Hz";
 	}
 
 	public String getDisplayableChannels() {
-		final PlaylistItemTag tag = getInfoTag();
-		final int channels = (tag == null) ? -1 : tag.getChannels();
+		val tag = getInfoTag();
+		val channels = (tag == null) ? -1 : tag.getChannels();
 		switch(channels) {
 		case 1: return "mono";
 		case 2: return "stereo";
@@ -72,10 +69,10 @@ public class PlaylistItem {
 	}
 
 	public String getDisplayableLength() {
-		final long seconds = getLength();
+		val seconds = getLength();
 		if (seconds < 0) return "unknown";
-		final long millis = SECONDS.toMillis(getLength());
-		final long hour = HOURS.toMillis(1);
+		val millis = SECONDS.toMillis(getLength());
+		val hour = HOURS.toMillis(1);
 		if (millis < hour) {
 			return String.format("%1$TM:%1$TS", millis);
 		} else {
@@ -84,8 +81,8 @@ public class PlaylistItem {
 	}
 
 	private String createDisplayableName() {
-		final PlaylistItemTag tag = getInfoTag();
-		final StringBuilder builder = new StringBuilder();
+		val tag = getInfoTag();
+		val builder = new StringBuilder();
 		if (tag != null) {
 			if (StringUtils.isNotEmpty(tag.getTitle()) && StringUtils.isNotEmpty(tag.getArtist())) {
 				builder.append(tag.getArtist()).append(" - ").append(tag.getTitle());

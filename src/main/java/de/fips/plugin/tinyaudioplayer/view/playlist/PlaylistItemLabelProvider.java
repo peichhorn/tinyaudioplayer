@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  */
 package de.fips.plugin.tinyaudioplayer.view.playlist;
 
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
@@ -30,23 +30,21 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
-import de.fips.plugin.tinyaudioplayer.audio.Playlist;
 import de.fips.plugin.tinyaudioplayer.audio.PlaylistItem;
-import de.fips.plugin.tinyaudioplayer.audio.PlaylistItemTag;
 
 @RequiredArgsConstructor
 public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
 	static RGB GREY = new RGB(225, 225, 225);
 	static RGB WHITE = new RGB(255, 255, 255);
-	
+
 	private final TinyAudioPlayer player;
 
 	@Override
 	public void update(final ViewerCell cell) {
-		final PlaylistItem item = (PlaylistItem) cell.getElement();
+		val item = (PlaylistItem) cell.getElement();
 		cell.setText(item.getDisplayableName());
 		if (player != null) {
-			final Playlist playlist = player.getPlaylist();
+			val playlist = player.getPlaylist();
 			if (!playlist.isEmpty() && (item.equals(playlist.getCurrentTrack()))) {
 				cell.setBackground(new Color(null, GREY));
 			} else {
@@ -56,9 +54,9 @@ public class PlaylistItemLabelProvider extends StyledCellLabelProvider {
 	}
 
 	public String getToolTipText(Object element) {
-		final PlaylistItem item = (PlaylistItem) element;
-		final StringBuilder text = new StringBuilder();
-		final PlaylistItemTag tag = item.getInfoTag();
+		val item = (PlaylistItem) element;
+		val text = new StringBuilder();
+		val tag = item.getInfoTag();
 		if (tag != null) {
 			if (StringUtils.isNotEmpty(tag.getAlbum())) {
 				text.append("album: ").append(tag.getAlbum()).append("\n");

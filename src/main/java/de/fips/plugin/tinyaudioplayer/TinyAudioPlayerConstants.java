@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 /**
  * Some constants used by the TinyAudioPlayer.
  */
-@NoArgsConstructor(access=AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TinyAudioPlayerConstants {
 	public static final String PLUGIN_ID = "de.fips.plugin.tinyaudioplayer"; //$NON-NLS-1$
 	public static final Pattern COVER_DETECTION_PATTERN = Pattern.compile(".*(cover|front).*\\.(jpg|jpeg|bmp|png)"); //$NON-NLS-1$

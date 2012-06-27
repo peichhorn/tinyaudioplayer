@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import lombok.Await;
-import lombok.Getter;
-import lombok.ListenerSupport;
-import lombok.Signal;
+import lombok.*;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 import de.fips.plugin.tinyaudioplayer.audio.PlaybackEvent.Type;
 
@@ -66,7 +63,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	@Override
 	public void play() {
 		if (line == null) {
-			final Thread thread = new Thread(this, "AudioPlayer thread playing: " + location);
+			val thread = new Thread(this, "AudioPlayer thread playing: " + location);
 			thread.setDaemon(true);
 			thread.start();
 		} else {
@@ -99,11 +96,11 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 
 	@Override
 	public void run() {
-		final AudioInputStream encodedAudioInputStream = getEncodeAudioInputStream();
+		val encodedAudioInputStream = getEncodeAudioInputStream();
 		if (encodedAudioInputStream != null) {
 			fireHandlePlaybackEvent(new PlaybackEvent(Type.STARTED));
 
-			final AudioFormat decodedFormat = decodeAudioFormat(encodedAudioInputStream.getFormat());
+			val decodedFormat = decodeAudioFormat(encodedAudioInputStream.getFormat());
 			AudioInputStream decodedAudioInputStream = null;
 			try {
 				decodedAudioInputStream = AudioSystem.getAudioInputStream(decodedFormat, encodedAudioInputStream);
@@ -140,7 +137,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 				if (decodedAudioInputStream != null) {
 					try {
 						decodedAudioInputStream.close();
-					} catch(IOException ignore) {
+					} catch (IOException ignore) {
 					}
 				}
 				fireHandlePlaybackEvent(new PlaybackEvent(Type.CANCELED));
@@ -151,16 +148,16 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 	}
 
 	private void applyMute() {
-		if ((line != null ) && line.isOpen() && line.isControlSupported(BooleanControl.Type.MUTE)) {
-			final BooleanControl muteControl = ((BooleanControl)line.getControl(BooleanControl.Type.MUTE));
+		if ((line != null) && line.isOpen() && line.isControlSupported(BooleanControl.Type.MUTE)) {
+			val muteControl = ((BooleanControl) line.getControl(BooleanControl.Type.MUTE));
 			muteControl.setValue(mute);
 		}
 	}
 
 	private void applyVolume() {
-		if ((line != null ) && line.isOpen() && line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
-			final FloatControl volumeControl = ((FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN));
-			float dB = (float)(Math.log(volume) / Math.log(10.0) * 20.0);
+		if ((line != null) && line.isOpen() && line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+			val volumeControl = ((FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN));
+			val dB = (float) (Math.log(volume) / Math.log(10.0) * 20.0);
 			volumeControl.setValue(dB);
 		}
 	}
@@ -170,7 +167,7 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 		try {
 			try {
 				encodedAudioInputStream = AudioSystem.getAudioInputStream(new File(location));
-			} catch(IllegalArgumentException ignore) {
+			} catch (IllegalArgumentException ignore) {
 				// File(URI) preconditions did not hold
 				encodedAudioInputStream = AudioSystem.getAudioInputStream(location.toURL());
 			}
@@ -191,8 +188,8 @@ public class SingleTrackAudioPlayer implements IAudioPlayer, Runnable {
 			}
 		}
 
-		final int channels = endcodedAudioFormat.getChannels();
-		final float sampleRate = endcodedAudioFormat.getSampleRate();
+		val channels = endcodedAudioFormat.getChannels();
+		val sampleRate = endcodedAudioFormat.getSampleRate();
 		return new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, sampleRate, sampleSizeInBits, channels, (channels * sampleSizeInBits) >> 3, sampleRate, false);
 	}
 

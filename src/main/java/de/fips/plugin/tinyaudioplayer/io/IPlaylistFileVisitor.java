@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,6 +54,7 @@ import java.net.URI;
  * </pre>
  */
 public interface IPlaylistFileVisitor {
+
 	public void visitBegin(File file) throws IOException;
 
 	public void visitComment(String comment) throws IOException;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.Delegate;
-import lombok.ListenerSupport;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @ListenerSupport(IPlaylistListener.class)
@@ -39,7 +37,7 @@ public class Playlist implements Iterable<PlaylistItem> {
 	@Delegate(types = IListSubset.class)
 	private final List<PlaylistItem> tracks = new CopyOnWriteArrayList<PlaylistItem>();
 	private final List<PlaylistItem> selectedTracks = new CopyOnWriteArrayList<PlaylistItem>();
-	private int currentIndex = -1;
+	private AtomicInteger currentIndex = new AtomicInteger(-1);
 	private volatile boolean shuffle;
 	private volatile boolean repeat;
 
@@ -57,17 +55,17 @@ public class Playlist implements Iterable<PlaylistItem> {
 
 	public int add(final Playlist other, final boolean allowDuplicates) {
 		if (other != null) {
-			final int oldSize = tracks.size();
+			val oldSize = tracks.size();
 			if (allowDuplicates) {
-				for (final PlaylistItem track : other.tracks) {
+				for (val track : other.tracks) {
 					add(track);
 				}
 			} else {
-				final Set<String> uniqueTrackNames = new HashSet<String>();
-				for (final PlaylistItem track : tracks) {
+				val uniqueTrackNames = new HashSet<String>();
+				for (val track : tracks) {
 					uniqueTrackNames.add(track.getDisplayableName());
 				}
-				for (final PlaylistItem track : other.tracks) {
+				for (val track : other.tracks) {
 					if (uniqueTrackNames.add(track.getDisplayableName())) {
 						add(track);
 					}
@@ -83,12 +81,12 @@ public class Playlist implements Iterable<PlaylistItem> {
 			add(track);
 		}
 	}
-	
+
 	public void add(final PlaylistItem track) {
 		if (tracks != null) {
 			tracks.add(track);
-			if (currentIndex < 0) {
-				currentIndex = 0;
+			if (currentIndex.get() < 0) {
+				currentIndex.set(0);
 				fireTrackEnqueued(track);
 				fireTrackChanged(track);
 			} else {
@@ -99,11 +97,11 @@ public class Playlist implements Iterable<PlaylistItem> {
 
 	public void remove(final PlaylistItem track) {
 		remove(tracks.indexOf(track));
-		
+
 	}
 
 	public void removeCurrent() {
-		remove(currentIndex);
+		remove(currentIndex.get());
 	}
 
 	public void removeSelected() {
@@ -112,20 +110,20 @@ public class Playlist implements Iterable<PlaylistItem> {
 		}
 		selectedTracks.clear();
 	}
-	
+
 	public int removeDuplicates() {
 		if (!isEmpty()) {
-			final String currentTrackName = getCurrentTrack().getDisplayableName();
-			final Set<String> uniqueTrackNames = new HashSet<String>();
-			final List<PlaylistItem> oldTracks = new ArrayList<PlaylistItem>(tracks);
+			val currentTrackName = getCurrentTrack().getDisplayableName();
+			val uniqueTrackNames = new HashSet<String>();
+			val oldTracks = new ArrayList<PlaylistItem>(tracks);
 			tracks.clear();
-			currentIndex = 0;
+			currentIndex.set(0);
 			firePlaylistCleared();
-			for (final PlaylistItem track : oldTracks) {
-				final String trackName = track.getDisplayableName();
+			for (val track : oldTracks) {
+				val trackName = track.getDisplayableName();
 				if (uniqueTrackNames.add(trackName)) {
 					if (currentTrackName.equals(trackName)) {
-						currentIndex = tracks.size();
+						currentIndex.set(tracks.size());
 					}
 					tracks.add(track);
 					fireTrackEnqueued(track);
@@ -138,15 +136,15 @@ public class Playlist implements Iterable<PlaylistItem> {
 
 	private void remove(final int index) {
 		if (isValidIndex(index)) {
-			final PlaylistItem track = tracks.get(index);
+			val track = tracks.get(index);
 			tracks.remove(index);
 			if (tracks.isEmpty()) {
-				currentIndex = -1;
+				currentIndex.set(-1);
 				fireTrackRemoved(track);
 				firePlaylistCleared();
 			} else {
-				if (currentIndex >= index) {
-					currentIndex--;
+				if (currentIndex.get() >= index) {
+					currentIndex.decrementAndGet();
 				}
 				fireTrackRemoved(track);
 				fireTrackChanged(getCurrentTrack());
@@ -155,8 +153,8 @@ public class Playlist implements Iterable<PlaylistItem> {
 	}
 
 	public PlaylistItem getCurrentTrack() {
-		if (isValidIndex(currentIndex)) {
-			return tracks.get(currentIndex);
+		if (isValidIndex(currentIndex.get())) {
+			return tracks.get(currentIndex.get());
 		}
 		return null;
 	}
@@ -167,10 +165,10 @@ public class Playlist implements Iterable<PlaylistItem> {
 
 	public void setCurrentTrack(final int index) {
 		if (isValidIndex(index)) {
-			currentIndex = index;
+			currentIndex.set(index);
 		}
 	}
-	
+
 	private boolean isValidIndex(final int index) {
 		return (index >= 0) && (index < tracks.size());
 	}
@@ -192,7 +190,7 @@ public class Playlist implements Iterable<PlaylistItem> {
 
 	public void clear() {
 		tracks.clear();
-		currentIndex = -1;
+		currentIndex.set(-1);
 		firePlaylistCleared();
 	}
 
@@ -206,24 +204,24 @@ public class Playlist implements Iterable<PlaylistItem> {
 
 	private void updateIndex(final int first, final int last, final int diff) {
 		if (shuffle) {
-			currentIndex = new Random().nextInt(tracks.size());
-		} else if (currentIndex == last) {
+			currentIndex.set(new Random().nextInt(tracks.size()));
+		} else if (currentIndex.get() == last) {
 			if (repeat) {
-				currentIndex = first;
+				currentIndex.set(first);
 			} else {
-				currentIndex = last;
+				currentIndex.set(last);
 			}
 		} else {
-			currentIndex += diff;
+			currentIndex.addAndGet(diff);
 		}
 		fireTrackChanged(getCurrentTrack());
 	}
-	
+
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
+		val builder = new StringBuilder();
 		builder.append(this.getClass().getSimpleName()).append("\n");
 		int trackCounter = 1;
-		for (PlaylistItem track : tracks) {
+		for (val track : tracks) {
 			if (selectedTracks.contains(track)) {
 				builder.append("[").append(trackCounter++).append("] - ");
 			} else {
@@ -233,11 +231,14 @@ public class Playlist implements Iterable<PlaylistItem> {
 		}
 		return builder.toString();
 	}
-	
+
 	private static interface IListSubset {
 		boolean isEmpty();
+
 		int size();
+
 		Object[] toArray();
+
 		Iterator<PlaylistItem> iterator();
 	}
 }

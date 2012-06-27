@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,7 @@ package de.fips.plugin.tinyaudioplayer.audio;
 
 import java.net.URI;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.VisibleForTesting;
+import lombok.*;
 
 @RequiredArgsConstructor
 public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
@@ -89,7 +87,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 
 	@Override
 	public void previous() {
-		boolean wasPlaying = player != null;
+		val wasPlaying = player != null;
 		stop();
 		playlist.previous();
 		if (wasPlaying) {
@@ -99,7 +97,7 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 
 	@Override
 	public void next() {
-		boolean wasPlaying = player != null;
+		val wasPlaying = player != null;
 		stop();
 		playlist.next();
 		if (wasPlaying) {
@@ -131,7 +129,8 @@ public class PlaylistAudioPlayer implements IMultiTrackAudioPlayer {
 		}
 	}
 
-	@VisibleForTesting SingleTrackAudioPlayer createInternalPlayer(final URI location, final float volume, final boolean mute) {
+	@VisibleForTesting
+	SingleTrackAudioPlayer createInternalPlayer(final URI location, final float volume, final boolean mute) {
 		return new SingleTrackAudioPlayer(location, volume, mute);
 	}
 }

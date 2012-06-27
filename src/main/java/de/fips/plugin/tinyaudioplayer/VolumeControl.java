@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,39 +25,37 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
-import org.fest.util.VisibleForTesting;
+
+import lombok.*;
 
 /**
- * Simple Volume Control that allows to modify the
- * volume of the {@link TinyAudioPlayerPlugin}.
- *
+ * Simple Volume Control that allows to modify the volume of the {@link TinyAudioPlayerPlugin}.
+ * 
  * @see TinyAudioPlayer#setVolume(float)
  */
 public class VolumeControl extends WorkbenchWindowControlContribution {
 	private float volume = 1.0f;
-	
+
 	private final Image baseVolumeImage;
 	private final Image volumeImage;
-	
+
 	public VolumeControl() {
 		this(new ImageLocator());
 	}
-	
-	@VisibleForTesting VolumeControl(final IImageLocator imageLocator) {
-		super();
+
+	VolumeControl(final IImageLocator imageLocator) {
 		baseVolumeImage = imageLocator.getImage("icons/16px-volume-base.png");
 		volumeImage = imageLocator.getImage("icons/16px-volume.png");
 	}
 
 	@Override
 	protected Control createControl(final Composite parent) {
-		final Composite volumeControl = new Composite(parent, SWT.NONE);
+		val volumeControl = new Composite(parent, SWT.NONE);
 		volumeControl.setData("org.eclipse.swtbot.widget.key", "volumeControl");
 		volumeControl.setBackgroundMode(SWT.INHERIT_DEFAULT);
 		volumeControl.addPaintListener(new PaintListener() {
@@ -69,8 +67,9 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 				e.gc.dispose();
 			}
 		});
-		final Listener listener = new Listener() {
+		val listener = new Listener() {
 			private boolean mouseDown;
+
 			@Override
 			public void handleEvent(final Event event) {
 				switch (event.type) {
@@ -91,7 +90,7 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 
 			private void updateVolume(final Event event) {
 				if (mouseDown) {
-					final Rectangle rect = volumeControl.getBounds();
+					val rect = volumeControl.getBounds();
 					volume = ((float) event.x / (float) rect.width * 2.0f);
 					TinyAudioPlayerPlugin.getDefaultPlayer().setVolume(volume);
 					volumeControl.redraw();
@@ -106,18 +105,19 @@ public class VolumeControl extends WorkbenchWindowControlContribution {
 		volumeControl.setSize(64, 16);
 		return volumeControl;
 	}
-	
+
 	@Override
 	public void dispose() {
 		baseVolumeImage.dispose();
 		volumeImage.dispose();
 		super.dispose();
 	}
-	
-	@VisibleForTesting static interface IImageLocator {
+
+	@VisibleForTesting
+	static interface IImageLocator {
 		public Image getImage(String imagePath);
 	}
-	
+
 	private static class ImageLocator implements IImageLocator {
 		@Override
 		public Image getImage(final String imagePath) {

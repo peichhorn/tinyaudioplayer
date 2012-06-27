@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.11.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.11"/>
+   <feature url="features/de.fips.plugin.tinyaudioplayer_feature_1.0.12.jar" id="de.fips.plugin.tinyaudioplayer_feature" version="1.0.12"/>
 </site>

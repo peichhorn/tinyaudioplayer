@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@ package de.fips.plugin.tinyaudioplayer.wizards.soundcloud;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.val;
+
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 
@@ -44,7 +45,7 @@ public class FilterResultsPage extends WizardPage {
 	private CheckboxTableViewer viewer;
 	private Composite container;
 	private Thread soundCloudScanner;
-	
+
 	public FilterResultsPage() {
 		super("filter.results");
 		setTitle("Filter Results");
@@ -65,12 +66,12 @@ public class FilterResultsPage extends WizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
+		val layout = new GridLayout();
 		container.setLayout(layout);
 		viewer = CheckboxTableViewer.newCheckList(container, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		viewer.setContentProvider(new PlaylistContentProvider());
 		viewer.setLabelProvider(new PlaylistItemLabelProvider(null));
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		val gd = new GridData(GridData.FILL_BOTH);
 		viewer.getControl().setLayoutData(gd);
 
 		setControl(container);
@@ -78,11 +79,11 @@ public class FilterResultsPage extends WizardPage {
 	}
 
 	public Playlist getPlaylist() {
-		final Object input = viewer.getInput();
+		val input = viewer.getInput();
 		if (input instanceof Playlist) {
 			@SuppressWarnings("unchecked")
-			final List<PlaylistItem> selectedTracks = (List<PlaylistItem>) (List<?>) Arrays.asList(viewer.getCheckedElements());
-			final Playlist playlist = new Playlist();
+			val selectedTracks = (List<PlaylistItem>) (List<?>) Arrays.asList(viewer.getCheckedElements());
+			val playlist = new Playlist();
 			playlist.add(selectedTracks);
 			return playlist;
 		}
@@ -91,11 +92,11 @@ public class FilterResultsPage extends WizardPage {
 
 	private void updateTableViewer() {
 		viewer.setInput(new Playlist());
-		final IWizard wizard = getWizard();
+		val wizard = getWizard();
 		if (wizard instanceof SoundCloudWizard) {
 			stopScanner();
-			final String searchText = ((SoundCloudWizard) getWizard()).getSearchText();
-			final SoundCloudPlaylistProvider playlistProvider = ((SoundCloudWizard) getWizard()).getPlaylistProvider();
+			val searchText = ((SoundCloudWizard) getWizard()).getSearchText();
+			val playlistProvider = ((SoundCloudWizard) getWizard()).getPlaylistProvider();
 			startScanner(searchText, playlistProvider);
 		}
 	}
@@ -106,16 +107,16 @@ public class FilterResultsPage extends WizardPage {
 		}
 		soundCloudScanner = null;
 	}
-	
+
 	private void startScanner(final String searchText, final SoundCloudPlaylistProvider playlistProvider) {
 		soundCloudScanner = new Thread("Scan Soundcloud for: '" + searchText + "'") {
 			@Override
 			public void run() {
 				try {
-					final Object input = viewer.getInput();
+					val input = viewer.getInput();
 					if (input instanceof Playlist) {
-						final Playlist playlist = (Playlist) input;
-						final int numberOfPages = playlistProvider.getNumberOfPagesFor(searchText);
+						val playlist = (Playlist) input;
+						val numberOfPages = playlistProvider.getNumberOfPagesFor(searchText);
 						for (int currentPage = 1; currentPage <= numberOfPages; currentPage++) {
 							if (isInterrupted()) break;
 							playlist.add(playlistProvider.getPlaylistFor(searchText, currentPage));

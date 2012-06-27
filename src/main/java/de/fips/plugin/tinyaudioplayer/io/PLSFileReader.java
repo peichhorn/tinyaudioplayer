@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.StringTokenizer;
 
-import lombok.Cleanup;
-import lombok.ExtensionMethod;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @RequiredArgsConstructor
 @ExtensionMethod(Strings.class)
@@ -38,9 +36,9 @@ public class PLSFileReader {
 
 	public void read(final File file) throws IOException {
 		visitor.visitBegin(file);
-		@Cleanup final Iterable<String> lines = Lines.in(file);
+		@Cleanup val lines = Lines.in(file);
 		boolean entryOpen = false;
-		for (final String line : lines.trim().filterNonEmpty()) {
+		for (val line : lines.trim().filterNonEmpty()) {
 			if (line.startsWith("[")) {
 				visitor.visitComment(line);
 			} else if ((line.toLowerCase().startsWith("file"))) {
@@ -50,11 +48,11 @@ public class PLSFileReader {
 				}
 				visitor.visitEntryBegin();
 				entryOpen = true;
-				final StringTokenizer st = new StringTokenizer(line, "=");
+				val st = new StringTokenizer(line, "=");
 				st.nextToken();
-				final String fileNameOrURL = st.nextToken().trim();
+				val fileNameOrURL = st.nextToken().trim();
 				try {
-					final URI uri = new URI(fileNameOrURL);
+					val uri = new URI(fileNameOrURL);
 					if (!uri.isAbsolute()) throw new URISyntaxException(line, "URI is not absolute");
 					visitor.visitLocation(uri);
 				} catch (URISyntaxException  e) {
@@ -65,17 +63,17 @@ public class PLSFileReader {
 					visitor.visitLocation(f.toURI());
 				}
 			} else if ((line.toLowerCase().startsWith("title"))) {
-				final StringTokenizer st = new StringTokenizer(line, "=");
+				val st = new StringTokenizer(line, "=");
 				st.nextToken();
 				visitor.visitTitle(st.nextToken().trim());
 			} else if ((line.toLowerCase().startsWith("length"))) {
-				final StringTokenizer st = new StringTokenizer(line, "=");
+				val st = new StringTokenizer(line, "=");
 				st.nextToken();
 				visitor.visitLength(Long.valueOf(st.nextToken().trim()));
 				visitor.visitEntryEnd();
 				entryOpen = false;
 			} else if ((line.toLowerCase().startsWith("numberofentries"))) {
-				final StringTokenizer st = new StringTokenizer(line, "=");
+				val st = new StringTokenizer(line, "=");
 				st.nextToken();
 				visitor.visitNumberOfEntries(new Integer(st.nextToken().trim()));
 			}

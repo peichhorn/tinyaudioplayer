@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,18 @@
  */
 package de.fips.plugin.tinyaudioplayer.io;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Yield.yield;
+import static lombok.Yield.yield;
+
+import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Strings {
 
 	public static Iterable<String> trim(final Iterable<String> lines) {
-		for (final String line : lines) yield(line.trim());
+		for (val line : lines) yield(line.trim());
 	}
 	
 	public static Iterable<String> filterNonEmpty(final Iterable<String> lines) {
-		for (final String line : lines) if (!line.isEmpty()) yield(line);
+		for (val line : lines) if (!line.isEmpty()) yield(line);
 	}
 }

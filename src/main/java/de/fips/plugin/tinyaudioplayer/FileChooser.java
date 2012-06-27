@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,8 @@
  */
 package de.fips.plugin.tinyaudioplayer;
 
+import lombok.val;
+
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -30,7 +32,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class FileChooser {
 	public static boolean IS_IN_TEST_MODE = false;
-	
+
 	public final FileDialog dialog;
 
 	public FileChooser(final Shell parent, int style) {
@@ -47,7 +49,7 @@ public class FileChooser {
 
 	public String open() {
 		if (IS_IN_TEST_MODE) {
-			final InputDialog testDialog = new InputDialog(dialog.getParent(), "FileChooser", "Please enter the file path", "", null);
+			val testDialog = new InputDialog(dialog.getParent(), "FileChooser", "Please enter the file path", "", null);
 			return testDialog.open() != 0 ? null : testDialog.getValue();
 		} else {
 			return dialog.open();

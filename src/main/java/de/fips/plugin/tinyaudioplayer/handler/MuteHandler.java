@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@ package de.fips.plugin.tinyaudioplayer.handler;
 
 import java.util.Map;
 
+import lombok.*;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -31,7 +33,6 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
 import org.eclipse.ui.menus.UIElement;
 
-import de.fips.plugin.tinyaudioplayer.TinyAudioPlayer;
 import de.fips.plugin.tinyaudioplayer.TinyAudioPlayerPlugin;
 
 public final class MuteHandler extends AbstractHandler implements IElementUpdater {
@@ -39,9 +40,9 @@ public final class MuteHandler extends AbstractHandler implements IElementUpdate
 
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
-		final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
+		val player = TinyAudioPlayerPlugin.getDefaultPlayer();
 		player.setMute(!player.isMute());
-		final ICommandService commandService = (ICommandService) TinyAudioPlayerPlugin.getDefaultWorkbench().getService(ICommandService.class);
+		val commandService = (ICommandService) TinyAudioPlayerPlugin.getDefaultWorkbench().getService(ICommandService.class);
 		if (commandService != null) {
 			commandId = event.getCommand().getId();
 			commandService.refreshElements(commandId, null);
@@ -51,10 +52,10 @@ public final class MuteHandler extends AbstractHandler implements IElementUpdate
 
 	@Override
 	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
-		final ICommandImageService commandImageService = (ICommandImageService) TinyAudioPlayerPlugin.getDefaultWorkbench().getService(ICommandImageService.class);
+		val commandImageService = (ICommandImageService) TinyAudioPlayerPlugin.getDefaultWorkbench().getService(ICommandImageService.class);
 		if ((commandImageService != null) && (commandId != null)) {
-			final TinyAudioPlayer player = TinyAudioPlayerPlugin.getDefaultPlayer();
-			final int type = player.isMute() ? ICommandImageService.TYPE_DISABLED : ICommandImageService.TYPE_DEFAULT;
+			val player = TinyAudioPlayerPlugin.getDefaultPlayer();
+			val type = player.isMute() ? ICommandImageService.TYPE_DISABLED : ICommandImageService.TYPE_DEFAULT;
 			element.setIcon(commandImageService.getImageDescriptor(commandId, type));
 		}
 	}

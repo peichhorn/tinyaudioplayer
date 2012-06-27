@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 Philipp Eichhorn.
+ * Copyright © 2011-2012 Philipp Eichhorn.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,24 +23,24 @@ package de.fips.plugin.tinyaudioplayer.http;
 
 import java.net.URI;
 
-import lombok.Cleanup;
+import lombok.*;
 
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
 
 import org.apache.commons.httpclient.HostConfiguration;
-import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 
 public final class EclipseProxyConfiguration implements IProxyConfiguration {
 
 	@Override
 	public void setupProxyFor(final HostConfiguration hostConfig, final URI uri) {
-		@Cleanup("close") final ServiceTracker proxyTracker = new ServiceTracker(FrameworkUtil.getBundle(this.getClass()).getBundleContext(), IProxyService.class.getName(), null);
+		@Cleanup("close")
+		val proxyTracker = new ServiceTracker(FrameworkUtil.getBundle(this.getClass()).getBundleContext(), IProxyService.class.getName(), null);
 		proxyTracker.open();
-		IProxyService proxyService = (IProxyService) proxyTracker.getService();
-		IProxyData[] proxyDataForHost = proxyService.select(uri);
-		for (IProxyData data : proxyDataForHost) {
+		val proxyService = (IProxyService) proxyTracker.getService();
+		val proxyDataForHost = proxyService.select(uri);
+		for (val data : proxyDataForHost) {
 			if (data.getHost() == null) continue;
 			hostConfig.setProxy(data.getHost(), data.getPort());
 			break;
